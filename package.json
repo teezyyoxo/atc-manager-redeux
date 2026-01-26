@@ -6,7 +6,7 @@
   "sideEffects": false,
   "scripts": {
     "start": "if-env NODE_ENV=production && npm run serve || npm run dev",
-    "build": "cross-env NODE_ENV=production preact build --json --clean --template template.html",
+    "build": "cross-env NODE_ENV=production preact build --json --template template.html",
     "serve": "npm run build && preact serve",
     "dev": "preact watch --template template.html",
     "lint": "eslint src",
