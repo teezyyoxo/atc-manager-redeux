@@ -19,13 +19,11 @@ class SvgRadar extends Component {
     this.state = {};
   }
 
-  componentWillMount() {
-    GameStore.on('change', this.reRender);
+  componentDidMount() {
     SettingsStore.on('change', this.reRender);
   }
 
   componentWillUnmount() {
-    GameStore.removeListener('change', this.reRender);
     SettingsStore.removeListener('change', this.reRender);
   }
 
@@ -38,8 +36,7 @@ class SvgRadar extends Component {
   render() {
     const airplanes = GameStore.traffic.map((airplane, i) => (
       <RadarTraffic
-        stateEmitter={GameStore}
-        key={i}
+        key={airplane.regNum}
         index={i}
         airplane={airplane}
         cmd={this.props.cmd}
@@ -76,11 +73,11 @@ class SvgRadar extends Component {
           <BackgroundSvg name={GameStore.id} />
         </g>
         <MSALayer />
-        <SidSvg emitter={this.props.emitter} />
-        <StarSvg emitter={this.props.emitter} />
+        <SidSvg cmd={this.props.cmd} />
+        <StarSvg cmd={this.props.cmd} />
         <WayPoints onContextMenu={this.props.onWayPointContextMenu} />
         <Airport />
-        <RouteVisualizer cmd={this.props.cmd} emitter={this.props.emitter} />
+        <RouteVisualizer cmd={this.props.cmd} />
         {airplanes}
         <rect
           width="100%"

@@ -1,4 +1,46 @@
-
 .TimelapseChart {
-    
+  min-height: 400px;
+}
+
+.TimelapseChart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.TimelapseChart.empty {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+.chart-grid {
+  stroke: rgba(255, 255, 255, 0.18);
+  stroke-width: 1;
+}
+
+.chart-tick,
+.chart-legend text {
+  fill: #fff;
+  font-size: 11px;
+}
+
+.chart-tick {
+  text-anchor: end;
+}
+
+.traffic-area {
+  fill: #62c67a;
+  fill-opacity: 0.22;
+}
+
+.chart-line {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.chart-legend text {
+  text-anchor: start;
 }

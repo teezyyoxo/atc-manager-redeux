@@ -1,8 +1,9 @@
-import React, { Component } from 'preact';
+import { Component } from 'preact';
 import './SavedGamesOpen.css';
 import { loadState, saveState } from '../../lib/persistance';
-import { Route, Link, route } from 'preact-router';
+import { route } from 'preact-router';
 import GameStore from '../../stores/GameStore';
+import { sendMessageError } from '../GameMessages/GameMessages';
 
 class SavedGamesOpen extends Component {
   constructor(props) {
@@ -11,17 +12,13 @@ class SavedGamesOpen extends Component {
     const games = [];
     const s = loadState();
     for (const name in s.games) {
-      if (s.games.hasOwnProperty(name)) {
+      if (Object.prototype.hasOwnProperty.call(s.games, name)) {
         games.push({ name, state: s.games[name] });
       }
     }
 
     this.state = { games };
   }
-
-  componentWillMount() {}
-
-  componentWillUnmount() {}
 
   handleSavedGamesOpenListItemClick = e => {
     const name = e.currentTarget.getAttribute('data-name');
@@ -35,8 +32,13 @@ class SavedGamesOpen extends Component {
         return;
       }
     }
-    GameStore.startLocalstorage(name);
-    route('/game');
+    try {
+      GameStore.startLocalstorage(name);
+      route('/game');
+    } catch (error) {
+      sendMessageError(`Unable to load "${name}".`);
+      console.warn('Saved game load failed.', error);
+    }
   };
 
   handleSavedGameOpenListItemTrash = e => {
@@ -48,7 +50,7 @@ class SavedGamesOpen extends Component {
     saveState(state);
     const games = [];
     for (const name in state.games) {
-      if (state.games.hasOwnProperty(name)) {
+      if (Object.prototype.hasOwnProperty.call(state.games, name)) {
         games.push({ name, state: state.games[name] });
       }
     }

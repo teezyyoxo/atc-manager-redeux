@@ -1,8 +1,7 @@
 import { Component } from 'preact';
 import './SavedTimelapseOpen.css';
 import { loadState, saveState } from '../../lib/persistance';
-import { Route, Link, route } from 'preact-router';
-import GameStore from '../../stores/GameStore';
+import { route } from 'preact-router';
 
 class SavedTimelapseOpen extends Component {
   constructor(props) {
@@ -11,17 +10,13 @@ class SavedTimelapseOpen extends Component {
     const timelapses = [];
     const s = loadState();
     for (const name in s.timelapses) {
-      if (s.timelapses.hasOwnProperty(name)) {
+      if (Object.prototype.hasOwnProperty.call(s.timelapses, name)) {
         timelapses.push({ name, state: s.timelapses[name] });
       }
     }
 
     this.state = { timelapses };
   }
-
-  componentWillMount() {}
-
-  componentWillUnmount() {}
 
   handleSavedTimelapseOpenListItemClick = e => {
     const name = e.currentTarget.getAttribute('data-name');
@@ -37,7 +32,7 @@ class SavedTimelapseOpen extends Component {
     saveState(state);
     const timelapses = [];
     for (const name in state.timelapses) {
-      if (state.timelapses.hasOwnProperty(name)) {
+      if (Object.prototype.hasOwnProperty.call(state.timelapses, name)) {
         timelapses.push({ name, state: state.timelapses[name] });
       }
     }

@@ -37,17 +37,13 @@ class AirplaneEditor extends Component {
     };
   }
 
-  componentWillMount() {}
-
-  componentWillUnmount() {}
-
   handleInputChanged = e => {
     const id = e.target.value;
-    const plane = airplanesById[id];
+    const plane = airplanesById[id] || null;
 
     this.setState({
       plane,
-      json: plane !== null ? JSON.stringify(plane, null, 4) : ''
+      json: plane ? JSON.stringify(plane, null, 4) : ''
     });
   };
 
@@ -112,6 +108,8 @@ class AirplaneEditor extends Component {
   };
 
   readFromFile = e => {
+    const file = e.target.files[0];
+    if (!file) return;
     var reader = new FileReader();
     const _this = this;
     reader.onload = function() {
@@ -123,7 +121,7 @@ class AirplaneEditor extends Component {
         () => _this.parseTextareaJsonDebounced(reader.result)
       );
     };
-    reader.readAsText(e.target.files[0]);
+    reader.readAsText(file);
   };
 
   handleRawJSONSwitchInput = e => {
@@ -136,6 +134,7 @@ class AirplaneEditor extends Component {
     this.setState(prevstate => {
       prevstate.plane = e.formData;
       prevstate.planesSet[prevstate.plane.id] = e.formData;
+      prevstate.json = JSON.stringify(e.formData, null, 4);
       return prevstate;
     });
   };
@@ -147,6 +146,7 @@ class AirplaneEditor extends Component {
     this.setState(prevstate => {
       prevstate.plane = plane;
       prevstate.planesSet[plane.id] = plane;
+      prevstate.json = JSON.stringify(plane, null, 4);
       return prevstate;
     });
   };
@@ -164,7 +164,8 @@ class AirplaneEditor extends Component {
 
     this.setState({
       planesSet,
-      plane: null
+      plane: null,
+      json: ''
     });
     sendMessageInfo('Saved file to local storage');
   };
@@ -180,14 +181,13 @@ class AirplaneEditor extends Component {
         <div className="panel">
           <h1>Airplane Editor</h1>
 
-          <select onInput={this.handleInputChanged}>
+          <select
+            value={this.state.plane ? this.state.plane.id : ''}
+            onInput={this.handleInputChanged}
+          >
             <option value="">Choose Airplane:</option>
-            {Object.keys(airplanesById).map((id, i) => (
-              <option
-                key={i}
-                value={id}
-                selected={eq(airplanesById[id], this.state.plane)}
-              >
+            {Object.keys(airplanesById).map(id => (
+              <option key={id} value={id}>
                 {airplanesById[id].name}
               </option>
             ))}
@@ -241,7 +241,6 @@ class AirplaneEditor extends Component {
             className="inputfile"
             type="file"
             accept=".json"
-            disabled={!this.state.plane || this.state.plane.name === ''}
           />
           <label for="saveseditor">Open File</label>
           <CopyToClipboard text={this.state.json} onCopy={this.handleCopy}>
@@ -323,5 +322,3 @@ function debounce(func, wait, immediate) {
     if (callNow) func.apply(context, args);
   };
 }
-
-const eq = (p1, p2) => p1 && p2 && p1.id === p2.id;

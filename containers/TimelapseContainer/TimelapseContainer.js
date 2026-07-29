@@ -1,35 +1,27 @@
 import { Component } from 'preact';
 import './TimelapseContainer.css';
 import {
-  FaLink,
   FaShareAlt,
-  FaEnvelope,
   FaPlayCircle,
   FaDesktop,
-  FaChartLine,
   FaSave
 } from 'react-icons/fa/index.esm';
 import FullscreenableTimelapseViewer from '../FullscreenableTimelapseViewer/FullscreenableTimelapseViewer';
 import TimelapsePlaybackStore from '../../stores/TimelapsePlaybackStore';
-import { gamestoreFramesTimeFmt, logErr } from '../../lib/util';
+import { gamestoreFramesTimeFmt } from '../../lib/util';
 import GameStore from '../../stores/GameStore';
 import { saveAs } from 'file-saver';
-import config from '../../lib/config';
-import SharingPanel from '../../components/SharingPanel/SharingPanel';
 import TimelapseStore from '../../stores/TimelapseStore';
 import { route } from 'preact-router';
 import SavedGamesOpen from '../../components/SavedGamesOpen/SavedGamesOpen';
 import TimelapseChart from '../../components/TimelapseChart/TimelapseChart';
-import { sendMessageInfo } from '../../components/GameMessages/GameMessages';
-import { compressToUTF16 } from 'lz-string';
+import { sendMessageError, sendMessageInfo } from '../../components/GameMessages/GameMessages';
+import { shareOrDownloadTimelapse } from '../../lib/timelapse-file';
 
 class TimelapseContainer extends Component {
   constructor(props) {
     super();
-    this.state = {
-      sharing: false,
-      url: props.url
-    };
+    this.state = {};
     this.chartSvgRef = null;
   }
 
@@ -46,67 +38,33 @@ class TimelapseContainer extends Component {
     );
   };
 
-  componentWillMount() {
+  componentDidMount() {
     TimelapsePlaybackStore.on('change', this.reRender);
-    GameStore.on('change', this.reRender);
   }
 
   componentWillUnmount() {
     TimelapsePlaybackStore.removeListener('change', this.reRender);
-    GameStore.removeListener('change', this.reRender);
   }
 
   reRender = () => this.setState({});
 
-  sharingDone = () => this.setState({ sharing: false });
-
-  share = () => {
-    if (typeof window === 'undefined') return;
-    const stats = TimelapsePlaybackStore.timelapse.stats;
-    const timelapse = TimelapsePlaybackStore.timelapse;
-    const sharingPromise = Promise.resolve()
-      .then(() => {
-        if (this.state.url) return this.state.url;
-        else
-          return fetch('https://api.myjson.com/bins', {
-            method: 'POST',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              content: compressToUTF16(
-                JSON.stringify(TimelapsePlaybackStore.timelapse)
-              )
-            })
-          })
-            .then(response => response.text())
-            .then(
-              json =>
-                JSON.parse(json)
-                  .uri.split('/')
-                  .slice(-1)[0]
-            )
-            .then(id => `${config.url}timelapse/url?id=${id}`);
-      })
-      .then(url => ({
-        title: this.state.name || TimelapseStore.defaultTimelapseName(),
-        text: `ATC Manager 2 timelapse with ${stats.departures} departures, \
-${stats.enroutes} enroute flights and ${stats.arrivals} arrivals.`,
-        url: url
-      }))
-      .catch(err => {
-        logErr(err);
-        this.setState({
-          sharingPromise: null,
-          sharing: false
-        });
-      });
-    this.setState({
-      sharingPromise: sharingPromise,
-      sharing: true
-    });
-    sharingPromise.then(o => this.setState({ url: o.url }));
+  share = async () => {
+    try {
+      const result = await shareOrDownloadTimelapse(
+        TimelapsePlaybackStore.timelapse,
+        this.props.name || TimelapseStore.defaultTimelapseName()
+      );
+      sendMessageInfo(
+        result === 'shared'
+          ? 'Timelapse shared.'
+          : 'Timelapse exported to a file.'
+      );
+    } catch (error) {
+      if (error.name !== 'AbortError') {
+        sendMessageError('Unable to export the timelapse.');
+        console.warn('Timelapse export failed.', error);
+      }
+    }
   };
 
   handleStartPlaying = () => {
@@ -117,7 +75,9 @@ ${stats.enroutes} enroute flights and ${stats.arrivals} arrivals.`,
       if (!result) return;
     }
     GameStore.startSaved(
-      TimelapsePlaybackStore.states[TimelapsePlaybackStore.index]
+      TimelapsePlaybackStore.states[
+        Math.floor(TimelapsePlaybackStore.index)
+      ]
     );
     route('/game');
   };
@@ -150,7 +110,7 @@ ${stats.enroutes} enroute flights and ${stats.arrivals} arrivals.`,
               {gamestoreFramesTimeFmt(TimelapsePlaybackStore.index)}
             </div>
             <div className="option" onClick={this.share}>
-              <FaShareAlt /> Share this timelapse
+              <FaShareAlt /> Share / Export this timelapse
             </div>
             {this.props.timelapseroute !== 'localstorage' ? (
               <div className="option" onClick={this.handleSaveTimelapse}>
@@ -168,13 +128,6 @@ ${stats.enroutes} enroute flights and ${stats.arrivals} arrivals.`,
         <div className="panel">
           <TimelapseChart />
         </div>
-        {this.state.sharing ? <div className="panel-open-bg" /> : null}
-        {this.state.sharing ? (
-          <SharingPanel
-            onClose={this.sharingDone}
-            promise={this.state.sharingPromise}
-          />
-        ) : null}
       </div>
     );
   }

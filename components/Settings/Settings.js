@@ -1,10 +1,7 @@
 import { Component } from 'preact';
 import './Settings.css';
 import SettingsStore from '../../stores/SettingsStore';
-import Communications from '../../lib/communications';
-import GameStore from '../../stores/GameStore';
 import { FaCompress, FaExpand } from 'react-icons/fa/index.esm';
-import config from '../../lib/config';
 import { wipeServiceWorkerCache } from '../../lib/persistance';
 
 class Settings extends Component {
@@ -17,20 +14,12 @@ class Settings extends Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     SettingsStore.on('change', this.handleSettingsStoreChange);
-    Communications.synth.addEventListener(
-      'voiceschanged',
-      this.handleVoicesChange
-    );
   }
 
   componentWillUnmount() {
     SettingsStore.removeListener('change', this.handleSettingsStoreChange);
-    Communications.synth.removeEventListener(
-      'voiceschanged',
-      this.handleVoicesChange
-    );
   }
 
   handleSettingsStoreChange = () => {
@@ -50,7 +39,6 @@ class Settings extends Component {
   handleSpeechVoiceChange = e => {
     SettingsStore.changeATCVoice(SettingsStore.voices.find(voice =>
       voice.name === e.target.value));
-    SettingsStore.emit('change');
   };
 
   handleSpeechSynthesisSettingChange = e => {
@@ -63,23 +51,16 @@ class Settings extends Component {
     SettingsStore.emit('change');
   };
 
-  handleVoicesChange = e => {
-    SettingsStore.emit('change');
-  };
-
   handlePitchChange = e => {
     SettingsStore.changePitch(+e.target.value);
-    SettingsStore.emit('change');
   };
 
   handleRateChange = e => {
     SettingsStore.changeRate(+e.target.value);
-    SettingsStore.emit('change');
   };
 
   handleSpeedChange = e => {
     SettingsStore.setSpeed(+e.target.value);
-    SettingsStore.emit('change');
   };
 
   handleDifficultyChange = e => {
@@ -106,6 +87,7 @@ class Settings extends Component {
     this.setState({
       difficulty: e.target.value
     });
+    SettingsStore.emit('change');
   };
 
   handleIlsPathColorChange(e) {

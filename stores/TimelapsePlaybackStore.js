@@ -1,14 +1,7 @@
 import { EventEmitter } from 'events';
-import Communications from '../lib/communications';
 import { loadState, saveState } from '../lib/persistance';
-import { patch, unpatch, clone } from 'jsondiffpatch';
-import Router, { route } from 'preact-router';
-import { getParameterByName } from '../lib/util';
-import {
-  sendMessageError,
-  sendMessageWarning,
-  sendMessageInfo
-} from '../components/GameMessages/GameMessages';
+import { patch, clone } from 'jsondiffpatch';
+import { sendMessageWarning, sendMessageInfo } from '../components/GameMessages/GameMessages';
 import config from '../lib/config';
 import GameStore from './GameStore';
 import { loadMap } from '../lib/map';
@@ -25,7 +18,7 @@ const createChart = (data, clampLength) => {
 };
 
 const promiseMeATimelapse = timelapse =>
-  new Promise((res, rej) => {
+  new Promise(res => {
     const states = new Array(timelapse.patches.length);
     let i = 0;
     let cursor = clone(timelapse.start);
@@ -38,7 +31,11 @@ const promiseMeATimelapse = timelapse =>
       }
       if (i >= timelapse.patches.length) {
         clearInterval(interval);
-        states.unshift(timelapse.start);
+        const start = clone(timelapse.start);
+        start.trafficLength = Array.isArray(start.traffic)
+          ? start.traffic.length
+          : 0;
+        states.unshift(start);
         return res(states);
       }
     }, 50);
@@ -57,7 +54,7 @@ class TimelapsePlaybackStore extends EventEmitter {
 
   play = () => {
     if (this.interval !== null) this.stop();
-    else if (this.index >= this.timelapse.patches.length) this.index = 0;
+    else if (this.states && this.index >= this.states.length) this.index = 0;
     this.interval = setInterval(this.update, config.updateTimelapseInterval);
     this.emit('change');
   };
@@ -76,15 +73,18 @@ class TimelapsePlaybackStore extends EventEmitter {
   };
 
   update = () => {
-    if (this.interval !== null && this.index >= this.timelapse.patches.length)
+    if (!this.states || this.index >= this.states.length)
       return this.stop();
-    if (this.index % 1 === 0) {
-      // Check if we arrived on the next frame and not between frames due to slow time speed
-      GameStore.loadJson(this.states[this.index]);
-    }
-    this.index += this.speed;
-    if (this.index - Math.round(this.index) < 0.00001)
+    GameStore.loadJson(this.states[Math.floor(this.index)]);
+    const nextIndex = this.index + this.speed;
+    const finished = nextIndex >= this.states.length;
+    this.index = finished ? this.states.length - 1 : nextIndex;
+    if (Math.abs(this.index - Math.round(this.index)) < 0.00001)
       this.index = Math.round(this.index);
+    if (finished) {
+      clearInterval(this.interval);
+      this.interval = null;
+    }
     this.emit('change');
     GameStore.emit('change');
   };
@@ -143,13 +143,21 @@ class TimelapsePlaybackStore extends EventEmitter {
   }
 
   loadPromise(timelapse) {
+    if (
+      !timelapse ||
+      !timelapse.start ||
+      !Array.isArray(timelapse.patches)
+    ) {
+      return Promise.reject(new Error('Invalid timelapse data.'));
+    }
     return promiseMeATimelapse(timelapse).then(states => {
       this.timelapse = timelapse;
       this.index = 0;
       this.states = states;
       this.chart = createChart(states, 50);
+      const map = loadMap(states[0].id);
       GameStore.loadJson(clone(states[0]));
-      const map = (GameStore.map = loadMap(states[0].id));
+      GameStore.map = map;
       GameStore.setup(map);
       GameStore.pause();
       this.emit('change');
@@ -157,10 +165,10 @@ class TimelapsePlaybackStore extends EventEmitter {
   }
 
   scrub(frames) {
-    if (!this.timelapse) throw 'No timelapse is loaded.';
-    if (frames >= this.timelapse.patches.length)
-      throw 'Not enough frames in timelapse.';
-    this.index = frames;
+    if (!this.timelapse) throw new Error('No timelapse is loaded.');
+    if (frames < 0 || frames >= this.states.length)
+      throw new Error('Not enough frames in timelapse.');
+    this.index = Math.floor(frames);
     GameStore.loadJson(this.states[this.index]);
     GameStore.emit('change');
     this.emit('change');

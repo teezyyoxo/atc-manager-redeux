@@ -5,14 +5,12 @@ class GroundGameDataLoader extends Component {
   constructor(props) {
     super();
     this.state = {
+      dots: 0
     };
-
-    
-
   }
 
-  componentWillMount() {
-    this.interval = setInterval(this.setDots);
+  componentDidMount() {
+    this.interval = setInterval(this.setDots, 400);
   }
 
   componentWillUnmount() {
@@ -21,11 +19,10 @@ class GroundGameDataLoader extends Component {
 
   setDots = () => {
     this.setState({ dots: (this.state.dots + 1) % 6 });
-  }
+  };
 
   render() {
-    const dots = '.....'.slice(this.state.dots);
-    
+    const dots = '.'.repeat(this.state.dots);
     return (
       <div className="GroundGameDataLoader">
         <div className="InnerLoader">

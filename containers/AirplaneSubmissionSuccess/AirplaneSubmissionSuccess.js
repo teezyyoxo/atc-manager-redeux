@@ -7,10 +7,6 @@ class AirplaneSubmissionSuccess extends Component {
     this.state = {};
   }
 
-  componentWillMount() {}
-
-  componentWillUnmount() {}
-
   render() {
     return (
       <div className="AirplaneSubmissionSuccess">

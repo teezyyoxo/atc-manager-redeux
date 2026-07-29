@@ -1,32 +1,35 @@
-IMAGE ?= atc-manager
+ENGINE ?= docker
+VERSION ?= 2.5.0
+BUILD_FLAGS ?= --build-arg APP_VERSION=$(VERSION)
+IMAGE ?= atc-manager:$(VERSION)
 PORT ?= 8080
 CONTAINER ?= atc-manager
 
 .PHONY: build run run-detached stop rm logs ps compose-up compose-down
 
 build:
-	docker build -t $(IMAGE) .
+	$(ENGINE) build $(BUILD_FLAGS) -t $(IMAGE) .
 
 run: build
-	docker run --rm -p $(PORT):80 $(IMAGE)
+	$(ENGINE) run --pull=never --rm -p $(PORT):80 $(IMAGE)
 
 run-detached: build
-	docker run -d --name $(CONTAINER) -p $(PORT):80 --restart unless-stopped $(IMAGE)
+	$(ENGINE) run --pull=never -d --name $(CONTAINER) -p $(PORT):80 --restart unless-stopped $(IMAGE)
 
 stop:
-	docker stop $(CONTAINER) || true
+	$(ENGINE) stop $(CONTAINER) || true
 
 rm:
-	docker rm $(CONTAINER) || true
+	$(ENGINE) rm $(CONTAINER) || true
 
 logs:
-	docker logs -f $(CONTAINER)
+	$(ENGINE) logs -f $(CONTAINER)
 
 ps:
-	docker ps --format 'table {{.ID}}\t{{.Names}}\t{{.Ports}}'
+	$(ENGINE) ps --format 'table {{.ID}}\t{{.Names}}\t{{.Ports}}'
 
 compose-up:
-	docker-compose up --build -d
+	$(ENGINE) compose up --build -d
 
 compose-down:
-	docker-compose down
+	$(ENGINE) compose down

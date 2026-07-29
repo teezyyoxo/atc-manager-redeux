@@ -8,10 +8,6 @@ class GroundAptView extends Component {
     this.state = {};
   }
 
-  componentWillMount() {}
-
-  componentWillUnmount() {}
-
   render() {
     return (
       <div className="GroundAptView">

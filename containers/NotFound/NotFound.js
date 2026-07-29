@@ -9,10 +9,6 @@ class NotFound extends Component {
     this.state = {};
   }
 
-  componentWillMount() {}
-
-  componentWillUnmount() {}
-
   render() {
     return (
       <div className="NotFound">

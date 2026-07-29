@@ -12,13 +12,10 @@ import GameStore from '../../stores/GameStore';
 import GameMetaControls from '../../components/GameMetaControls/GameMetaControls';
 import {
   routeTypes,
-  operatorsById,
   airplanesById,
   VFRStates,
   allowedVFRStates
 } from '../../lib/airplane-library/airplane-library';
-import PlaneSpd from '../PlaneSpd/PlaneSpd';
-import PlaneAlt from '../PlaneSpd/PlaneSpd';
 import { landableRwys, activeRwys, idType } from '../../lib/map';
 import config from '../../lib/config';
 import SettingsPanel from '../../containers/SettingsPanel/SettingsPanel';
@@ -49,37 +46,34 @@ class TrafficStack extends Component {
     this.dtcToDataListId = `dct-tgt-${Math.random()
       .toString()
       .replace('.', '')}`;
-    props.emitter.on('cmdtgt', this.handleAirplaneClick);
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({ cmd: nextProps.cmd });
+    if (nextProps.cmd !== this.props.cmd) {
+      this.setState({ cmd: nextProps.cmd });
+    }
   }
 
-  componentWillMount() {
-    GameStore.on('change', this.handleGameStoreChange);
+  componentDidMount() {
+    this.props.emitter.on('cmdtgt', this.handleAirplaneClick);
     SettingsStore.on('change', this.handleSettingsStoreChange);
     if (typeof window !== 'undefined')
-      window.addEventListener('keypress', this.handleKeyPress);
+      window.addEventListener('keydown', this.handleKeyPress);
   }
 
   componentWillUnmount() {
-    GameStore.removeListener('change', this.handleGameStoreChange);
+    this.props.emitter.removeListener('cmdtgt', this.handleAirplaneClick);
     SettingsStore.removeListener('change', this.handleSettingsStoreChange);
     if (typeof window !== 'undefined')
-      window.removeEventListener('keypress', this.handleKeyPress);
+      window.removeEventListener('keydown', this.handleKeyPress);
   }
 
   handleKeyPress = e => {
-    if (e.keyCode == 13 && this.state.cmd.tgt) {
+    if (e.key === 'Enter' && this.state.cmd.tgt) {
       if (SettingsStore.useTextCmd) this.onCmdTextParse();
       else this.props.onCmdExecution();
       return false;
     }
-  };
-
-  handleGameStoreChange = () => {
-    this.setState({});
   };
 
   handleSettingsStoreChange = () => {
@@ -122,8 +116,9 @@ class TrafficStack extends Component {
   };
 
   handleTrafficStackInfoButtonClick = e => {
-    const index = e.srcElement.parentElement.getAttribute('data-index');
+    const index = e.currentTarget.parentElement.getAttribute('data-index');
     const airplane = GameStore.traffic[index];
+    if (!airplane) return;
     const model = airplanesById[airplane.typeId];
 
     this.setState({ infoPanelTgt: { airplane, model } });
@@ -133,6 +128,7 @@ class TrafficStack extends Component {
     this.setState(
       prevstate => {
         prevstate.cmd.goAround = true;
+        return prevstate;
       },
       () => {
         this.props.onChange(this.state.cmd);
@@ -199,6 +195,7 @@ class TrafficStack extends Component {
   renderTrafficStack = () => {
     return GameStore.traffic.map((airplane, i) => (
       <TrafficStackEntry
+        key={airplane.regNum}
         cmd={this.state.cmd}
         airplane={airplane}
         index={i}
@@ -271,7 +268,7 @@ class TrafficStack extends Component {
           <datalist id={this.dtcToDataListId}>
             {cmd.tgt.routeType === routeTypes.INBOUND ? landableRwysArr : null}
             {allowedWaypoints.map(w => (
-              <option value={w} />
+              <option key={w} value={w} />
             ))}
             {routes}
           </datalist>
@@ -401,9 +398,8 @@ class TrafficStack extends Component {
             value={this.state.cmd.tgtVfrState}
           >
             {allowedVFRStates(this.state.cmd.tgt).map(x => (
-              <option value={x}>{VFRStates[x]}</option>
-            ))}{' '}
-            />
+              <option key={x} value={x}>{VFRStates[x]}</option>
+            ))}
           </select>
         </div>
         <div>

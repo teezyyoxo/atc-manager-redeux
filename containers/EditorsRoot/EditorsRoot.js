@@ -22,10 +22,6 @@ class EditorsRoot extends Component {
     this.state = {};
   }
 
-  componentWillMount() {}
-
-  componentWillUnmount() {}
-
   render() {
     return (
       <div className="EditorsRoot">

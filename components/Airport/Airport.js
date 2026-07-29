@@ -4,29 +4,6 @@ import config from '../../lib/config';
 import SettingsStore from '../../stores/SettingsStore';
 
 class Airport extends Component {
-  constructor(props) {
-    super();
-    this.state = {
-      airport: GameStore.airport
-    };
-
-    this.handleGameStoreStart = this.handleGameStoreStart.bind(this);
-  }
-
-  componentWillMount() {
-    GameStore.on('start', this.handleGameStoreStart);
-  }
-
-  componentWillUnmount() {
-    GameStore.removeListener('start', this.handleGameStoreStart);
-  }
-
-  handleGameStoreStart() {
-    this.setState({
-      airport: GameStore.airport
-    });
-  }
-
   renderRwy(rwy) {
     const len = rwy.length * config.rwyLenScale;
     let x1 = Math.sin((rwy.hdg1 * Math.PI) / 180) * -len * GameStore.zoom;
@@ -93,7 +70,7 @@ class Airport extends Component {
   }
 
   render() {
-    const airport = this.state.airport;
+    const airport = GameStore.airport;
     if (!airport || !airport.runways) return null;
 
     const x = config.width / 2 + airport.x;
@@ -120,7 +97,7 @@ class Airport extends Component {
         {distanceCirlces}
         <circle r="2" fill="#fff" />
         <g className="runways">{airportJsx}</g>
-        <text x="4">{this.state.airport.callsign}</text>
+        <text x="4">{airport.callsign}</text>
       </g>
     );
   }

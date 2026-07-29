@@ -9,20 +9,6 @@ import communications from '../../lib/communications';
 import Airplane from '../../lib/airplane';
 
 class RadarTraffic extends Component {
-  constructor(props) {
-    super();
-  }
-
-  componentWillMount() {
-    GameStore.on('change', this.handleGameStoreChange);
-  }
-
-  componentWillUnmount() {
-    GameStore.removeListener('change', this.handleGameStoreChange);
-  }
-
-  handleGameStoreChange = () => this.setState({});
-
   render() {
     const airplane = this.props.airplane;
 
@@ -81,7 +67,7 @@ class RadarTraffic extends Component {
       routeTypes[airplane.routeType].replace(/ /g, '-'),
       this.props.cmd.tgt === airplane ? 'airplane-active' : 'airplane-inactive',
       tooLow && 'too-low'
-    ].filter(x => x !== undefined);
+    ].filter(Boolean);
 
     return (
       <g

@@ -1,8 +1,5 @@
 import { Component } from 'preact';
 import './AptDat.css';
-import { history } from '../../index';
-import { route } from 'preact-router';
-import AptDatStore from '../../stores/AptDatStore';
 import GroundAirportSvg from '../../components/GroundAirportSvg/GroundAirportSvg';
 
 class AptDat extends Component {
@@ -10,10 +7,6 @@ class AptDat extends Component {
     super();
     this.state = {};
   }
-
-  componentWillMount() {}
-
-  componentWillUnmount() {}
 
   render() {
     return (

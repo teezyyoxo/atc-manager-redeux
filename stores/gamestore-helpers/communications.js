@@ -2,7 +2,6 @@ import { emitter } from '../../lib/airplane';
 import { routeTypes } from '../../lib/airplane-library/airplane-library';
 import GameStore from '../GameStore';
 import communications from '../../lib/communications';
-import { idType } from '../../lib/map';
 import SettingsStore from '../SettingsStore';
 
 emitter.on('create', airplane => {
@@ -47,6 +46,6 @@ export const clearToLand = (airplane, rwyName) => {
     : `${winddirtxt} at ${windspdtxt} knots`;
   const text = callsign
     + ' cleared to land runway ' + rwyName + ` the wind is ${wind}`;
-  GameStore.addLog(text, true);
+  GameStore.addLog(text, 'ATC');
   if (SettingsStore.speechsynthesis) communications.speak(text);
 };

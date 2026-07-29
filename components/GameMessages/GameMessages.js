@@ -48,7 +48,7 @@ export class GameMessages extends Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     emitter.addListener('message', this.handleMessage);
   }
 
@@ -57,12 +57,11 @@ export class GameMessages extends Component {
   }
 
   handleMessage = (type, message) => {
-    this.setState(prevstate => {
-      prevstate.messages.push({ type, message, key: this.key++ });
-      prevstate.messages = prevstate.messages.slice(-this.len);
-      this.key %= this.len;
-      return prevstate;
-    });
+    this.setState(prevstate => ({
+      messages: prevstate.messages
+        .concat({ type, message, key: this.key++ })
+        .slice(-this.len)
+    }));
   };
 
   render() {

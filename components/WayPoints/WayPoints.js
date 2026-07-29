@@ -5,34 +5,12 @@ import config from '../../lib/config';
 import { idType } from '../../lib/map';
 
 class WayPoints extends Component {
-  constructor(props) {
-    super();
-    this.state = {
-      waypoints: GameStore.waypoints
-    };
-
-    this.handleGameStoreStart = this.handleGameStoreStart.bind(this);
-  }
-
-  componentWillMount() {
-    GameStore.on('start', this.handleGameStoreStart);
-  }
-
-  componentWillUnmount() {
-    GameStore.removeListener('start', this.handleGameStoreStart);
-  }
-
-  handleGameStoreStart() {
-    this.setState({
-      waypoints: GameStore.waypoints
-    });
-  }
-
   render() {
-    const waypointsJsx = Object.keys(this.state.waypoints)
-      .filter(x => this.state.waypoints[x].type !== idType.DIRECTION)
+    const waypoints = GameStore.waypoints;
+    const waypointsJsx = Object.keys(waypoints)
+      .filter(x => waypoints[x].type !== idType.DIRECTION)
       .map(w => {
-        const waypoint = this.state.waypoints[w];
+        const waypoint = waypoints[w];
         const x =
           (waypoint.x - config.width / 2) * GameStore.zoom + config.width / 2;
         const y =
@@ -42,6 +20,7 @@ class WayPoints extends Component {
           textTranslateY = 7;
         return (
           <g
+            key={w}
             className="waypoint"
             onContextMenu={e => this.props.onContextMenu(e, waypoint, w)}
             transform={`translate(${x} ${y})`}

@@ -1,6 +1,32 @@
 import { Component } from 'preact';
 import './AtomFeedItem.css';
-import { format } from 'timeago.js';
+
+const relativeTime = value => {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '';
+  const diffSeconds = Math.round((date.getTime() - Date.now()) / 1000);
+  const units = [
+    ['year', 31536000],
+    ['month', 2592000],
+    ['week', 604800],
+    ['day', 86400],
+    ['hour', 3600],
+    ['minute', 60],
+    ['second', 1]
+  ];
+  const unit = units.find(([, seconds]) => Math.abs(diffSeconds) >= seconds);
+  if (
+    unit &&
+    typeof Intl !== 'undefined' &&
+    typeof Intl.RelativeTimeFormat === 'function'
+  ) {
+    return new Intl.RelativeTimeFormat(undefined, { numeric: 'auto' }).format(
+      Math.round(diffSeconds / unit[1]),
+      unit[0]
+    );
+  }
+  return date.toLocaleDateString();
+};
 
 class AtomFeedItem extends Component {
   constructor(props) {
@@ -8,16 +34,17 @@ class AtomFeedItem extends Component {
     this.state = {};
   }
 
-  componentWillMount() {}
-
-  componentWillUnmount() {}
-
   render() {
     return (
-      <a target="_blank" className="AtomFeedItem" href={this.props.link}>
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        className="AtomFeedItem"
+        href={this.props.link}
+      >
         <figure style={{ backgroundImage: `url(${this.props.image})` }} />
         <h6>{this.props.title}</h6>
-        <small>{format(new Date(this.props.time))}</small>
+        <small>{relativeTime(this.props.time)}</small>
         <p>
           {this.props.content}
           <br />

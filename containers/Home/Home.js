@@ -1,11 +1,9 @@
 import { Component } from 'preact';
 import './Home.css';
 import {
-  FaLink,
   FaShareAlt,
   FaEnvelope,
   FaTwitter,
-  FaRss,
   FaInfo,
   FaMobile,
   FaSitemap,
@@ -17,47 +15,34 @@ import {
   FaGithub
 } from 'react-icons/fa/index.esm';
 import SavedGamesOpen from '../../components/SavedGamesOpen/SavedGamesOpen';
-import LoginQuestion from '../../components/LoginQuestion/LoginQuestion';
 import { mapsArr, maps } from '../../lib/map';
 import { Link, route } from 'preact-router';
 import GameStore from '../../stores/GameStore';
 import Settings from '../../components/Settings/Settings';
 import { router } from '../../index';
-import { upcase } from '../../lib/util';
-import SocialButtons from '../../components/SocialButtons/SocialButtons';
 import config from '../../lib/config';
 import SharingPanel from '../../components/SharingPanel/SharingPanel';
 import AtomFeed from '../../components/AtomFeed/AtomFeed';
 import PushNotifications from '../../components/PushNotifications/PushNotifications';
 import SettingsStore from '../../stores/SettingsStore';
-import AuthenticationStore from '../../stores/AuthenticationStore';
 
 class Home extends Component {
   constructor(props) {
     super();
     this.state = {
-      sharing: false,
-      user: AuthenticationStore.user
+      sharing: false
     };
 
     this.handleMapSelectionChange = this.handleMapSelectionChange.bind(this);
     this.handleStartClick = this.handleStartClick.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     router.on('change', this.reRender);
-    AuthenticationStore.on('change', this.handleAuthenticationChange)
   }
 
   componentWillUnmount() {
     router.removeListener('change', this.reRender);
-    AuthenticationStore.removeListener('change', this.handleAuthenticationChange)
-  }
-
-  handleAuthenticationChange = () => {
-    this.setState({
-      user: AuthenticationStore.user
-    })
   }
 
   reRender = () => this.setState({});
@@ -87,7 +72,9 @@ class Home extends Component {
         return;
       }
     }
-    GameStore.startMap(SettingsStore.selectedMapId);
+    const selectedMap = maps[SettingsStore.selectedMapId] || maps.default;
+    SettingsStore.selectedMapId = selectedMap.id;
+    GameStore.startMap(selectedMap.id);
     route('/game');
   }
 
@@ -95,21 +82,14 @@ class Home extends Component {
     route('/tutorials/intro');
   };
 
-  logout = () => {
-    AuthenticationStore.logout()
-  }
-
   render() {
-    console.log('settingsstore' + SettingsStore.selectedMapId);
+    const selectedMap = maps[SettingsStore.selectedMapId] || maps.default;
     return (
       <div className="home" style="background-color: #194850">
         <div className="abs-container">
           {GameStore.started ? (
             <button style="top: 0; left: 0" onClick={this.handleReturnToGame}>Return to Game</button>
           ) : null}
-        </div>
-        <div className="abs-container" style="top: 0; right: 0">
-          {this.state.user && <button onClick={this.logout}>Logout</button>}
         </div>
         <div className="panel">
           <div>
@@ -122,25 +102,26 @@ class Home extends Component {
         <div className="panel">
           <SavedGamesOpen />
         </div>
-        {this.state.user ? null : <div className="panel">
-          <LoginQuestion />
-        </div>}
         <div className="panel">
           <h2 className="mb">Start</h2>
           <span className="mb">Airport:</span>
-          <select className="mb" onInput={this.handleMapSelectionChange}>
+          <select
+            className="mb"
+            value={selectedMap.id}
+            onInput={this.handleMapSelectionChange}
+          >
             {mapsArr.map(map => (
-              <option selected={map.id === SettingsStore.selectedMapId} value={map.id}>
+              <option key={map.id} value={map.id}>
                 {map.name}
               </option>
             ))}
           </select>
-          {maps[SettingsStore.selectedMapId].ga === 0 ? (
+          {selectedMap.ga === 0 ? (
             <small class="color-red">
               Airport does not support general aviation.
             </small>
           ) : null}
-          {maps[SettingsStore.selectedMapId].commercial === 0 ? (
+          {selectedMap.commercial === 0 ? (
             <small class="color-red">
               Airport does not support commercial traffic.
             </small>

@@ -33,6 +33,7 @@ class SettingsStore extends EventEmitter {
     this.pitch = Communications.pitch;
     this.speed = 1;
     this.distanceCircles = true;
+    this.distanceCircleColor = '#ffffff';
     this.distanceCirclesDistance = 200;
     this.distanceCirclesAmount = 5;
     this.sidsStars = false;
@@ -101,6 +102,7 @@ class SettingsStore extends EventEmitter {
       Communications.atcVoice = this.voices[0];
       if (Communications.atcVoice) this.atcVoice = Communications.atcVoice.name;
     }
+    this.emit('change');
   }
 
   changePitch = (pitch) => {
@@ -116,6 +118,7 @@ class SettingsStore extends EventEmitter {
   }
 
   changeATCVoice = (voice) => {
+    if (!voice) return;
     Communications.atcVoice = voice;
     this.atcVoice = voice.name;
     this.emit('change');
@@ -132,7 +135,15 @@ class SettingsStore extends EventEmitter {
       [
         'selectedMapId',
         'speechsynthesis',
+        'speechrecognition',
         'atcVoice',
+        'pitch',
+        'rate',
+        'speed',
+        'newPlaneInterval',
+        'startingInboundPlanes',
+        'startingOutboundPlanes',
+        'startingEnroutePlanes',
         'distanceCircles',
         'distanceCirclesDistance',
         'takeoffInOrder',
@@ -172,6 +183,6 @@ class SettingsStore extends EventEmitter {
   };
 }
 
-const isNullOrUndefined = val => val === undefined && val === null;
+const isNullOrUndefined = val => val === undefined || val === null;
 
 export default new SettingsStore();

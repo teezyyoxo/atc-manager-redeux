@@ -1,12 +1,11 @@
 import { Component } from 'preact';
-import { FaLink, FaShareAlt, FaEnvelope } from 'react-icons/fa/index.esm';
+import { FaLink, FaShareAlt } from 'react-icons/fa/index.esm';
 import './SharingPanel.css';
 import {
   sendMessageError,
   sendMessageInfo
 } from '../GameMessages/GameMessages';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { debounce } from '../../lib/util';
 import SocialButtons from '../../components/SocialButtons/SocialButtons';
 
 class SharingPanel extends Component {
@@ -15,22 +14,28 @@ class SharingPanel extends Component {
     this.state = {
       loading: true
     };
-
-    props.promise.then(({ title, text, url }) => {
-      this.setState({
-        loading: false,
-        title,
-        text,
-        url
-      });
-    });
   }
 
-  componentWillMount() {}
+  componentDidMount() {
+    this.mounted = true;
+    Promise.resolve(this.props.promise)
+      .then(({ title, text, url }) => {
+        if (this.mounted) {
+          this.setState({ loading: false, title, text, url });
+        }
+      })
+      .catch(error => {
+        if (this.mounted) this.setState({ loading: false, error: true });
+        console.warn('Unable to prepare sharing details.', error);
+      });
+  }
 
-  componentWillUnmount() {}
+  componentWillUnmount() {
+    this.mounted = false;
+  }
 
   share = e => {
+    if (!navigator.share) return;
     navigator
       .share({
         title: this.state.title,
@@ -38,17 +43,14 @@ class SharingPanel extends Component {
         url: this.state.url
       })
       .catch(err => {
-        sendMessageError('Unable to share :(, sorry...');
+        if (err.name !== 'AbortError') {
+          sendMessageError('Unable to share :(, sorry...');
+        }
       });
   };
 
   handleCopy = () => {
-    sendMessageInfo(`Copied ${this.state.url} to cliboard`);
-  };
-
-  handleMail = () => {
-    const body = encodeURIComponent(this.state.text + '\n\n' + this.state.url);
-    window.open(`mailto:%20?subject=${this.state.title}&body=${body}`);
+    sendMessageInfo(`Copied ${this.state.url} to clipboard`);
   };
 
   handleTitleChange = e => {
@@ -71,7 +73,9 @@ class SharingPanel extends Component {
         <button onClick={this.props.onClose} class="close">
           &times;
         </button>
-        {this.state.loading ? null : (
+        {this.state.error ? (
+          <div className="content">Unable to prepare sharing details.</div>
+        ) : this.state.loading ? null : (
           <div class="content">
             <input
               type="text"
@@ -80,9 +84,11 @@ class SharingPanel extends Component {
               value={this.state.title}
             />
             <br />
-            <textarea spellcheck="false" onChange={this.handleTextChange}>
-              {this.state.text}
-            </textarea>
+            <textarea
+              spellcheck="false"
+              onInput={this.handleTextChange}
+              value={this.state.text}
+            />
             <br />
             {canShare ? (
               <button class="button" onClick={this.share}>

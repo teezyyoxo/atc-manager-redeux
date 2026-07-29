@@ -37,10 +37,11 @@ class AtcView extends Component {
     this.emitter = new EventEmitter();
   }
 
-  componentWillMount() {
+  componentDidMount() {
     GameStore.on('change', this.handleGameStoreChange);
     if (typeof window !== 'undefined') {
       document.addEventListener('click', this.handleDocumentClick);
+      window.addEventListener('beforeunload', this.handleBeforeUnload);
     }
   }
 
@@ -48,14 +49,37 @@ class AtcView extends Component {
     GameStore.removeListener('change', this.handleGameStoreChange);
     if (typeof window !== 'undefined') {
       document.removeEventListener('click', this.handleDocumentClick);
+      window.removeEventListener('beforeunload', this.handleBeforeUnload);
     }
   }
+
+  handleBeforeUnload = e => {
+    if (!GameStore.started) return;
+    e.preventDefault();
+    e.returnValue = '';
+  };
 
   handleDocumentClick = () => {
     this.setState({ actionMenu: null });
   };
 
   handleGameStoreChange = () => {
+    if (
+      this.state.cmd.tgt &&
+      !GameStore.traffic.includes(this.state.cmd.tgt)
+    ) {
+      this.setState({
+        cmd: {
+          tgt: null,
+          heading: null,
+          altitude: null,
+          direction: null,
+          speed: null,
+          directionOld: null
+        }
+      });
+      return;
+    }
     this.setState({});
   };
 
@@ -113,6 +137,7 @@ class AtcView extends Component {
 
   handleAirplaneClick = index => {
     const airplane = GameStore.traffic[index];
+    if (!airplane) return;
     if (airplane === this.state.cmd.tgt) {
       airplane.textRotation = (airplane.textRotation || 0) + 1;
       airplane.textRotation %= 4;

@@ -12,10 +12,6 @@ class LogsPanel extends Component {
     };
   }
 
-  componentWillMount() {}
-
-  componentWillUnmount() {}
-
   handleOnlySelfButton = () => {
     this.setState({ logsOnlySelf: !this.state.logsOnlySelf });
   };

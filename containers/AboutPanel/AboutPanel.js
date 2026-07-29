@@ -2,17 +2,12 @@ import { Component } from 'preact';
 import './AboutPanel.css';
 import { FaCompress } from 'react-icons/fa/index.esm';
 import GitHubButton from 'react-github-button';
-import Donate from '../Donate/Donate';
 
 class AboutPanel extends Component {
   constructor(props) {
     super();
     this.state = {};
   }
-
-  componentWillMount() { }
-
-  componentWillUnmount() { }
 
   render() {
     return (
@@ -32,15 +27,6 @@ class AboutPanel extends Component {
           namespace="LesterGallagher"
           repo="atc-manager-2"
         />
-        &nbsp;
-        <a
-          class="header-btn"
-          href="https://www.paypal.me/esstudio"
-          target="_blank"
-        >
-          <span class="legend">support</span>
-          <span class="paypal">paypal</span>
-        </a>
         <br />
         <br />
         ATC Manager 2 is a web based air traffic control game. Manage airspace
@@ -53,32 +39,8 @@ class AboutPanel extends Component {
           ATC Manager 1 App
         </a>
         .
-        <Donate />
         <br />
-        <h5>A Special thanks to...</h5>
-        <b>Donator(s) to the project: </b>
-        <ul>
-          <li>
-            <a href="https://www.reddit.com/user/KableKiB" target="_blank">
-              KableKiB
-            </a>
-          </li>
-          <li>
-            Richard Johnson
-          </li>
-          <li>
-            Tracy Mercier
-          </li>
-          <li>
-            Eric Hvinden
-          </li>
-          <li>
-            Richard Johnson
-          </li>
-          <li>
-            Michael Welch
-          </li>
-        </ul>
+        <h5>A special thanks to...</h5>
         <b>Top Contributors:</b>
         <ul>
           <li>

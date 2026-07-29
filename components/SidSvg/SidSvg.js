@@ -5,78 +5,26 @@ import config from '../../lib/config';
 import SettingsStore from '../../stores/SettingsStore';
 
 class SidSvg extends Component {
-  constructor(props) {
-    super();
-    this.state = {
-      sids: GameStore.parsedSids,
-      zoom: GameStore.zoom,
-      cmdtgt: undefined
-    };
-  }
+  zoomX = x => (x - config.width / 2) * GameStore.zoom + config.width / 2;
 
-  componentWillMount() {
-    GameStore.on('start', this.handleGameStoreStart);
-    GameStore.on('change', this.handleGameStoreChange);
-    SettingsStore.on('change', this.handleSettingStoreChange);
-    if (this.props.emitter)
-      this.props.emitter.on('cmdtgt', this.handleCmdTgtChange);
-    if (this.props.emitter)
-      this.props.emitter.on('cmdexecution', this.handleCmdTgtChange);
-  }
-
-  componentWillUnmount() {
-    GameStore.removeListener('start', this.handleGameStoreStart);
-    GameStore.removeListener('change', this.handleGameStoreChange);
-    SettingsStore.removeListener('change', this.handleSettingStoreChange);
-    if (this.props.emitter)
-      this.props.emitter.removeListener('cmdtgt', this.handleCmdTgtChange);
-    if (this.props.emitter)
-      this.props.emitter.removeListener(
-        'cmdexecution',
-        this.handleCmdTgtChange
-      );
-  }
-
-  handleGameStoreStart = () => {
-    this.setState({ sids: GameStore.parsedSids });
-  };
-
-  handleCmdTgtChange = cmd => {
-    this.setState({ cmdtgt: cmd.tgt });
-  };
-
-  handleSettingStoreChange = () => {
-    this.setState({});
-  }
-
-  handleGameStoreChange = () => {
-    if (this.state.zoom === GameStore.zoom) return;
-    this.setState({ zoom: GameStore.zoom });
-  };
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return this.state !== nextState;
-  }
-
-  zoomX = x => (x - config.width / 2) * this.state.zoom + config.width / 2;
-
-  zoomY = y => (y - config.height / 2) * this.state.zoom + config.height / 2;
+  zoomY = y => (y - config.height / 2) * GameStore.zoom + config.height / 2;
 
   labelPos = (p1, p2) => (p1 * 2 + p2) / 3;
 
   isFocussed = routeName =>
-    this.state.cmdtgt &&
-    typeof this.state.cmdtgt.tgtDirection === 'string' &&
-    this.state.cmdtgt.tgtDirection.toLowerCase() === routeName.toLowerCase();
+    this.props.cmd.tgt &&
+    typeof this.props.cmd.tgt.tgtDirection === 'string' &&
+    this.props.cmd.tgt.tgtDirection.toLowerCase() === routeName.toLowerCase();
 
   render() {
     if (!SettingsStore.sidsStars) return null;
-    const sids = this.state.sids;
+    const sids = GameStore.parsedSids;
     if (!sids) return;
-    const jsx = Object.keys(sids).map((key, i) => {
+    const jsx = Object.keys(sids).map(key => {
       const sid = sids[key].route
         .slice(0)
         .filter(x => typeof x.dir !== 'number');
+      if (sid.length < 2) return null;
       const mx = this.labelPos(
         GameStore.callsignsPos[sid[sid.length - 1].dir].x,
         GameStore.callsignsPos[sid[sid.length - 2].dir].x
@@ -104,7 +52,7 @@ class SidSvg extends Component {
         classList.push('focussed');
       }
       return (
-        <g key={i} className={classList.join(' ')}>
+        <g key={key} className={classList.join(' ')}>
           <text x={this.zoomX(mx)} y={this.zoomY(config.height - my)}>
             {key}
           </text>

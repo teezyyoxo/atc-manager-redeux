@@ -7,10 +7,6 @@ class OperatorSubmissionSuccess extends Component {
     this.state = {};
   }
 
-  componentWillMount() {}
-
-  componentWillUnmount() {}
-
   render() {
     return (
       <div className="OperatorSubmissionSuccess">

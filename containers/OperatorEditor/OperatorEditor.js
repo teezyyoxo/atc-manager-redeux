@@ -28,7 +28,7 @@ class OperatorEditor extends Component {
 
     this.state = {
       json: '',
-      plane: null,
+      operator: null,
       operatorsSet: Object.assign(
         {},
         ...(loadState().customOperators || []).map(x => ({ [x.id]: x }))
@@ -38,17 +38,13 @@ class OperatorEditor extends Component {
     };
   }
 
-  componentWillMount() {}
-
-  componentWillUnmount() {}
-
   handleInputChanged = e => {
     const id = e.target.value;
-    const operator = operatorsById[id];
+    const operator = operatorsById[id] || null;
 
     this.setState({
       operator,
-      json: operator !== null ? JSON.stringify(operator, null, 4) : ''
+      json: operator ? JSON.stringify(operator, null, 4) : ''
     });
   };
 
@@ -67,7 +63,8 @@ class OperatorEditor extends Component {
       const obj = JSON.parse(json);
       this.setState(prevstate => {
         prevstate.warningMessage = null;
-        (prevstate.infoMessage = null), (prevstate.operator = obj);
+        prevstate.infoMessage = null;
+        prevstate.operator = obj;
         return prevstate;
       });
     } catch (err) {
@@ -83,7 +80,7 @@ class OperatorEditor extends Component {
     if (this.state.operator === null)
       return sendMessageError('Please submit a valid save file');
     const operatorsSet = this.state.operatorsSet;
-    operatorsSet[this.state.operator.id] = this.state.plane;
+    operatorsSet[this.state.operator.id] = this.state.operator;
     let gamePersistance = loadState();
     gamePersistance.customOperators = Object.values(operatorsSet);
     saveState(gamePersistance);
@@ -112,6 +109,8 @@ class OperatorEditor extends Component {
   };
 
   readFromFile = e => {
+    const file = e.target.files[0];
+    if (!file) return;
     var reader = new FileReader();
     const _this = this;
     reader.onload = function() {
@@ -123,7 +122,7 @@ class OperatorEditor extends Component {
         () => _this.parseTextareaJsonDebounced(reader.result)
       );
     };
-    reader.readAsText(e.target.files[0]);
+    reader.readAsText(file);
   };
 
   handleRawJSONSwitchInput = e => {
@@ -136,6 +135,7 @@ class OperatorEditor extends Component {
     this.setState(prevstate => {
       prevstate.operator = e.formData;
       prevstate.operatorsSet[prevstate.operator.id] = e.formData;
+      prevstate.json = JSON.stringify(e.formData, null, 4);
       return prevstate;
     });
   };
@@ -147,6 +147,7 @@ class OperatorEditor extends Component {
     this.setState(prevstate => {
       prevstate.operator = operator;
       prevstate.operatorsSet[operator.id] = operator;
+      prevstate.json = JSON.stringify(operator, null, 4);
       return prevstate;
     });
   };
@@ -164,7 +165,8 @@ class OperatorEditor extends Component {
 
     this.setState({
       operatorsSet,
-      operator: null
+      operator: null,
+      json: ''
     });
     sendMessageInfo('Saved file to local storage');
   };
@@ -180,14 +182,13 @@ class OperatorEditor extends Component {
         <div className="panel">
           <h1>Operator Editor</h1>
 
-          <select onInput={this.handleInputChanged}>
+          <select
+            value={this.state.operator ? this.state.operator.id : ''}
+            onInput={this.handleInputChanged}
+          >
             <option value="">Choose Operator:</option>
-            {Object.keys(operatorsById).map((id, i) => (
-              <option
-                key={i}
-                value={id}
-                selected={eq(operatorsById[id], this.state.operator)}
-              >
+            {Object.keys(operatorsById).map(id => (
+              <option key={id} value={id}>
                 {operatorsById[id].name}
               </option>
             ))}
@@ -241,7 +242,6 @@ class OperatorEditor extends Component {
             className="inputfile"
             type="file"
             accept=".json"
-            disabled={!this.state.operator || this.state.operator.name === ''}
           />
           <label for="saveseditor">Open File</label>
           <CopyToClipboard text={this.state.json} onCopy={this.handleCopy}>
@@ -308,5 +308,3 @@ class OperatorEditor extends Component {
 }
 
 export default OperatorEditor;
-
-const eq = (p1, p2) => p1 && p2 && p1.id === p2.id;

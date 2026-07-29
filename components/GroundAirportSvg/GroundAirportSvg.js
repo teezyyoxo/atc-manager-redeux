@@ -7,10 +7,6 @@ class GroundAirportSvg extends Component {
     this.state = {};
   }
 
-  componentWillMount() {}
-
-  componentWillUnmount() {}
-
   render() {
     return <div className="GroundAirportSvg">GroundAirportSvg Component</div>;
   }

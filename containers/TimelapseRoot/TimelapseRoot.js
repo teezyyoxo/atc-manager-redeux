@@ -9,7 +9,6 @@ import TimelapseContainer from '../TimelapseContainer/TimelapseContainer';
 import TimelapseOverview from '../TimelapseOverview/TimelapseOverview';
 import GameStore from '../../stores/GameStore';
 import { route } from 'preact-router';
-import { decompressFromUTF16 } from 'lz-string';
 
 export const rethrow = msg => {
   return err => {
@@ -20,10 +19,17 @@ export const rethrow = msg => {
 
 class TimelapseRoot extends Component {
   constructor(props) {
-    super();
+    super(props);
+    this.state = {
+      timelapseroute: props.timelapseroute,
+      loading: true,
+      progress: 0,
+      url: null,
+      name: ''
+    };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.loadRoute();
   }
 
@@ -100,48 +106,10 @@ class TimelapseRoot extends Component {
               this.setOverview();
             });
         } else if (this.state.timelapseroute === 'url') {
-          if (typeof window === 'undefined') return;
-          const id = getParameterByName('id', window.location.href);
-          fetch(`https://api.myjson.com/bins/${id}`)
-            .then(response => response.text())
-            .then(json => JSON.parse(json))
-            .then(savedTimelapseEncoded => {
-              const timelapse = JSON.parse(
-                decompressFromUTF16(savedTimelapseEncoded.content)
-              );
-              if (!timelapse)
-                return this.setState({
-                  timelapseroute: 'overview',
-                  loading: false
-                });
-              if (GameStore.started) {
-                if (
-                  confirm('You have unsaved progress. Do you want to save?')
-                ) {
-                  if (TimelapsePlaybackStore.saveGame() === false) {
-                    return route('/game');
-                  }
-                }
-                GameStore.stop();
-              }
-              TimelapsePlaybackStore.loadPromise(timelapse)
-                .then(() => {
-                  this.setState({
-                    loading: false,
-                    url: location.href,
-                    name: 'Shared timelapse'
-                  });
-                })
-                .catch(err => {
-                  logErr(err);
-                  this.setOverview();
-                });
-            })
-            .catch(err => {
-              logErr(err);
-              sendMessageError('Could not retrieve timelapse :(');
-              this.setState({ loading: false, timelapseroute: 'overview' });
-            });
+          sendMessageError(
+            'Legacy hosted timelapse links are no longer available. Import a timelapse file instead.'
+          );
+          this.setOverview();
         } else {
           this.setState({
             loading: false,
@@ -151,8 +119,6 @@ class TimelapseRoot extends Component {
       }
     );
   }
-
-  componentWillUnmount() { }
 
   render() {
     const showOverview = this.state.timelapseroute === 'overview';

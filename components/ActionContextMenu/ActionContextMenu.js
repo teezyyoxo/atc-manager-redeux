@@ -7,10 +7,6 @@ class ActionContextMenu extends Component {
     this.state = {};
   }
 
-  componentWillMount() {}
-
-  componentWillUnmount() {}
-
   render() {
     return (
       <div

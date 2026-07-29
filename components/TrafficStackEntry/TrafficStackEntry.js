@@ -1,11 +1,6 @@
 import { Component } from 'preact';
 import './TrafficStackEntry.css';
-import {
-  operatorsById,
-  routeTypes,
-  airplanesById
-} from '../../lib/airplane-library/airplane-library';
-import GameStore from '../../stores/GameStore';
+import { routeTypes, airplanesById } from '../../lib/airplane-library/airplane-library';
 import PlaneSpd from '../PlaneSpd/PlaneSpd';
 import PlaneAlt from '../PlaneAlt/PlaneAlt';
 import communications from '../../lib/communications';
@@ -22,30 +17,9 @@ const getPlaneColor = airplane => {
     default:
       return SettingsStore.vfrTrafficColor;
   }
-}
+};
 
 class TrafficStackEntry extends Component {
-  constructor(props) {
-    super();
-    this.state = {};
-  }
-
-  componentWillMount() {
-    GameStore.on('change', this.reRender);
-  }
-
-  componentWillUnmount() {
-    GameStore.removeListener('change', this.reRender);
-  }
-
-  reRender = () => {
-    this.setState({});
-  };
-
-  componentWillReceiveProps(nextProps) {
-    this.reRender();
-  }
-
   render() {
     const airplane = this.props.airplane;
     const spd = <PlaneSpd airplane={airplane} tagName="span" />;

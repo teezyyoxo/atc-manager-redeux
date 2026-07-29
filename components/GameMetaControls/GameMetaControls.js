@@ -5,41 +5,14 @@ import { saveState, loadState, decimalFormatter } from '../../lib/persistance';
 import {
   FaPause,
   FaPlay,
-  FaDesktop,
-  FaSave,
-  FaPlane
+  FaSave
 } from 'react-icons/fa/index.esm';
 import {
-  sendMessageError,
   sendMessageWarning,
   sendMessageInfo
 } from '../GameMessages/GameMessages';
 
 class GameMetaControls extends Component {
-  constructor(props) {
-    super();
-
-    this.state = {
-      paused: GameStore.paused,
-      started: GameStore.started
-    };
-  }
-
-  componentWillMount() {
-    GameStore.on('change', this.handleGameStoreChange);
-  }
-
-  componentWillUnmount() {
-    GameStore.removeListener('change', this.handleGameStoreChange);
-  }
-
-  handleGameStoreChange = () => {
-    this.setState({
-      paused: GameStore.paused,
-      started: GameStore.started
-    });
-  };
-
   handlePauseResumeButtonClick = () => {
     GameStore[GameStore.paused ? 'resume' : 'pause']();
   };
@@ -67,7 +40,7 @@ class GameMetaControls extends Component {
   };
 
   render() {
-    const paused = this.state.paused;
+    const paused = GameStore.paused;
     return (
       <div className="gamemetacontrols">
         <button className="w-50" onClick={this.handlePauseResumeButtonClick}>

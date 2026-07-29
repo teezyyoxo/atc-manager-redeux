@@ -711,29 +711,6 @@ input:checked + .slider:before {
 	cursor: pointer; /* "hand" cursor */
 }
 
-.header-btn {
-  display: inline-block;
-  overflow: hidden;
-  font-size: 11px;
-  color: #fff!important;
-  vertical-align: top;
-  border-radius: 3px
-}
-
-.header-btn .legend {
-  display: inline-block;
-  padding: 0 .5rem;
-  line-height: 20px;
-  background-color: #555
-}
-
-.header-btn .paypal {
-  display: inline-block;
-  padding: 0 .5rem;
-  line-height: 20px;
-  background-color: #007ec6
-}
-
 .github-btn {
   display: inline-block;
 }

@@ -9,10 +9,6 @@ class TutorialsTextCommands extends Component {
     this.state = {};
   }
 
-  componentWillMount() {}
-
-  componentWillUnmount() {}
-
   handleTutorialClick = () => {
     route('/tutorials');
   };

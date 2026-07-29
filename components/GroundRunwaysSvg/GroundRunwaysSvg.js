@@ -6,20 +6,30 @@ import { meterPerLatLng } from '../../lib/ground/navhelpers';
 
 class GroundRunwaysSvg extends Component {
   constructor(props) {
-    super();
-    this.state = { loaded: props.loaded };
-    if (props.loaded) this.setGroundGameStoreData();
+    super(props);
+    this.state = {};
   }
 
-  componentDidUpdate = () => {
-    if (this.props.loaded !== this.state.loaded) {
-      this.setState({ loaded: true }, this.setGroundGameStoreData);
-    }
+  componentDidMount() {
+    GroundGameStore.on('change', this.handleGroundGameStoreChange);
+    if (this.props.loaded) this.setGroundGameStoreData();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.loaded && !prevProps.loaded) this.setGroundGameStoreData();
   }
 
   setGroundGameStoreData = () => {
     const { apt } = GroundGameStore;
-    if (this.state.loaded === false) return;
+    if (
+      !this.props.loaded ||
+      !apt ||
+      !apt.taxiRoutingNetwork ||
+      apt.taxiRoutingNetwork.nodes.length === 0
+    ) {
+      return;
+    }
+
     const fieldMidLatLng = [GroundGameStore.aptNav.lat, GroundGameStore.aptNav.lng];
     const mpll = meterPerLatLng(fieldMidLatLng[0], fieldMidLatLng[1]);
     const fieldMid = [fieldMidLatLng[0] * mpll[0], fieldMidLatLng[1] * mpll[1]];
@@ -30,8 +40,8 @@ class GroundRunwaysSvg extends Component {
       x: mpll[1] * node.lng - fieldMid[1],
       y: mpll[0] * node.lat - fieldMid[0],
     }));
-    console.log(mpll);
-    const runwaysXY = apt.rwys.map((rwy, key) => ({
+    const runwaysXY = apt.rwys.map(rwy => ({
+      identifier: rwy.ends.map(end => end.identifier).join('-'),
       x1: mpll[1] * rwy.ends[0].lng - fieldMid[1],
       y1: mpll[0] * rwy.ends[0].lat - fieldMid[0],
       x2: mpll[1] * rwy.ends[1].lng - fieldMid[1],
@@ -57,18 +67,18 @@ class GroundRunwaysSvg extends Component {
         end: nodes.find(node => node.identifier === edge.end),
         start: nodes.find(node => node.identifier === edge.start),
         twoway: edge.twoway,
-        runway: edge.twoway,
+        runway: edge.runway,
       };
-    });
-    edges.push(...apt.taxiRoutingNetwork.edges.map(edge => {
+    }).filter(edge => edge.start && edge.end);
+    edges.push(...apt.taxiRoutingNetwork.edges.filter(edge => edge.twoway).map(edge => {
       return {
         identifier: edge.identifier,
         start: nodes.find(node => node.identifier === edge.end),
         end: nodes.find(node => node.identifier === edge.start),
         twoway: edge.twoway,
-        runway: edge.twoway,
+        runway: edge.runway,
       };
-    }));
+    }).filter(edge => edge.start && edge.end));
 
     const distSq = (node1, node2) => Math.pow(Math.abs(node1.x - node2.x), 2) + Math.pow(Math.abs(node1.y - node2.y), 2);
     edges.forEach(edge => edge.cost = Math.sqrt(distSq(edge.start, edge.end)));
@@ -77,30 +87,23 @@ class GroundRunwaysSvg extends Component {
     this.setState({ runwaysXY, nodes, edges, midFromNodes });
   }
 
-  componentWillMount() {
-    GroundGameStore.on('change', this.handleGroundGameStoreChange);
-  }
-
   componentWillUnmount() {
     GroundGameStore.removeListener('change', this.handleGroundGameStoreChange);
   }
 
   handleGroundGameStoreChange = () => {
-    this.setState({});
     if (this.props.loaded) this.setGroundGameStoreData();
   }
 
   render() {
-    if (!this.state.loaded) return;
+    if (!this.props.loaded || !this.state.nodes) return null;
 
     const { nodes, edges } = this.state;
     const { getX, getY } = this;
 
-    const rwys = this.state.runwaysXY.map(({ x1, y1, x2, y2 }, key) => {
-      console.log(x1, y1, x2, y2);
-      return (
+    const rwys = this.state.runwaysXY.map(({ identifier, x1, y1, x2, y2 }) => (
         <line
-          key={key}
+          key={identifier}
           x1={getX({ x: x1, y: y1 })}
           y1={getY({ x: x1, y: y1 })}
           x2={getX({ x: x2, y: y2 })}
@@ -108,16 +111,16 @@ class GroundRunwaysSvg extends Component {
           stroke="#fff"
           strokeWidth="2"
         />
-      );
-    });
+    ));
 
-    const nodesJsx = nodes.map((node, i) => (
-      <circle className="ground-taxi-nodes" key={i} cx={getX(node)} cy={getY(node)} r="2" />
+    const nodesJsx = nodes.map(node => (
+      <circle className="ground-taxi-nodes" key={node.identifier} cx={getX(node)} cy={getY(node)} r="2" />
     ));
 
     const edgesJsx = edges.map((edge, i) => (
       <line className="ground-taxi-edges"
-        key={i} x1={getX(edge.start)} y1={getY(edge.start)}
+        key={`${edge.start.identifier}-${edge.end.identifier}-${i}`}
+        x1={getX(edge.start)} y1={getY(edge.start)}
         x2={getX(edge.end)} y2={getY(edge.end)} />
     ));
 

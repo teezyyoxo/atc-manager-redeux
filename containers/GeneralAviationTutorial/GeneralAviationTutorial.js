@@ -7,10 +7,6 @@ class GeneralAviationTutorial extends Component {
     this.state = {};
   }
 
-  componentWillMount() {}
-
-  componentWillUnmount() {}
-
   render() {
     return (
       <div className="GeneralAviationTutorial">

@@ -14,10 +14,6 @@ class TutorialsIntro extends Component {
     saveState(state);
   }
 
-  componentWillMount() {}
-
-  componentWillUnmount() {}
-
   handleTutorialClick = () => {
     route('/tutorials');
   };

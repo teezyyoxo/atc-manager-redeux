@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { loadState, saveState, decimalFormatter } from '../lib/persistance';
+import { decimalFormatter } from '../lib/persistance';
 import GameStore from './GameStore';
 import { diff, clone } from 'jsondiffpatch';
 
@@ -21,11 +21,11 @@ class TimelapseStore extends EventEmitter {
   handleGameStoreUpdate = () => {
     if (this.recording && this.timelapse) {
       const state = JSON.parse(JSON.stringify(GameStore.toJson(), decFmt));
-      var delta = clone(diff(lastState, state));
+      const delta = clone(diff(lastState, state));
       this.timelapse.patches.push(delta);
       lastState = state;
+      this.emit('change');
     }
-    this.emit('change');
   };
 
   startTimelapse = () => {

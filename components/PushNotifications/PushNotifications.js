@@ -2,13 +2,12 @@ import { Component } from 'preact';
 import './PushNotifications.css';
 import config from '../../lib/config';
 import { sendMessageError } from '../GameMessages/GameMessages';
-import { logErr } from '../../lib/util';
 
 const urlBase64ToUint8Array = base64String => {
   if (typeof window === 'undefined') return;
   const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
   const base64 = (base64String + padding)
-    .replace(/\-/g, '+')
+    .replace(/-/g, '+')
     .replace(/_/g, '/');
 
   const rawData = window.atob(base64);
@@ -38,77 +37,78 @@ class PushNotifications extends Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
+    this.mounted = true;
     if (typeof window === 'undefined') return;
-    navigator.serviceWorker.ready
-      .then(registration => {
-        registration.pushManager
-          .getSubscription()
-          .then(subscription => {
-            if (subscription !== null) {
-              this.setState({ status: status.REGISTERED, subscription });
-              return;
-            }
-            this.setState({
-              status: status.READY,
-              cb: () => {
-                this.setState({ status: status.LOADING });
-                registration.pushManager
-                  .subscribe({
-                    userVisibleOnly: true,
-                    // The `urlBase64ToUint8Array()` function is the same as in
-                    // https://www.npmjs.com/package/web-push#using-vapid-key-for-applicationserverkey
-                    applicationServerKey: urlBase64ToUint8Array(
-                      config.publicVapidKey
-                    )
-                  })
-                  .then(subscription => {
-                    fetch(config.subscriptionURL, {
-                      method: 'POST',
-                      body: JSON.stringify(subscription),
-                      headers: {
-                        'content-type': 'application/json'
-                      }
-                    })
-                      .then(response => response.text())
-                      .then(json => {
-                        this.setState({
-                          status: status.REGISTERED,
-                          subscription
-                        });
-                      })
-                      .catch(err => {
-                        throw err;
-                      });
-                  })
-                  .catch(err => {
-                    throw err;
-                  });
-              }
-            });
-          })
-          .catch(err => {
-            this.setState({ status: status.ERROR });
-            sendMessageError('Whoops... Something went wrong.');
-            logErr(err);
-          });
-      })
-      .catch(err => {
-        console.warn('serviceWorker.ready was rejected', err);
-      });
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+      this.setState({ status: status.ERROR });
+      return;
+    }
+    this.initialize();
   }
 
-  componentWillUnmount() {}
+  componentWillUnmount() {
+    this.mounted = false;
+  }
 
-  unsubscribe = () => {
-    this.state.subscription
-      .unsubscribe()
-      .then(succesfull => {
-        this.setState({ status: status.USER_REJECTED });
-      })
-      .catch(err => {
-        this.setState({ status: status.ERROR });
+  initialize = async () => {
+    try {
+      const registration = await navigator.serviceWorker.ready;
+      const subscription = await registration.pushManager.getSubscription();
+      if (!this.mounted) return;
+      if (subscription) {
+        this.setState({ status: status.REGISTERED, subscription });
+        return;
+      }
+      this.setState({
+        status: status.READY,
+        cb: () => this.subscribe(registration)
       });
+    } catch (error) {
+      this.handleError(error);
+    }
+  };
+
+  subscribe = async registration => {
+    this.setState({ status: status.LOADING });
+    try {
+      const subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(config.publicVapidKey)
+      });
+      const response = await fetch(config.subscriptionURL, {
+        method: 'POST',
+        body: JSON.stringify(subscription),
+        headers: { 'content-type': 'application/json' }
+      });
+      if (!response.ok) {
+        throw new Error(`Subscription request failed: ${response.status}`);
+      }
+      if (this.mounted) {
+        this.setState({ status: status.REGISTERED, subscription });
+      }
+    } catch (error) {
+      this.handleError(error);
+    }
+  };
+
+  handleError = error => {
+    if (!this.mounted) return;
+    this.setState({ status: status.ERROR });
+    sendMessageError('Whoops... Something went wrong.');
+    console.warn('Push notification setup failed.', error);
+  };
+
+  unsubscribe = async () => {
+    if (!this.state.subscription) return;
+    try {
+      const successful = await this.state.subscription.unsubscribe();
+      if (successful && this.mounted) {
+        this.setState({ status: status.USER_REJECTED });
+      }
+    } catch (error) {
+      this.handleError(error);
+    }
   };
 
   isVisible() {
@@ -138,10 +138,11 @@ class PushNotifications extends Component {
   }
 
   render() {
-    const classList = [this.isVisible() ? 'visible' : 'hidden'];
     const btnDisabled = this.state.status === status.LOADING;
     return (
-      <div className="PushNotifications" style={classList.join(' ')}>
+      <div
+        className={`PushNotifications ${this.isVisible() ? 'visible' : 'hidden'}`}
+      >
         {this.showButtons() && (
           <div>
             Do you want to receive notifications from ATC Manager 2?
@@ -168,9 +169,6 @@ class PushNotifications extends Component {
         {this.state.status === status.USER_REJECTED && (
           <div>Radio silence.</div>
         )}
-        {Object.keys(this.state.status)
-          .filter(key => status[key] === this.state.status)
-          .join('')}
       </div>
     );
   }

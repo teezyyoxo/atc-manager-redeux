@@ -28,7 +28,7 @@ class GroundGameStore extends EventEmitter {
     };
 
     this.apt = apt;
-    this.loaded = false;
+    this.loaded = true;
 
     this.emit('change');
   }

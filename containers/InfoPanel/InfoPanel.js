@@ -3,7 +3,6 @@ import GameStore from '../../stores/GameStore';
 import {
   FaCompress,
   FaDesktop,
-  FaFileVideo,
   FaImage
 } from 'react-icons/fa/index.esm';
 import { activeRwys, getAltimeter } from '../../lib/map';
@@ -11,39 +10,31 @@ import { upcase, lpad } from '../../lib/util';
 import './InfoPanel.css';
 import { saveAs } from 'file-saver';
 import SettingsStore from '../../stores/SettingsStore';
-import {
-  sendMessageInfo,
-  sendMessageError
-} from '../../components/GameMessages/GameMessages';
-import TimelapseStore from '../../stores/TimelapseStore';
-import { loadState } from '../../lib/persistance';
 import TimelapseRecorder from '../../components/TimelapseRecorder/TimelapseRecorder';
 
-const isFullscreen = () => typeof window !== 'undefined' &&
-  !(
-    (document.fullScreenElement && document.fullScreenElement !== null) ||
-    (!document.mozFullScreen && !document.webkitIsFullScreen)
+const isFullscreen = () =>
+  typeof document !== 'undefined' &&
+  !!(
+    document.fullscreenElement ||
+    document.webkitFullscreenElement ||
+    document.mozFullScreenElement
   );
 
 const toggleFullScreen = () => {
+  if (typeof document === 'undefined') return;
+
   if (!isFullscreen()) {
-    if (document.documentElement.requestFullScreen) {
-      document.documentElement.requestFullScreen();
-    } else if (document.documentElement.mozRequestFullScreen) {
-      document.documentElement.mozRequestFullScreen();
-    } else if (document.documentElement.webkitRequestFullScreen) {
-      document.documentElement.webkitRequestFullScreen(
-        Element.ALLOW_KEYBOARD_INPUT
-      );
-    }
+    const request =
+      document.documentElement.requestFullscreen ||
+      document.documentElement.webkitRequestFullscreen ||
+      document.documentElement.mozRequestFullScreen;
+    if (request) request.call(document.documentElement);
   } else {
-    if (document.cancelFullScreen) {
-      document.cancelFullScreen();
-    } else if (document.mozCancelFullScreen) {
-      document.mozCancelFullScreen();
-    } else if (document.webkitCancelFullScreen) {
-      document.webkitCancelFullScreen();
-    }
+    const exit =
+      document.exitFullscreen ||
+      document.webkitExitFullscreen ||
+      document.mozCancelFullScreen;
+    if (exit) exit.call(document);
   }
 };
 
@@ -51,18 +42,6 @@ class InfoPanel extends Component {
   constructor(props) {
     super();
   }
-
-  componentWillMount() {
-    GameStore.on('change', this.reRender);
-    SettingsStore.on('change', this.reRender);
-  }
-
-  componentWillUnmount() {
-    GameStore.removeListener('change', this.reRender);
-    SettingsStore.on('change', this.reRender);
-  }
-
-  reRender = () => this.setState({});
 
   handleTakeoffRunwayAssignInput = e => {
     const rwyName = e.srcElement.getAttribute('data-rwy-name');

@@ -1,26 +1,8 @@
 import { Component } from 'preact';
 import './GroundRadarSvg.css';
-import GroundGameStore from '../../stores/GroundGameStore';
 import GroundRunwaysSvg from '../GroundRunwaysSvg/GroundRunwaysSvg';
 
 class GroundRadarSvg extends Component {
-  constructor(props) {
-    super();
-    this.state = {};
-  }
-
-  componentWillMount() {
-    GroundGameStore.on('change', this.handleGroundGameStoreChange);
-  }
-
-  componentWillUnmount() {
-    GroundGameStore.removeListener('change', this.handleGroundGameStoreChange);
-  }
-
-  handleGroundGameStoreChange = () => {
-    this.setState({});
-  };
-
   setRef = el => (this.svgRef = el);
 
   render() {

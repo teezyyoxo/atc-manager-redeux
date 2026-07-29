@@ -8,15 +8,11 @@ import {
   FaAngleRight,
   FaCompress,
   FaExpand,
-  FaArrowsAlt,
   FaSearch
 } from 'react-icons/fa/index.esm';
-import config from '../../lib/config';
-import TimelapseStore from '../../stores/TimelapseStore';
-import SettingsStore from '../../stores/SettingsStore';
 import SvgRadar from '../../components/SvgRadar/SvgRadar';
 import GameStore from '../../stores/GameStore';
-import { lpad, debounce, gamestoreFramesTimeFmt } from '../../lib/util';
+import { debounce, gamestoreFramesTimeFmt } from '../../lib/util';
 import Fullscreenable from 'react-fullscreenable';
 
 class TimelapseViewer extends Component {
@@ -40,7 +36,7 @@ class TimelapseViewer extends Component {
   handleSVGClick = e => {
   };
 
-  componentWillMount() {
+  componentDidMount() {
     TimelapsePlaybackStore.on(
       'change',
       this.handleTimelapsePlaybackStoreChange
@@ -110,7 +106,7 @@ class TimelapseViewer extends Component {
 
   render() {
     const index = TimelapsePlaybackStore.index;
-    const len = TimelapsePlaybackStore.timelapse.patches.length;
+    const len = TimelapsePlaybackStore.states.length;
 
     return (
       <div className="TimelapseViewer">

@@ -14,15 +14,32 @@ class AtomFeed extends Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     if (typeof window === 'undefined') return;
-    fetch(this.props.url)
-      .then(response => response.text())
+    this.mounted = true;
+    this.abortController =
+      typeof AbortController !== 'undefined' ? new AbortController() : null;
+    const requestOptions = this.abortController
+      ? { signal: this.abortController.signal }
+      : undefined;
+    fetch(this.props.url, requestOptions)
+      .then(response => {
+        if (!response.ok) throw new Error(`Feed request failed: ${response.status}`);
+        return response.text();
+      })
       .then(xml => new DOMParser().parseFromString(xml, 'application/xml'))
-      .then(this.parseAtomDocument);
+      .then(this.parseAtomDocument)
+      .catch(error => {
+        if (this.mounted && error.name !== 'AbortError') {
+          this.setState({ loaded: true });
+        }
+      });
   }
 
-  componentWillUnmount() {}
+  componentWillUnmount() {
+    this.mounted = false;
+    if (this.abortController) this.abortController.abort();
+  }
 
   parseAtomDocument = feed => {
     const items = Array.from(feed.getElementsByTagName('entry')).map(entry => ({
@@ -37,11 +54,11 @@ class AtomFeed extends Component {
       ),
       link: entry.getElementsByTagName('link')[0].getAttribute('href'),
       id: entry.getElementsByTagName('id')[0].textContent,
-      image: entry
-        .getElementsByTagName('media:thumbnail')[0]
-        .getAttribute('url')
+      image: entry.getElementsByTagName('media:thumbnail')[0]
+        ? entry.getElementsByTagName('media:thumbnail')[0].getAttribute('url')
+        : null
     }));
-    this.setState({ items, loaded: true });
+    if (this.mounted) this.setState({ items, loaded: true });
   };
 
   render() {

@@ -1,18 +1,13 @@
 import { Component } from 'preact';
 import './TimelapseRecorder.css';
 import {
-  FaCompress,
-  FaDesktop,
-  FaFileVideo,
   FaSave,
   FaStop,
   FaPlay,
-  FaStart,
   FaVideo,
   FaShareAlt
 } from 'react-icons/fa/index.esm';
 
-import GameStore from '../../stores/GameStore';
 import TimelapseStore from '../../stores/TimelapseStore';
 import {
   sendMessageInfo,
@@ -20,28 +15,23 @@ import {
   sendMessageWarning
 } from '../GameMessages/GameMessages';
 import { loadState, saveState } from '../../lib/persistance';
-import SharingPanel from '../SharingPanel/SharingPanel';
 import { route } from 'preact-router';
-import { compressToUTF16 } from 'lz-string';
-import config from '../../lib/config';
+import { shareOrDownloadTimelapse } from '../../lib/timelapse-file';
 
 class TimelapseRecorder extends Component {
   constructor(props) {
     super();
     this.state = {
-      msg: '*Changing the game speed will also change the timelapse speed.',
-      sharingPromise: null
+      msg: '*Changing the game speed will also change the timelapse speed.'
     };
     this.wasSaved = false;
   }
 
-  componentWillMount() {
-    GameStore.on('change', this.reRender);
+  componentDidMount() {
     TimelapseStore.on('change', this.reRender);
   }
 
   componentWillUnmount() {
-    GameStore.removeListener('change', this.reRender);
     TimelapseStore.removeListener('change', this.reRender);
   }
 
@@ -112,40 +102,23 @@ class TimelapseRecorder extends Component {
 
   reRender = () => this.setState({});
 
-  handleShareTimelapse = e => {
-    if (typeof window === 'undefined') return;
-    const stats = TimelapseStore.timelapse.stats;
-    const sharingPromise = fetch('https://api.myjson.com/bins', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        content: compressToUTF16(JSON.stringify(TimelapseStore.timelapse))
-      })
-    })
-      .then(response => response.text())
-      .then(
-        json =>
-          JSON.parse(json)
-            .uri.split('/')
-            .slice(-1)[0]
-      )
-      .then(id => ({
-        title:
-          this.state.timelapseName || TimelapseStore.defaultTimelapseName(),
-        text: `ATC Manager 2 timelapse with ${stats.departures} departures, \
-  ${stats.enroutes} enroute flights and ${stats.arrivals} arrivals.`,
-        url: `${config.url}timelapse/url?id=${id}`
-      }));
-    this.setState({ sharingPromise: sharingPromise });
-  };
-
-  handleShareClose = () => {
-    this.setState({
-      sharingPromise: null
-    });
+  handleShareTimelapse = async () => {
+    try {
+      const result = await shareOrDownloadTimelapse(
+        TimelapseStore.timelapse,
+        this.state.timelapseName || TimelapseStore.defaultTimelapseName()
+      );
+      sendMessageInfo(
+        result === 'shared'
+          ? 'Timelapse shared.'
+          : 'Timelapse exported to a file.'
+      );
+    } catch (error) {
+      if (error.name !== 'AbortError') {
+        sendMessageError('Unable to export the timelapse.');
+        console.warn('Timelapse export failed.', error);
+      }
+    }
   };
 
   handlePlayTimelapse = () => {
@@ -195,7 +168,7 @@ class TimelapseRecorder extends Component {
             disabled={state !== 'done'}
             className="timelapse-share"
             onClick={this.handleShareTimelapse}
-            title="Share timelapse"
+            title="Share or export timelapse"
           >
             <FaShareAlt />
           </button>
@@ -217,12 +190,6 @@ class TimelapseRecorder extends Component {
           </button>
           <small className="game-speed">{this.state.msg}</small>
         </div>
-        {this.state.sharingPromise ? (
-          <SharingPanel
-            promise={this.state.sharingPromise}
-            onClose={this.handleShareClose}
-          />
-        ) : null}
       </div>
     );
   }

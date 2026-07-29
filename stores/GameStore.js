@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 import Airplane from '../lib/airplane';
 import config from '../lib/config';
-import createVoiceCommandsInstance from '../lib/voice-commands'
+import createVoiceCommandsInstance from '../lib/voice-commands';
 import { clearToLand } from './gamestore-helpers/communications';
 import {
   loadMap,
@@ -108,7 +108,9 @@ class GameStore extends EventEmitter {
   }
 
   createInitialPlanes = () => {
-    const isAptCommercial = this.map.commercial >= this.map.ga || !SettingsStore.ga;
+    const isAptCommercial =
+      this.map.commercial > 0 &&
+      (!SettingsStore.ga || this.map.commercial >= this.map.ga);
     // create planes (if airport isvfr(map.ga > map.commercial) 
     // then { spawn all vfr and one ifr } else { spawn all ifr and one vfr }
     for (let i = 0; i < SettingsStore.startingInboundPlanes; i++) {
@@ -128,7 +130,11 @@ class GameStore extends EventEmitter {
           : this.newPlaneVFREnroute(Math.random() > 0.5);
       }
     }
-    if (SettingsStore.ga && this.map.ga > 0) {
+    if (
+      SettingsStore.ga &&
+      this.map.ga > 0 &&
+      this.map.commercial > 0
+    ) {
       isAptCommercial ? this.newPlaneVFROutbound() : this.newPlaneOutbound();
     }
   }
@@ -140,13 +146,18 @@ class GameStore extends EventEmitter {
   };
 
   startSaved = game => {
+    if (!game || typeof game !== 'object' || typeof game.id !== 'string') {
+      throw new Error('Invalid saved game data.');
+    }
+    const map = loadMap(game.id);
     this.loadJson(game);
-    const map = (this.map = loadMap(game.id));
+    this.map = map;
     this.setup(map);
     this.resume();
   };
 
   setup(map) {
+    this.disableTakoffsOnRwysSet = {};
     this.waypoints = map.waypoints;
     this.waypoints.NORTH = {
       x: config.width / 2,
@@ -250,11 +261,14 @@ class GameStore extends EventEmitter {
 
   newPlane = () => {
     if (this.paused || SettingsStore.stopSpawn) return;
-    let rnd = Math.random();
-    let trafficSum = this.map.ga + this.map.commercial;
+    const trafficSum = this.map.ga + this.map.commercial;
+    const gaRatio = trafficSum > 0 ? this.map.ga / trafficSum : 0;
+    const gaEnabled = SettingsStore.ga || this.map.commercial <= 0;
+    if (gaEnabled && Math.random() < gaRatio) {
+      this.spawnVFRPlane();
+      return;
+    }
     const opts = [this.newPlaneInbound, this.newPlaneOutbound];
-    if (SettingsStore.ga && rnd < this.map.ga / trafficSum)
-      opts.push(this.spawnVFRPlane);
     if (SettingsStore.enroute) opts.push(this.newPlaneEnroute);
     rndArr(opts)();
   };
@@ -282,7 +296,7 @@ class GameStore extends EventEmitter {
       const reqLen = landing
         ? model.landingMinRunwayLength
         : model.takeoffMinRunwayLength;
-      return reqLen >= len;
+      return len >= reqLen;
     });
     if (activeRunwayWithCorrectLength.length > 0) {
       activeRunways = activeRunwayWithCorrectLength;
@@ -639,9 +653,18 @@ class GameStore extends EventEmitter {
   }
 
   loadJson = state => {
-    for (let i = 0; i < persistanceProps.length; i++) {
-      this[persistanceProps[i]] = state[persistanceProps[i]];
+    if (!state || typeof state !== 'object') {
+      throw new Error('Invalid game state.');
     }
+    for (let i = 0; i < persistanceProps.length; i++) {
+      const key = persistanceProps[i];
+      if (state[key] !== undefined) this[key] = state[key];
+    }
+    this.traffic = Array.isArray(this.traffic)
+      ? this.traffic.filter(airplane => airplanesById[airplane.typeId])
+      : [];
+    this.log = Array.isArray(this.log) ? this.log : [];
+    this.selfLog = Array.isArray(this.selfLog) ? this.selfLog : [];
   }
 
   setSvgEl = el => {
@@ -650,8 +673,9 @@ class GameStore extends EventEmitter {
 
   trySpawn() {
     this._spawnPlaneCounter += config.updateInterval * SettingsStore.speed;
-    if (this._spawnPlaneCounter > SettingsStore.newPlaneInterval * 1000) {
-      this._spawnPlaneCounter %= SettingsStore.newPlaneInterval;
+    const intervalMs = Math.max(1000, SettingsStore.newPlaneInterval * 1000);
+    if (this._spawnPlaneCounter >= intervalMs) {
+      this._spawnPlaneCounter %= intervalMs;
       this.newPlane();
     }
   }
@@ -660,10 +684,16 @@ class GameStore extends EventEmitter {
     if (this.paused) return;
     const s = config.globalSpeed * SettingsStore.speed;
     this.trySpawn();
-    this.pathCounter =
-      ++this.pathCounter % Math.floor(config.pathCounterUpdateEvery / s);
-    this.weatherCounter =
-      ++this.weatherCounter % Math.floor(config.updateWeatherEvery / s);
+    const pathUpdateTicks = Math.max(
+      1,
+      Math.floor(config.pathCounterUpdateEvery / s)
+    );
+    const weatherUpdateTicks = Math.max(
+      1,
+      Math.floor(config.updateWeatherEvery / s)
+    );
+    this.pathCounter = ++this.pathCounter % pathUpdateTicks;
+    this.weatherCounter = ++this.weatherCounter % weatherUpdateTicks;
     for (const key in this.oldSepDistanceVialotions)
       delete this.oldSepDistanceVialotions[key];
     Object.assign(this.oldSepDistanceVialotions, this.sepDistanceVialotions);
@@ -680,7 +710,7 @@ class GameStore extends EventEmitter {
     }
     this._remove.length = 0;
     this.time += s;
-    this.time %= 86400; // seconds in a year
+    this.time %= 86400; // seconds in a day
     if (this.weatherCounter === 0) {
       this.winddir = wrapHeadig(
         this.winddir + (Math.random() - 0.5) * s * config.windDirChange
@@ -811,7 +841,10 @@ class GameStore extends EventEmitter {
             waypointPosition.x,
             waypointPosition.y
           );
-      } else if (this.callsigns[airplane.tgtDirection].class === 'route') {
+      } else if (
+        this.callsigns[airplane.tgtDirection] &&
+        this.callsigns[airplane.tgtDirection].class === 'route'
+      ) {
         route.call(this);
       }
     }
@@ -1277,7 +1310,7 @@ class GameStore extends EventEmitter {
 
         if (headingToDelta >= -10 && headingToDelta <= maxAngle) {
           tgtHeading = wrapHeadig(hdgTo - maxAngle - 0.1);
-        } else if (headingToDelta < -10 && headingToDelta >= maxAngle) {
+        } else if (headingToDelta < -10 && headingToDelta >= -maxAngle) {
           tgtHeading = wrapHeadig(hdgTo + maxAngle + 0.1);
         }
       }
@@ -1291,21 +1324,23 @@ class GameStore extends EventEmitter {
         routeObj,
         this.callsignsPos
       );
+      if (!best) return;
       const from = this.callsignsPos[best.from.dir];
       const to = this.callsignsPos[best.to.dir];
+      if (!from || !to) return;
 
       let hdgToTgt = headingTo(airplane.x, airplane.y, to.x, to.y);
       let legHdg = headingTo(from.x, from.y, to.x, to.y);
       let deg = angleDelta(legHdg, hdgToTgt);
 
       if (complete) {
-        if (typeof best.dir === 'number') {
+        if (typeof best.to.dir === 'number') {
           tgtHeading = airplane.tgtDirection = best.to.dir;
         } else {
           airplane.tgtDirection = best.to.dir;
         }
       } else {
-        if (typeof best.dir === 'number') {
+        if (typeof best.to.dir === 'number') {
           tgtHeading = best.to.dir;
         } else {
           if (Math.abs(deg) < 45) {
@@ -1468,7 +1503,7 @@ const persistanceProps = [
   'time'
 ];
 
-const wrapHeadig = hdg => (hdg + 360) % 360;
+const wrapHeadig = hdg => ((hdg % 360) + 360) % 360;
 
 const legsOrder = Object.assign(
   {},

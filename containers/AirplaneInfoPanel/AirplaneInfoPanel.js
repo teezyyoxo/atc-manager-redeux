@@ -1,8 +1,5 @@
 import { Component } from 'preact';
-import GameStore from '../../stores/GameStore';
-import { FaCompress, FaDesktop } from 'react-icons/fa/index.esm';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { landableRwys, idType, activeRwys } from '../../lib/map';
+import { FaCompress } from 'react-icons/fa/index.esm';
 import { upcase, lpad } from '../../lib/util';
 import Communications from '../../lib/communications';
 import './AirplaneInfoPanel.css';
@@ -17,10 +14,6 @@ class AirplaneInfoPanel extends Component {
     super();
     this.state = {};
   }
-
-  componentWillMount() {}
-
-  componentWillUnmount() {}
 
   render() {
     if (!this.props.infoPanelTgt) return null;

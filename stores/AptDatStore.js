@@ -1,9 +1,6 @@
 import { EventEmitter } from 'events';
-import {
-  sendMessageWarning,
-  sendMessageError
-} from '../components/GameMessages/GameMessages';
-import { parseAptNav, parseApt } from '../lib/ground/spec';
+import { sendMessageError } from '../components/GameMessages/GameMessages';
+import { parseApt } from '../lib/ground/spec';
 import { logErr } from '../lib/util';
 
 class AptDatStore extends EventEmitter {
@@ -13,13 +10,16 @@ class AptDatStore extends EventEmitter {
     const url = (this.url = 'https://esstudio.site/apt-dat-parser-js/data/');
 
     this.loading = true;
-    const aptNavPromise = fetch(url + 'apt_nav.dat.txt').then(x => x.text());
-    const earthFixPromise = fetch(url + 'earth_fix.dat.txt').then(x =>
-      x.text()
-    );
-    const earthNavPromise = fetch(url + 'earth_nav.dat.txt').then(x =>
-      x.text()
-    );
+    const fetchText = async path => {
+      const response = await fetch(url + path);
+      if (!response.ok) {
+        throw new Error(`World-data request failed (${response.status}).`);
+      }
+      return response.text();
+    };
+    const aptNavPromise = fetchText('apt_nav.dat.txt');
+    const earthFixPromise = fetchText('earth_fix.dat.txt');
+    const earthNavPromise = fetchText('earth_nav.dat.txt');
 
     this.datPromise = Promise.all([
       aptNavPromise,
@@ -28,13 +28,13 @@ class AptDatStore extends EventEmitter {
     ])
       .then(this.handleDataloaded)
       .catch(err => {
-        sendMessageError('Something wen\'t wrong while loading world data.');
+        sendMessageError('Something went wrong while loading world data.');
         logErr(err);
+        throw err;
       });
   }
 
   handleDataloaded = resolved => {
-    const [aptNav, earthFix, earthNav] = resolved;
     this.loading = false;
     this.emit('change');
 
@@ -44,15 +44,17 @@ class AptDatStore extends EventEmitter {
   searchAptNavIcao = icao => {
     icao = icao.toUpperCase();
     return this.datPromise.then(resolved => {
-      const [aptNav, earthFix, earthNav] = resolved;
+      const [aptNav] = resolved;
 
-      return aptNav.split('\n').filter(apt => apt.split(' ')[0].includes(icao));
+      return aptNav
+        .split('\n')
+        .filter(apt => apt.trim().split(/\s+/)[0] === icao);
     });
   };
 
   searchAptName = name => {
     return this.datPromise.then(resolved => {
-      const [aptNav, earthFix, earthNav] = resolved;
+      const [aptNav] = resolved;
 
       return aptNav.split('\n').filter(apt =>
         apt
@@ -67,9 +69,14 @@ class AptDatStore extends EventEmitter {
   fetchAptByIcao = async icao => {
     icao = icao.toUpperCase();
     const response = await fetch(this.url + `airports/${icao}.dat.txt`);
+    if (!response.ok) {
+      throw new Error(`Airport data request failed (${response.status}).`);
+    }
     const txt = await response.text();
 
-    return parseApt(txt, true)[0];
+    const apt = parseApt(txt, true)[0];
+    if (!apt) throw new Error(`No airport data found for ${icao}.`);
+    return apt;
   };
 }
 

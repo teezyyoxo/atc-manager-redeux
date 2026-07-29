@@ -5,13 +5,10 @@
     "commonjs": true,
     "es6": true
   },
-  "parser": "babel-eslint",
   "extends": "eslint:recommended",
   "parserOptions": {
+    "ecmaVersion": 2022,
     "ecmaFeatures": {
-      "experimentalObjectRestSpread": true,
-      "modules": true,
-      "arrowFunctions": true,
       "jsx": true
     },
     "sourceType": "module"
@@ -20,12 +17,9 @@
     "react"
   ],
   "rules": {
-    "no-console": ["error", { "allow": ["warn", "error"] }],
+    "no-console": "off",
     "react/jsx-uses-vars": ["error"],
     "no-unused-vars": ["error", { "args": "none" }],
-    "indent": ["error", 2],
-    "jsx-quotes": ["error", "prefer-double"],
-    "quotes": ["error", "single"],
-    "semi": ["error", "always"]
+    "no-case-declarations": "off"
   }
 }

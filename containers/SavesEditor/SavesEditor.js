@@ -26,10 +26,6 @@ class SavesEditor extends Component {
     };
   }
 
-  componentWillMount() {}
-
-  componentWillUnmount() {}
-
   handleInputChanged = e => {
     const saveName = e.target.value;
     const save = this.state.saves[saveName] || null;
@@ -68,7 +64,7 @@ class SavesEditor extends Component {
   }, 500);
 
   handleSaveClick = e => {
-    if (this.state.editingObj === null)
+    if (!this.state.saveName || this.state.editingObj === null)
       return sendMessageError('Please submit valid a valid save file');
     const saves = this.state.saves;
     saves[this.state.saveName] = this.state.editingObj;
@@ -97,14 +93,23 @@ class SavesEditor extends Component {
   };
 
   readFromFile = e => {
+    const file = e.target.files[0];
+    if (!file) return;
     var reader = new FileReader();
     const _this = this;
     reader.onload = function() {
-      _this.setState({
-        json: reader.result
-      });
+      e.target.value = '';
+      _this.setState(
+        {
+          debouncing: true,
+          json: reader.result,
+          saveName:
+            _this.state.saveName || file.name.replace(/\.json$/i, '')
+        },
+        () => _this.parseTextareaJsonDebounced(reader.result)
+      );
     };
-    reader.readAsText(e.target.files[0]);
+    reader.readAsText(file);
   };
 
   handleRawJSONSwitchInput = e => {
@@ -128,14 +133,13 @@ class SavesEditor extends Component {
       <div className="SavesEditor">
         <div className="panel">
           <h1>Saves Editor</h1>
-          <select onInput={this.handleInputChanged}>
+          <select
+            value={this.state.saveName}
+            onInput={this.handleInputChanged}
+          >
             <option value="">Choose Save:</option>
-            {Object.keys(this.state.saves).map((key, i) => (
-              <option
-                key={i}
-                value={key}
-                selected={this.state.saves[key] === this.state.save}
-              >
+            {Object.keys(this.state.saves).map(key => (
+              <option key={key} value={key}>
                 {key}
               </option>
             ))}
@@ -151,7 +155,6 @@ class SavesEditor extends Component {
           ) : null}
           {this.state.rawJSON || !save ? null : (
             <span>
-              testddd
               <SchemaForm
                 formData={save}
                 onChange={this.handleEditingObjectChange}
@@ -185,7 +188,6 @@ class SavesEditor extends Component {
             className="inputfile"
             type="file"
             accept=".json"
-            disabled={this.state.saveName === ''}
           />
           <label for="saveseditor">Open File</label>
           <CopyToClipboard text={this.state.json} onCopy={this.handleCopy}>

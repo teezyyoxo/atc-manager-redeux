@@ -1,20 +1,30 @@
-FROM node:18-alpine AS build
+FROM node:22-alpine AS build
 WORKDIR /app
 
-# install deps (including devDeps needed for building)
-COPY package.json package-lock.json* ./
-RUN npm install --production=false --no-audit --no-fund
+# Preact CLI 3 uses webpack 4, whose hashing requires OpenSSL's legacy provider.
+# This setting exists only in the disposable build stage.
+ENV NODE_OPTIONS=--openssl-legacy-provider
 
-# copy source and build
+COPY package.json package-lock.json ./
+RUN npm ci --no-audit --no-fund
+
 COPY . .
-RUN npm run build
+RUN npm run check
 
-FROM nginx:stable-alpine
+FROM nginx:1.28-alpine
+ARG APP_VERSION=2.5.0
+LABEL org.opencontainers.image.title="ATC Manager Redeux" \
+      org.opencontainers.image.version="${APP_VERSION}" \
+      org.opencontainers.image.description="Browser-based air traffic control simulation"
+
 COPY --from=build /app/build /usr/share/nginx/html
+RUN find /usr/share/nginx/html -type f -name '*.map' -delete
 
-# SPA fallback (rewrite to index.html)
 RUN rm /etc/nginx/conf.d/default.conf
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD wget --quiet --tries=1 --spider http://127.0.0.1/healthz || exit 1
+
 CMD ["nginx", "-g", "daemon off;"]
