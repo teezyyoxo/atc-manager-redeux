@@ -134,6 +134,40 @@ available port above or below it and print the chosen value. Direct
 `docker compose` and `podman compose` commands still read `.env`, but do not
 perform automatic port fallback or Git revision discovery.
 
+## What `make` does
+
+`make` is only a shortcut for the longer Docker or Podman commands in this
+project. You do not need to know Make syntax or edit the `Makefile`. For a
+normal Docker deployment:
+
+```bash
+# First deployment only: create your private configuration.
+cp .env.example .env
+
+# Build or rebuild the image and start the app.
+make compose-up
+
+# Stop and remove the Compose container later.
+make compose-down
+```
+
+Before `make compose-up` starts Docker, it:
+
+1. Reads `PORT` and `APP_VERSION` from `.env`.
+2. Uses the requested port, or finds a nearby free port if it is occupied.
+3. Embeds the current Git commit in the displayed build version.
+4. Runs `docker compose up --build -d`.
+
+The command prints the port it actually selected. For example, if `.env`
+contains `PORT=7123`, open `http://localhost:7123`. If 7123 is occupied and the
+command selects 7124, open `http://localhost:7124` instead.
+
+Keeping `.env` in `.dockerignore` is intentional. Compose and Make read it from
+the host before the image is built, so private local settings do not need to be
+copied into the image. Plain `docker run` does not read `.env` or publish a port
+automatically; its equivalent would need an explicit option such as
+`-p 7123:80`.
+
 ## Make targets
 
 The Makefile uses Docker by default. Select Podman with `ENGINE=podman`.
