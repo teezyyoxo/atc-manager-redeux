@@ -34,6 +34,7 @@ import { rndArr } from '../lib/util';
 import { parseRoute, mostSuitableLeg } from '../lib/sidstar';
 import { TakeoffRunwayAssignment } from '../lib/maps/runway-assignment';
 import { minimumSeperationDistance } from './gamestore-helpers/seperation';
+import { runwayWindComponents, windVector } from '../lib/weather';
 
 class GameStore extends EventEmitter {
   constructor() {
@@ -739,6 +740,11 @@ class GameStore extends EventEmitter {
     const s = config.globalSpeed * SettingsStore.speed;
     const dx = Math.sin((airplane.heading * Math.PI) / 180);
     const dy = Math.cos((airplane.heading * Math.PI) / 180);
+    const wind = windVector(this.winddir, this.windspd);
+    const heightAboveAirport = airplane.altitude - (this.airport.elevation || 0);
+    const windEffect = Math.max(0, Math.min(1, heightAboveAirport / 1000));
+    const groundVelocityX = dx * airplane.speed + wind.x * windEffect;
+    const groundVelocityY = dy * airplane.speed + wind.y * windEffect;
     let tgtHeading = airplane.heading;
     let spdChange = 0;
     let altChange = Math.min(
@@ -754,8 +760,14 @@ class GameStore extends EventEmitter {
         : airplane.tgtSpeed;
     let landing = false;
 
-    airplane.x += dx * s * airplane.speed * config.baseAirplaneSpeed;
-    airplane.y += dy * s * airplane.speed * config.baseAirplaneSpeed;
+    airplane.x += groundVelocityX * s * config.baseAirplaneSpeed;
+    airplane.y += groundVelocityY * s * config.baseAirplaneSpeed;
+    airplane.groundSpeed = Math.sqrt(
+      Math.pow(groundVelocityX, 2) + Math.pow(groundVelocityY, 2)
+    );
+    airplane.groundTrack =
+      (Math.atan2(groundVelocityX, groundVelocityY) * 180) / Math.PI;
+    airplane.groundTrack = (airplane.groundTrack + 360) % 360;
 
     const isAtManeuveringSpeed =
       airplane.speed >= airplanesById[airplane.typeId].landingSpeed - 0.01;
@@ -1430,31 +1442,44 @@ class GameStore extends EventEmitter {
         Math.abs(rwyAirplaneHdgDiff) < 20
       ) {
         if (isTouchAndGo === false && airplane.landing) {
-          const s =
-            (this.windspd / config.windSpdMax) *
-            config.likelyNessOfGoAroundDueWindSpd;
-          const crosswind = Math.abs(angleDelta(rwyHdg, this.winddir));
-          const crossWindMultiplier = 1 - Math.abs(crosswind - 90) / 90;
-          const d =
-            crossWindMultiplier * config.likelyNessOfGoAroundDueWindHhdg;
+          const wind = runwayWindComponents(
+            rwyHdg,
+            this.winddir,
+            this.windspd
+          );
+          const crosswindLimit = model.maxCrosswind || 25;
+          const tailwindLimit = model.maxTailwind || 10;
+          const crosswindRatio = wind.crosswind / crosswindLimit;
+          const tailwindRatio = wind.tailwind / tailwindLimit;
+          const weatherRisk =
+            Math.pow(crosswindRatio, 2) *
+              config.likelyNessOfGoAroundDueWindHhdg +
+            Math.pow(tailwindRatio, 2) *
+              config.likelyNessOfGoAroundDueWindSpd;
+          const outsideWindLimits =
+            crosswindRatio > 1 || tailwindRatio > 1;
           const rnd = Math.random();
-          if (rnd - d - s < config.likelyNessOfGoAround && SettingsStore.goArounds) {
-            if (rnd < config.likelyNessOfGoAround) {
-              sendMessageInfo(`${communications.getCallsign(airplane, true)} is going around.`);
-            } else if (
-              rnd - d - s < config.likelyNessOfGoAround &&
-              this.windspd > 10 &&
-              crossWindMultiplier > 0.5
-            ) {
-              sendMessageInfo(`${communications.getCallsign(airplane, true)} is making a go around because of a ${this.windspd}KTS crosswind.`);
-            }
-            else if (rnd - d - s < config.likelyNessOfGoAround) {
+          const shouldGoAround =
+            outsideWindLimits ||
+            rnd < config.likelyNessOfGoAround + weatherRisk;
+          if (shouldGoAround && SettingsStore.goArounds) {
+            const callsign = communications.getCallsign(airplane, true);
+            if (crosswindRatio > 1) {
               sendMessageInfo(
-                `${communications.getCallsign(
-                  airplane,
-                  true
-                )} is making a go around because of bad weather.`
+                `${callsign} is going around: ${wind.crosswind.toFixed(0)}KT ` +
+                `crosswind exceeds the ${crosswindLimit}KT aircraft limit.`
               );
+            } else if (tailwindRatio > 1) {
+              sendMessageInfo(
+                `${callsign} is going around: ${wind.tailwind.toFixed(0)}KT ` +
+                `tailwind exceeds the ${tailwindLimit}KT aircraft limit.`
+              );
+            } else if (weatherRisk > rnd) {
+              sendMessageInfo(
+                `${callsign} is going around because of the wind conditions.`
+              );
+            } else {
+              sendMessageInfo(`${callsign} is going around.`);
             }
             // go-around
             airplane.landing = false;

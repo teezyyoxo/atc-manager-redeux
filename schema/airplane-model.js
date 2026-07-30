@@ -156,36 +156,44 @@ export default {
     },
     'climbSpeed': {
       '$id': '#/properties/climbSpeed',
-      'type': 'integer',
+      'type': 'number',
       'title': 'Climbspeed',
       'default': 1,
+      'minimum': 0.1,
+      'maximum': 3,
       'examples': [
         1
       ]
     },
     'descendSpeed': {
       '$id': '#/properties/descendSpeed',
-      'type': 'integer',
+      'type': 'number',
       'title': 'descendSpeed',
       'default': 1,
+      'minimum': 0.1,
+      'maximum': 3,
       'examples': [
         1
       ]
     },
     'accelerationSpeed': {
       '$id': '#/properties/accelerationSpeed',
-      'type': 'integer',
+      'type': 'number',
       'title': 'Accelerationspeed',
       'default': 1,
+      'minimum': 0.1,
+      'maximum': 3,
       'examples': [
         1
       ]
     },
     'deAccelerationSpeed': {
       '$id': '#/properties/deAccelerationSpeed',
-      'type': 'integer',
+      'type': 'number',
       'title': 'Deaccelerationspeed',
       'default': 1,
+      'minimum': 0.1,
+      'maximum': 3,
       'examples': [
         1
       ]
@@ -207,7 +215,7 @@ export default {
       'title': 'Turningrate',
       'items': {
         '$id': '#/properties/turningRate/items',
-        'type': 'integer',
+        'type': 'number',
         'title': 'Items',
         'default': 0,
         'examples': [
@@ -216,6 +224,22 @@ export default {
           5
         ]
       }
+    },
+    'maxCrosswind': {
+      '$id': '#/properties/maxCrosswind',
+      'type': 'number',
+      'title': 'Maximum crosswind component (KTS)',
+      'default': 25,
+      'minimum': 1,
+      'maximum': 60
+    },
+    'maxTailwind': {
+      '$id': '#/properties/maxTailwind',
+      'type': 'number',
+      'title': 'Maximum tailwind component (KTS)',
+      'default': 10,
+      'minimum': 1,
+      'maximum': 30
     },
     'operators': {
       '$id': '#/properties/operators',

@@ -8,13 +8,14 @@ import, or share timelapse files.
 The production app is a static Preact build served by nginx. The same
 multi-stage `Dockerfile` is supported by Docker and Podman.
 
-Current release: **3.0.0-rc.1**
+Current release: **3.0.0-rc.2**
 
 ## Features
 
 - IFR, VFR, enroute, pattern, arrival, and departure traffic
 - Multiple airports, runways, SIDs, STARs, waypoints, weather, and wake
   turbulence
+- 81 built-in aircraft with differentiated performance and wind limits
 - Text commands, tutorials, configurable game speed, and accessibility settings
 - Local saves, airplane/operator editors, and timelapse recording, playback,
   file import, and file export
@@ -33,10 +34,10 @@ future changelog entries.
 | TD-001 | Reproducible Docker and Podman delivery | Available in 2.5.0 with one production image, Compose support, health checks, and SPA-aware nginx routing. |
 | TD-002 | Resilient browser runtime | Available in 2.5.0 with offline precaching, modern and legacy service workers, cache controls, and optional push handling. |
 | TD-003 | Repeatable verification | Available in 2.5.0 with pinned Node guidance, `npm ci`, lint/build checks, a production dependency audit, and versioned container metadata. |
-| TD-004 | Broader aircraft support | The current catalog includes 33 built-in aircraft types plus an in-game aircraft editor for custom definitions. |
+| TD-004 | Broader aircraft support | Available in 3.0.0-rc.2 with 81 built-in airliner, regional, cargo, business, utility, and general-aviation types plus an in-game editor for custom definitions. |
 | TD-005 | Broader airline/operator support | The current catalog includes 35 built-in operators plus an operator editor, callsigns, colors, and rarity controls. |
 | TD-006 | Scope and traffic customization | Available controls include working radar/font and route-display settings plus colors for backgrounds, traffic classes, paths, SIDs, STARs, ILS, MSA, climb, descent, and warnings. |
-| TD-007 | Expanded traffic simulation | IFR, VFR, enroute, pattern, arrival, and departure traffic coexist with weather, wake categories, go-arounds, local saves, and timelapses. |
+| TD-007 | Expanded traffic simulation | IFR, VFR, enroute, pattern, arrival, and departure traffic coexist with wind-responsive ground movement, aircraft-specific wind limits, wake categories, go-arounds, local saves, and timelapses. |
 
 ## Planned features and known gaps
 
@@ -46,13 +47,13 @@ quality or flexibility.
 
 | ID | Feature or gap | Status | Intended outcome |
 | --- | --- | --- | --- |
-| TD-008 | Additional aircraft packs | Planned | Add modern airliners, regional aircraft, cargo types, helicopters, and more general-aviation aircraft with validated performance data. |
+| TD-008 | Additional aircraft packs | Available in 3.0.0-rc.2 | The first expanded pack adds 48 types and rebalances the 33 legacy profiles; future packs can continue adding specialized traffic such as helicopters. |
 | TD-009 | Additional airlines and operators | Planned | Expand global, regional, cargo, charter, and general-aviation operators with accurate callsigns and sensible fleet assignments. |
 | TD-010 | Multiple radar/scope types | Planned | Provide distinct tower, ground, approach/TRACON, enroute, and simplified training scope presets. |
 | TD-011 | Radar and interface visual refinement | Needs refinement | Improve aircraft labels, vector/trail rendering, spacing, typography, responsive layouts, selection states, and high-density traffic readability. |
 | TD-012 | Visual presets and accessibility | Planned | Add coherent scope themes, color-blind-safe palettes, contrast presets, scalable UI density, and easier reset/import/export controls. |
 | TD-013 | Airport and scenario authoring | Planned | Make it easier to define and validate airports with curated procedures, runway-use rules, traffic mixes, weather behavior, tutorials, and difficulty profiles. |
-| TD-014 | Simulation fidelity | Needs refinement | Improve separation logic, runway occupancy, sequencing, taxi/ground behavior, aircraft performance, wind effects, and conflict feedback. |
+| TD-014 | Simulation fidelity | Improved in 3.0.0-rc.2 | Aircraft now have differentiated performance and wind-component limits, and airborne movement responds to wind; runway occupancy, sequencing, taxi behavior, and conflict feedback still need refinement. |
 | TD-015 | Modern frontend toolchain | Technical debt | Replace Preact CLI/webpack 4 and retire the build-only OpenSSL compatibility setting without losing existing features. |
 | TD-016 | Automated regression coverage | Technical debt | Add unit tests for parsers and simulation rules plus browser smoke tests for saves, editors, routes, timelapses, and offline behavior. |
 | TD-017 | Performance profiling | Planned | Establish measurable frame-time, memory, startup, and large-traffic targets; optimize only against recorded regressions. |
@@ -199,7 +200,7 @@ make ENGINE=podman run PORT=8081
 ```
 
 `VERSION`, `IMAGE`, `PORT`, `CONTAINER`, `BUILD_COMMIT`, and `BUILD_FLAGS` can
-all be overridden. The default image is `atc-manager:3.0.0-rc.1`.
+all be overridden. The default image is `atc-manager:3.0.0-rc.2`.
 
 ## Mobile and tablet browsers
 
@@ -227,8 +228,30 @@ session, backgrounding the page, changing tabs, or putting the device to sleep
 pauses the simulation. Return to the glowing pause dialog and choose
 **Resume session** when ready.
 The About panel shows the release and source revision as
-`3.0.0-rc.1+<commit>`, which identifies the exact release-candidate build in
+`3.0.0-rc.2+<commit>`, which identifies the exact release-candidate build in
 use.
+
+## Aircraft performance and weather
+
+The built-in fleet covers airliners, regional jets and turboprops, freighters,
+business aircraft, utility turboprops, and piston GA aircraft. Each type has
+its own runway requirements, speed envelope, ceiling, climb/descent response,
+acceleration, turning behavior, wake class, rarity, and wind-component limits.
+Existing built-in IDs were preserved so saves created by older releases still
+load the intended aircraft. New built-ins use IDs 100–147, leaving the legacy
+custom-aircraft range beginning at 33 undisturbed; a custom definition still
+takes precedence if it deliberately uses the same ID as a built-in.
+
+The wind shown in the game affects airborne ground track and ground speed; the
+aircraft information panel separates heading and airspeed from calculated
+ground track and ground speed.
+Takeoff assignment prefers a runway within the selected type's crosswind and
+tailwind limits, and enabled go-arounds react to the actual components on the
+landing runway. The influence tapers below 1,000 feet above the field to avoid
+unrealistic movement while an aircraft is on the runway.
+
+These values use the current in-session weather. Opt-in retrieval of live
+airport METAR observations remains tracked separately under TD-022.
 
 ## Local development
 
@@ -299,9 +322,9 @@ Podman did not find the requested image locally and tried to pull it. Build it
 first, use the same tag for `build` and `run`, and keep `--pull=never`:
 
 ```bash
-podman build --format docker --build-arg APP_VERSION=3.0.0-rc.1 \
-  -t localhost/atc-manager:3.0.0-rc.1 .
-podman run --pull=never --rm -p 8080:80 localhost/atc-manager:3.0.0-rc.1
+podman build --format docker --build-arg APP_VERSION=3.0.0-rc.2 \
+  -t localhost/atc-manager:3.0.0-rc.2 .
+podman run --pull=never --rm -p 8080:80 localhost/atc-manager:3.0.0-rc.2
 ```
 
 ### Port 8080 is already in use
@@ -309,8 +332,8 @@ podman run --pull=never --rm -p 8080:80 localhost/atc-manager:3.0.0-rc.1
 Publish another host port:
 
 ```bash
-docker run --rm -p 8081:80 atc-manager:3.0.0-rc.1
-podman run --rm -p 8081:80 localhost/atc-manager:3.0.0-rc.1
+docker run --rm -p 8081:80 atc-manager:3.0.0-rc.2
+podman run --rm -p 8081:80 localhost/atc-manager:3.0.0-rc.2
 ```
 
 ### Container build dependency errors

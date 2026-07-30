@@ -1,6 +1,44 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [3.0.0-rc.2] - 2026-07-29
+
+### Added
+
+- Expanded the built-in catalog from 33 to 81 aircraft, including the Boeing
+  737-800/900 and MAX variants, 747-8, 777-300ER/F, 787-10, Airbus neo and
+  A220 variants, additional regional jets and turboprops, cargo aircraft,
+  business jets, and a broader piston and turboprop GA fleet.
+- Added or refined the requested ATR 72-600, A380-800, B739, Citation CJ4,
+  DA62, and C172 profiles with distinct runway, speed, ceiling, climb,
+  acceleration, turn, rarity, wake-class, crosswind, and tailwind
+  characteristics.
+- Added calculated ground speed and ground track to the aircraft information
+  panel.
+
+### Changed
+
+- Rebalanced all 33 legacy aircraft profiles so heavies, narrowbodies,
+  regional aircraft, turboprops, and piston aircraft no longer share
+  placeholder performance behavior. Existing aircraft IDs remain compatible
+  with saved sessions and custom data; new built-ins use IDs 100–147 to avoid
+  the legacy editor's custom-aircraft range beginning at 33.
+- Made airborne movement respond to the session wind direction and speed using
+  the meteorological wind-from convention. Wind influence tapers near field
+  elevation to preserve stable runway and ground behavior.
+- Made takeoff runway assignment prefer runways within each aircraft's
+  crosswind and tailwind limits. Landing decisions now use actual runway wind
+  components and explain limit-related go-arounds.
+- Updated the aircraft editor schema to accept fractional performance
+  multipliers and expose crosswind and tailwind limits.
+- Updated application, package, Compose, Make, image, documentation, and build
+  metadata to 3.0.0-rc.2.
+
+### Fixed
+
+- Assigned registrations to operator-less IFR and VFR aircraft so business
+  and general-aviation traffic no longer falls back to generic flight labels.
+
 ## [3.0.0-rc.1] - 2026-07-29
 
 ### Added

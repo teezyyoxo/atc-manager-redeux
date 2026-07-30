@@ -41,7 +41,15 @@ class AirplaneInfoPanel extends Component {
             .join(', ') || 'None'}
         </div>
         <br />
-        <div>Speed: {this.props.infoPanelTgt.airplane.speed.toFixed(0)}KTS</div>
+        <div>
+          Airspeed: {this.props.infoPanelTgt.airplane.speed.toFixed(0)}KTS
+        </div>
+        {Number.isFinite(this.props.infoPanelTgt.airplane.groundSpeed) ? (
+          <div>
+            Ground speed:{' '}
+            {this.props.infoPanelTgt.airplane.groundSpeed.toFixed(0)}KTS
+          </div>
+        ) : null}
         <div>
           Altitude:{' '}
           <AltFmt
@@ -50,7 +58,7 @@ class AirplaneInfoPanel extends Component {
           />
         </div>
         <div>
-          heading:{' '}
+          Heading:{' '}
           {lpad(
             '' + this.props.infoPanelTgt.airplane.heading.toFixed(0),
             '0',
@@ -58,6 +66,17 @@ class AirplaneInfoPanel extends Component {
           )}
           °
         </div>
+        {Number.isFinite(this.props.infoPanelTgt.airplane.groundTrack) ? (
+          <div>
+            Ground track:{' '}
+            {lpad(
+              '' + this.props.infoPanelTgt.airplane.groundTrack.toFixed(0),
+              '0',
+              3
+            )}
+            °
+          </div>
+        ) : null}
         <br />
         <div>
           Ceiling:{' '}
@@ -71,6 +90,12 @@ class AirplaneInfoPanel extends Component {
           Landing speed: {this.props.infoPanelTgt.model.landingSpeed}KTS
         </div>
         <div>Min speed: {this.props.infoPanelTgt.model.minSpeed}KTS</div>
+        <div>
+          Max crosswind: {this.props.infoPanelTgt.model.maxCrosswind || 25}KTS
+        </div>
+        <div>
+          Max tailwind: {this.props.infoPanelTgt.model.maxTailwind || 10}KTS
+        </div>
         <div>
           Min landing runway length:{' '}
           {this.props.infoPanelTgt.model.landingMinRunwayLength}FT
