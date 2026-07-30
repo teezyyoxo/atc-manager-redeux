@@ -47,6 +47,7 @@ class SettingsStore extends EventEmitter {
     this.startingOutboundPlanes = 2;
     this.startingEnroutePlanes = 1;
     this.radarFontsize = 14;
+    this.interfaceScale = 'auto';
     this.ga = false;
     this.enroute = false;
     this.takeoffInOrder = false;
@@ -62,7 +63,13 @@ class SettingsStore extends EventEmitter {
       });
     }
 
+    this.applyInterfaceScale();
     this.on('change', this.persist);
+    this.on('change', this.applyInterfaceScale);
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', this.handleViewportResize);
+    }
 
     Communications.synth.addEventListener(
       'voiceschanged',
@@ -129,6 +136,37 @@ class SettingsStore extends EventEmitter {
     this.emit('change');
   }
 
+  handleViewportResize = () => {
+    if (this.interfaceScale === 'auto') this.applyInterfaceScale();
+  };
+
+  getInterfaceScale = () => {
+    if (this.interfaceScale !== 'auto') {
+      const scale = Number(this.interfaceScale);
+      if (Number.isFinite(scale)) return Math.min(1.5, Math.max(0.75, scale));
+    }
+    if (typeof window === 'undefined') return 1;
+
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    if (width > height && height <= 500) return 0.9;
+    if (width >= 1400) return 1.15;
+    if (width >= 768) return 1.1;
+    if (width <= 480) return 0.95;
+    return 1;
+  };
+
+  applyInterfaceScale = () => {
+    if (typeof document === 'undefined') return;
+    const scale = this.getInterfaceScale();
+    const rootStyle = document.documentElement.style;
+    rootStyle.setProperty('--interface-scale', scale);
+    rootStyle.setProperty('--interface-font-size', `${14 * scale}px`);
+    rootStyle.setProperty('--interface-sidebar-width', `${250 * scale}px`);
+    rootStyle.setProperty('--interface-compact-sidebar-width', `${220 * scale}px`);
+  };
+
   toJson = () => {
     return JSON.stringify(
       this,
@@ -152,6 +190,7 @@ class SettingsStore extends EventEmitter {
         'stopSpawn',
         'distanceCirclesAmount',
         'radarFontsize',
+        'interfaceScale',
         'distanceCircleColor',
         'ilsPathLength',
         'ilsPathColor',

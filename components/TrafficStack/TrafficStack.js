@@ -7,7 +7,6 @@ import {
   FaPaperPlane,
   FaQuestion
 } from 'react-icons/fa/index.esm';
-import './TrafficStack.css';
 import GameStore from '../../stores/GameStore';
 import GameMetaControls from '../../components/GameMetaControls/GameMetaControls';
 import {
@@ -494,20 +493,12 @@ class TrafficStack extends Component {
           : this.renderIFRTrafficControl()
         : null;
 
-    const innerHeight =
-      typeof window !== 'undefined' ? window.innerHeight : 600;
-
     return (
-      <div>
-        <div className="traffic-stack-wrapper" style={{ height: innerHeight }}>
+      <div className="traffic-stack-shell">
+        <div className="traffic-stack-wrapper">
           <div
             className="traffic-stack"
             onClick={this.props.onClick}
-            style={{
-              height: SettingsStore.useTextCmd
-                ? 'calc(100% - 203px)'
-                : 'calc(100% - 363px)'
-            }}
           >
             <div className="wind">
               wind: {Math.floor(GameStore.winddir)}° @{' '}
@@ -520,8 +511,9 @@ class TrafficStack extends Component {
             {trafficStack}
           </div>
           <div
-            className="traffic-control"
-            style={{ height: SettingsStore.useTextCmd ? '70px' : '200px' }}
+            className={`traffic-control ${
+              SettingsStore.useTextCmd ? 'text-command-control' : ''
+            }`}
           >
             {trafficControl}
           </div>

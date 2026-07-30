@@ -8,7 +8,7 @@ import, or share timelapse files.
 The production app is a static Preact build served by nginx. The same
 multi-stage `Dockerfile` is supported by Docker and Podman.
 
-Current release: **2.5.0**
+Current release: **2.5.1**
 
 ## Features
 
@@ -64,8 +64,8 @@ quality or flexibility.
 ## Quick start with Docker
 
 ```bash
-docker build --build-arg APP_VERSION=2.5.0 -t atc-manager:2.5.0 .
-docker run --pull=never --rm -p 8080:80 atc-manager:2.5.0
+docker build --build-arg APP_VERSION=2.5.1 -t atc-manager:2.5.1 .
+docker run --pull=never --rm -p 8080:80 atc-manager:2.5.1
 ```
 
 Open <http://localhost:8080>. For a background container:
@@ -75,15 +75,15 @@ docker run --pull=never -d \
   --name atc-manager \
   --restart unless-stopped \
   -p 8080:80 \
-  atc-manager:2.5.0
+  atc-manager:2.5.1
 ```
 
 ## Quick start with Podman
 
 ```bash
-podman build --format docker --build-arg APP_VERSION=2.5.0 \
-  -t localhost/atc-manager:2.5.0 .
-podman run --pull=never --rm -p 8080:80 localhost/atc-manager:2.5.0
+podman build --format docker --build-arg APP_VERSION=2.5.1 \
+  -t localhost/atc-manager:2.5.1 .
+podman run --pull=never --rm -p 8080:80 localhost/atc-manager:2.5.1
 ```
 
 Using a `localhost/` prefix makes it explicit that Podman should use the local
@@ -101,6 +101,9 @@ podman machine start
 The Compose file works with Docker Compose v2 and Podman's Compose provider:
 
 ```bash
+# Create your untracked local deployment configuration once.
+cp .env.example .env
+
 # Docker
 docker compose up --build -d
 docker compose down
@@ -110,15 +113,23 @@ podman compose up --build -d
 podman compose down
 ```
 
-Set `PORT` to change the published port:
+Compose reads `.env` automatically. Change `PORT` there whenever the published
+HTTP port needs to move, then redeploy:
 
 ```bash
-PORT=8081 docker compose up --build
-PORT=8081 podman compose up --build
+# .env
+PORT=8081
+APP_VERSION=2.5.1
+
+docker compose up --build -d
+# or
+podman compose up --build -d
 ```
 
-Set `APP_VERSION` to override both the Compose image tag and OCI image-version
-label.
+The real `.env` is ignored by Git; `.env.example` documents the available
+values. `APP_VERSION` controls both the Compose image tag and OCI image-version
+label. Shell overrides such as `PORT=8082 docker compose up --build` continue
+to work.
 
 ## Make targets
 
@@ -141,7 +152,20 @@ make ENGINE=podman BUILD_FLAGS="--format docker" build
 ```
 
 `VERSION`, `IMAGE`, `PORT`, `CONTAINER`, and `BUILD_FLAGS` can all be
-overridden. The default image is `atc-manager:2.5.0`.
+overridden. The default image is `atc-manager:2.5.1`.
+
+## Mobile and tablet browsers
+
+The game adapts to iPhone, iPad, and other touch browsers in portrait and
+landscape. The radar supports tap selection and two-finger zoom, the flight
+strip panel uses touch-sized controls, and safe-area insets are respected when
+the app is launched from an iOS home screen.
+
+In Safari, use **Share → Add to Home Screen** for a standalone web-app
+experience. Interface scale defaults to the connected display and can be
+overridden under **Settings → Appearance → Interface scale**. That choice,
+radar font size, colors, and the other appearance settings remain local to the
+current browser profile, so one player's device does not change another's.
 
 ## Local development
 
@@ -212,9 +236,9 @@ Podman did not find the requested image locally and tried to pull it. Build it
 first, use the same tag for `build` and `run`, and keep `--pull=never`:
 
 ```bash
-podman build --format docker --build-arg APP_VERSION=2.5.0 \
-  -t localhost/atc-manager:2.5.0 .
-podman run --pull=never --rm -p 8080:80 localhost/atc-manager:2.5.0
+podman build --format docker --build-arg APP_VERSION=2.5.1 \
+  -t localhost/atc-manager:2.5.1 .
+podman run --pull=never --rm -p 8080:80 localhost/atc-manager:2.5.1
 ```
 
 ### Port 8080 is already in use
@@ -222,8 +246,8 @@ podman run --pull=never --rm -p 8080:80 localhost/atc-manager:2.5.0
 Publish another host port:
 
 ```bash
-docker run --rm -p 8081:80 atc-manager:2.5.0
-podman run --rm -p 8081:80 localhost/atc-manager:2.5.0
+docker run --rm -p 8081:80 atc-manager:2.5.1
+podman run --rm -p 8081:80 localhost/atc-manager:2.5.1
 ```
 
 ### Container build dependency errors
@@ -232,6 +256,15 @@ The image uses `npm ci`, so `package.json` and `package-lock.json` must remain i
 sync. Regenerate the lockfile with a supported Node/npm version and commit both
 files together. Do not run Browserslist database updates as part of a container
 build; normal dependency maintenance should update that transitive data.
+
+### Babel reports that `react-icons/fa/index.esm.js` exceeds 500 KB
+
+This is a build-time code-formatting warning from the legacy Preact
+CLI/webpack/Babel toolchain, not a failed check and not a runtime image error.
+The production build can be used when `npm run check` and the container build
+finish successfully. Replacing the legacy frontend toolchain remains tracked as
+TD-015; suppressing the warning would not make the generated app smaller or
+safer.
 
 ## Project structure
 

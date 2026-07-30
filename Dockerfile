@@ -12,7 +12,7 @@ COPY . .
 RUN npm run check
 
 FROM nginx:1.28-alpine
-ARG APP_VERSION=2.5.0
+ARG APP_VERSION=2.5.1
 LABEL org.opencontainers.image.title="ATC Manager Redeux" \
       org.opencontainers.image.version="${APP_VERSION}" \
       org.opencontainers.image.description="Browser-based air traffic control simulation"

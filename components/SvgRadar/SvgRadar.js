@@ -42,11 +42,6 @@ class SvgRadar extends Component {
         cmd={this.props.cmd}
       />
     ));
-    const innerWidth = typeof window !== 'undefined' ? window.innerWidth : 800;
-    const innerHeight =
-      typeof window !== 'undefined' ? window.innerHeight : 600;
-    const height = innerHeight;
-    const width = this.props.timelapse ? innerWidth : innerWidth - 250;
     const transformScale =
       `translate(${config.width / 2} ${config.height / 2}) ` +
       `scale(${GameStore.zoom}) ` +
@@ -58,10 +53,14 @@ class SvgRadar extends Component {
       <svg
         ref={this.setRef}
         onWheel={this.props.onZoom}
+        onTouchStart={this.props.onTouchStart}
+        onTouchMove={this.props.onTouchMove}
+        onTouchEnd={this.props.onTouchEnd}
+        onTouchCancel={this.props.onTouchEnd}
         xmlns="http://www.w3.org/2000/svg"
         className="atc-view-svg"
-        width={width}
-        height={height}
+        width="100%"
+        height="100%"
         onClick={this.props.onClick}
         viewBox="0 0 1280 720"
         style={`background: ${

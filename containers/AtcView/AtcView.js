@@ -35,6 +35,7 @@ class AtcView extends Component {
     };
 
     this.emitter = new EventEmitter();
+    this.pinchDistance = null;
   }
 
   componentDidMount() {
@@ -277,6 +278,23 @@ class AtcView extends Component {
     GameStore.adjustZoom(-e.deltaY);
   };
 
+  handleTouchStart = e => {
+    if (e.touches.length !== 2) return;
+    this.pinchDistance = touchDistance(e.touches);
+  };
+
+  handleTouchMove = e => {
+    if (e.touches.length !== 2 || this.pinchDistance === null) return;
+    e.preventDefault();
+    const distance = touchDistance(e.touches);
+    GameStore.adjustZoom(distance - this.pinchDistance);
+    this.pinchDistance = distance;
+  };
+
+  handleTouchEnd = () => {
+    this.pinchDistance = null;
+  };
+
   handleCmdChange = cmd => {
     this.setState({ cmd });
   };
@@ -293,6 +311,9 @@ class AtcView extends Component {
       <div className="atc-view">
         <SvgRadar
           onZoom={this.handleZoom}
+          onTouchStart={this.handleTouchStart}
+          onTouchMove={this.handleTouchMove}
+          onTouchEnd={this.handleTouchEnd}
           onClick={this.handleSVGClick}
           cmd={this.state.cmd}
           emitter={this.emitter}
@@ -342,6 +363,12 @@ const getParent = (e, matcher) => {
     el = el.parentElement;
   }
   return null;
+};
+
+const touchDistance = touches => {
+  const x = touches[0].clientX - touches[1].clientX;
+  const y = touches[0].clientY - touches[1].clientY;
+  return Math.sqrt(x * x + y * y);
 };
 
 export default AtcView;

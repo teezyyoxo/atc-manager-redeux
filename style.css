@@ -1,12 +1,21 @@
 
+html {
+  font-size: var(--interface-font-size, 14px);
+}
+
 html, body {
-  font-size: 62.5%;
-  font: 14px 'Roboto Mono', monospace;
+  font-family: 'Roboto Mono', monospace;
   font-weight: 400;
   letter-spacing: .01em;
   line-height: 1.6;
   margin: 0;
   background-color: rgb(25, 72, 80);
+}
+
+body {
+  font-size: 1rem;
+  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 *,
@@ -417,6 +426,13 @@ body {
   color: #efefef;
 }
 
+button,
+input,
+select,
+textarea {
+  touch-action: manipulation;
+}
+
 h1 {
 	text-align: center;
 }
@@ -427,6 +443,11 @@ small, p, span {
 
 .hidden {
   display: none;
+}
+
+.settings-device-note {
+  display: block;
+  opacity: .75;
 }
 
 ::-webkit-scrollbar-track

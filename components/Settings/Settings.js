@@ -36,6 +36,12 @@ class Settings extends Component {
     SettingsStore.emit('change');
   };
 
+  handleInterfaceScaleChange = e => {
+    SettingsStore.interfaceScale =
+      e.target.value === 'auto' ? 'auto' : +e.target.value;
+    SettingsStore.emit('change');
+  };
+
   handleSpeechVoiceChange = e => {
     SettingsStore.changeATCVoice(SettingsStore.voices.find(voice =>
       voice.name === e.target.value));
@@ -220,6 +226,24 @@ class Settings extends Component {
             <span class="range-slider__value">
               {SettingsStore.radarFontsize} pixels
             </span>
+          </div>
+          <div className="mb">
+            <span>Interface scale:</span>
+            <select
+              value={SettingsStore.interfaceScale}
+              onInput={this.handleInterfaceScaleChange}
+            >
+              <option value="auto">Automatic for this display</option>
+              <option value="0.75">75%</option>
+              <option value="0.9">90%</option>
+              <option value="1">100%</option>
+              <option value="1.1">110%</option>
+              <option value="1.25">125%</option>
+              <option value="1.5">150%</option>
+            </select>
+            <small className="settings-device-note">
+              Saved only in this browser profile.
+            </small>
           </div>
           <div className="mb ColorInput">
             <span>ILS indicator color:</span>

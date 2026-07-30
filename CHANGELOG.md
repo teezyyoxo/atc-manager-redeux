@@ -1,6 +1,32 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.5.1] - 2026-07-29
+
+### Added
+
+- Added display-aware interface scaling with a per-browser override that is
+  persisted alongside the existing radar font and appearance settings.
+- Added touch-friendly radar zoom, iOS safe-area support, standalone web-app
+  metadata, and responsive iPhone/iPad portrait and landscape layouts.
+- Added an ignored local `.env` workflow and a tracked `.env.example` for
+  quickly changing the Compose HTTP port and image version.
+
+### Changed
+
+- Updated package, manifest, HTML, Compose, Makefile, Docker image-label, and
+  documentation defaults to 2.5.1.
+
+### Fixed
+
+- Promoted the flight-strip styles into the game route so production
+  tree-shaking cannot drop them, fixed the malformed selector that Safari could
+  discard, and strengthened strip backgrounds, separators, selection contrast,
+  and sidebar containment.
+- Replaced the fixed half-scale viewport and one-time window measurements with
+  device-width scaling and flexible radar/sidebar sizing across browser
+  resizes and device rotation.
+
 ## [2.5.0] - 2026-07-29
 
 ATC Manager 2.5.0 is the first Redeux release based on version 2.4.0. It

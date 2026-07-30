@@ -1,5 +1,5 @@
 ENGINE ?= docker
-VERSION ?= 2.5.0
+VERSION ?= 2.5.1
 BUILD_FLAGS ?= --build-arg APP_VERSION=$(VERSION)
 IMAGE ?= atc-manager:$(VERSION)
 PORT ?= 8080

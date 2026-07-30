@@ -38,7 +38,7 @@ class TrafficStackEntry extends Component {
     const color = getPlaneColor(airplane);
 
     return (
-      <div style={{ backgroundColor: color }}
+      <div style={`background-color: ${color};`}
         className={`traffic-stack-entry ${routeTypes[
           airplane.routeType
         ].replace(/ /g, '-')} ${
@@ -58,7 +58,11 @@ class TrafficStackEntry extends Component {
           : null}
         <button
           onClick={this.props.onClick}
-          class="airplane-traffic-stack-info-btn"
+          className="airplane-traffic-stack-info-btn"
+          aria-label={`Show details for ${communications.getCallsign(
+            airplane,
+            true
+          )}`}
         >
           ?
         </button>
