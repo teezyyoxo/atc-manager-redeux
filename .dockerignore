@@ -33,6 +33,7 @@ compose.override.yaml
 Makefile
 .nvmrc
 *.md
+!CHANGELOG.md
 
 *.tar
 *.tar.gz

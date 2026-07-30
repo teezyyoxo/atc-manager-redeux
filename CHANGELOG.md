@@ -24,6 +24,12 @@ All notable changes to this project will be documented in this file.
 - Updated application, package, Compose, Make, image, documentation, and build
   metadata to 3.0.0-rc.3.
 
+### Fixed
+
+- Re-included `CHANGELOG.md` in the Docker and Podman build context so the
+  changelog-driven release announcement can be generated inside container
+  builds.
+
 ## [3.0.0-rc.2] - 2026-07-29
 
 ### Added
