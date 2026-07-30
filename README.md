@@ -61,119 +61,127 @@ quality or flexibility.
 | TD-022 | Live airfield weather | Planned | Add an opt-in live-weather setting during session setup that uses current METAR and available ATIS information for the selected airfield. Lock the setting once play begins, update conditions on a controlled cadence, identify observation age/source, and fall back safely when live data is unavailable. |
 | TD-023 | Expanded airport roster | Planned | Add a balanced set of general-aviation, regional, major, and international airports, each with appropriate traffic mixes, runways, procedures, weather behavior, and difficulty rather than airport geometry alone. |
 
-## Quick start with Docker
+## Deployment with Make
+
+The Make targets are the recommended deployment interface. They provide the
+same workflow for Docker and Podman, while also loading local configuration,
+embedding the Git revision, checking port availability, and verifying the
+resulting container port. You do not need to know Make syntax or edit the
+`Makefile`.
+
+### First deployment
+
+Create the private configuration on the computer that will run the container:
 
 ```bash
-docker build --build-arg APP_VERSION=2.5.1 -t atc-manager:2.5.1 .
-docker run --pull=never --rm -p 8080:80 atc-manager:2.5.1
+cp .env.example .env
 ```
 
-Open <http://localhost:8080>. For a background container:
+Edit `.env` and choose the preferred host port:
+
+```dotenv
+PORT=7123
+APP_VERSION=2.5.1
+```
+
+Then deploy with Docker:
 
 ```bash
-docker run --pull=never -d \
-  --name atc-manager \
-  --restart unless-stopped \
-  -p 8080:80 \
-  atc-manager:2.5.1
+make compose-up
 ```
 
-## Quick start with Podman
+Or deploy the same Compose service with Podman:
 
 ```bash
-podman build --format docker --build-arg APP_VERSION=2.5.1 \
-  -t localhost/atc-manager:2.5.1 .
-podman run --pull=never --rm -p 8080:80 localhost/atc-manager:2.5.1
+make ENGINE=podman compose-up
 ```
 
-Using a `localhost/` prefix makes it explicit that Podman should use the local
-image rather than search a remote registry. Docker image format is requested so
-Podman preserves the Dockerfile health check; the app remains an OCI-compatible
-container. If a Podman machine is not already running on macOS or Windows:
+If a Podman machine is required on macOS or Windows, initialize it once before
+deploying:
 
 ```bash
 podman machine init
 podman machine start
 ```
 
-## Compose
+Use the exact target `compose-up`, with a hyphen. `make compose-up` uses Docker
+by default; adding `ENGINE=podman` is the only workflow difference for Podman.
 
-The Compose file works with Docker Compose v2 and Podman's Compose provider:
-
-```bash
-# Create your untracked local deployment configuration once.
-cp .env.example .env
-
-# Docker (recommended: embeds the commit and checks port availability)
-make compose-up
-make compose-down
-
-# Podman
-make ENGINE=podman compose-up
-make ENGINE=podman compose-down
-```
-
-Compose reads `.env` automatically. Change `PORT` there whenever the published
-HTTP port needs to move, then redeploy:
-
-```bash
-# .env
-PORT=8081
-APP_VERSION=2.5.1
-
-make compose-up
-# or
-make ENGINE=podman compose-up
-```
-
-The real `.env` is ignored by Git; `.env.example` documents the available
-values. `APP_VERSION` controls both the Compose image tag and OCI image-version
-label. The Make targets give `.env` priority, embed the current Git commit, and
-try the requested port first. If another process owns it, they select the next
-available port above or below it and print the chosen value. Direct
-`docker compose` and `podman compose` commands still read `.env`, but do not
-perform automatic port fallback or Git revision discovery.
-
-## What `make` does
-
-`make` is only a shortcut for the longer Docker or Podman commands in this
-project. You do not need to know Make syntax or edit the `Makefile`. For a
-normal Docker deployment, use the exact target `make compose-up` (with a
-hyphen, not `make compose up`):
-
-```bash
-# First deployment only: create your private configuration.
-cp .env.example .env
-
-# Build or rebuild the image and start the app.
-make compose-up
-
-# Stop and remove the Compose container later.
-make compose-down
-```
-
-Before `make compose-up` starts Docker, it:
+Before starting the service, Make:
 
 1. Reads `PORT` and `APP_VERSION` from `.env`.
 2. Uses the requested port, or finds a nearby free port if it is occupied.
 3. Embeds the current Git commit in the displayed build version.
 4. Rebuilds and forcibly recreates the Compose service.
-5. Checks Docker's resulting port mapping and fails if it does not match.
+5. Checks the resulting port mapping and fails if it does not match.
 
-The command prints both `Publishing ATC Manager on port ...` and a final
-`Verified: http://localhost:...` line. For example, if `.env` contains
-`PORT=7123`, open `http://localhost:7123`. If 7123 is occupied and the command
-selects 7124, open `http://localhost:7124` instead.
+The command prints `Publishing ATC Manager on port ...` followed by
+`Verified: http://localhost:...`. Open that verified address. To stop the
+service:
 
-Keeping `.env` in `.dockerignore` is intentional. Compose and Make read it from
-the host before the image is built, so private local settings do not need to be
-copied into the image. Plain `docker run` does not read `.env` or publish a port
-automatically; its equivalent would need an explicit option such as
-`-p 7123:80`.
+```bash
+# Docker
+make compose-down
 
-## Make targets
+# Podman
+make ENGINE=podman compose-down
+```
 
-The Makefile uses Docker by default. Select Podman with `ENGINE=podman`.
+### Quick upgrades
+
+The fastest upgrade pulls the newest commit, rebuilds the image, and recreates
+the running service:
+
+```bash
+# Docker
+git pull --ff-only && make compose-up
+
+# Podman
+git pull --ff-only && make ENGINE=podman compose-up
+```
+
+For an explicit stop-and-start upgrade:
+
+```bash
+# Docker
+git pull --ff-only && make compose-down && make compose-up
+
+# Podman
+git pull --ff-only && make ENGINE=podman compose-down && make ENGINE=podman compose-up
+```
+
+Using `&&` stops the sequence if any command fails. The untracked `.env` file
+and local saves are not replaced by `git pull`.
+
+### Per-host configuration
+
+The real `.env` is ignored by both Git and the container build. This keeps
+private infrastructure settings out of the repository and image, but also
+means `.env` does not follow the repository to another computer. Create or edit
+it separately on every deployment host, including a server reached through
+SSH.
+
+Check the current host's configured port or override it for one deployment:
+
+```bash
+grep '^PORT=' .env
+make compose-up PORT=7123
+
+# Podman uses the same override
+make ENGINE=podman compose-up PORT=7123
+```
+
+A command-line `PORT` overrides `.env` for that deployment only. Edit the
+deployment host's `.env` to make the change permanent.
+
+Direct `docker compose` and `podman compose` commands can run the service, but
+they bypass Make's automatic port fallback, Git revision discovery, forced
+recreation, and post-deployment port verification.
+
+### Other Make targets
+
+The non-Compose targets also use Docker by default and accept
+`ENGINE=podman`:
 
 ```bash
 make build
@@ -185,10 +193,6 @@ make rm
 
 make ENGINE=podman build
 make ENGINE=podman run PORT=8081
-make ENGINE=podman compose-up
-
-# Preserve the image-level health check when building directly with Podman
-make ENGINE=podman BUILD_FLAGS="--format docker" build
 ```
 
 `VERSION`, `IMAGE`, `PORT`, `CONTAINER`, `BUILD_COMMIT`, and `BUILD_FLAGS` can
