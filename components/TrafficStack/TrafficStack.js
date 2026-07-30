@@ -29,6 +29,7 @@ import SettingsStore from '../../stores/SettingsStore';
 import { sendMessageError } from '../GameMessages/GameMessages';
 import communications from '../../lib/communications';
 import { route } from 'preact-router';
+import TouchDial from '../TouchDial/TouchDial';
 
 class TrafficStack extends Component {
   constructor(props) {
@@ -142,9 +143,15 @@ class TrafficStack extends Component {
   };
 
   handleHeadingTgtChange = e => {
+    this.handleHeadingTgtValueChange(+e.target.value);
+  };
+
+  handleHeadingTgtValueChange = value => {
     this.setState(
       prevstate => {
-        prevstate.cmd.heading = +e.target.value;
+        prevstate.cmd.heading = value;
+        prevstate.cmd.direction = '';
+        prevstate.cmd.directionOld = true;
         return prevstate;
       },
       () => {
@@ -154,9 +161,15 @@ class TrafficStack extends Component {
   };
 
   handleAltitudeTgtChange = e => {
+    this.handleAltitudeTgtValueChange(
+      Math.min(+e.target.max, +e.target.value)
+    );
+  };
+
+  handleAltitudeTgtValueChange = value => {
     this.setState(
       prevstate => {
-        prevstate.cmd.altitude = Math.min(+e.target.max, e.target.value);
+        prevstate.cmd.altitude = value;
         return prevstate;
       },
       () => {
@@ -166,9 +179,13 @@ class TrafficStack extends Component {
   };
 
   handleSpeedTgtChange = e => {
+    this.handleSpeedTgtValueChange(Math.min(+e.target.max, +e.target.value));
+  };
+
+  handleSpeedTgtValueChange = value => {
     this.setState(
       prevstate => {
-        prevstate.cmd.speed = Math.min(+e.target.max, e.target.value);
+        prevstate.cmd.speed = value;
         return prevstate;
       },
       () => {
@@ -178,17 +195,31 @@ class TrafficStack extends Component {
   };
 
   handleDirectToTgtChange = e => {
+    this.handleDirectToSelection(e.target.value);
+  };
+
+  handleDirectToSelection = value => {
     if (!this.state.cmd.tgt) return;
     this.setState(
       prevstate => {
-        prevstate.cmd.direction = e.target.value.toUpperCase().trim();
+        prevstate.cmd.direction = value.toUpperCase().trim();
         prevstate.cmd.directionOld = false;
+        prevstate.cmd.heading = '';
         return prevstate;
       },
       () => {
         this.props.onChange(this.state.cmd);
       }
     );
+  };
+
+  handleTouchHeadingMode = () => {
+    const airplane = this.state.cmd.tgt;
+    const heading =
+      typeof airplane.tgtDirection === 'number'
+        ? airplane.tgtDirection
+        : Math.round(airplane.heading);
+    this.handleHeadingTgtValueChange(heading);
   };
 
   renderTrafficStack = () => {
@@ -232,9 +263,10 @@ class TrafficStack extends Component {
     const landableRwysArr = landableRwyNamesArr.map(name => (
       <option value={name} />
     ));
-    const routes = SettingsStore.sidsStars
-      ? Object.keys(this.getRoutes()).map(name => <option value={name} />)
-      : null;
+    const routeNames = SettingsStore.sidsStars
+      ? Object.keys(this.getRoutes())
+      : [];
+    const routes = routeNames.map(name => <option value={name} />);
 
     const directToValue = cmd.directionOld ? '' : cmd.direction;
     const directToPlaceholder = cmd.directionOld ? cmd.direction : '';
@@ -242,79 +274,172 @@ class TrafficStack extends Component {
     const allowedWaypoints = Object.keys(GameStore.waypoints).filter(
       x => GameStore.waypoints[x].type !== idType.DIRECTION
     );
+    const touchWaypoints = Array.from(
+      new Set(landableRwyNamesArr.concat(allowedWaypoints, routeNames))
+    ).sort();
+    const headingValue = Number.isFinite(cmd.heading)
+      ? cmd.heading
+      : typeof cmd.tgt.tgtDirection === 'number'
+        ? cmd.tgt.tgtDirection
+        : Math.round(cmd.tgt.heading);
+    const speedValue = Number.isFinite(cmd.speed) ? cmd.speed : cmd.tgt.speed;
+    const altitudeValue = Number.isFinite(cmd.altitude)
+      ? cmd.altitude
+      : cmd.tgt.altitude;
+    const directToSelection = cmd.directionOld ? '' : cmd.direction;
 
     return (
-      <div>
-        <div>
-          <span>Heading (°)</span>
-          <input
-            onInput={this.handleHeadingTgtChange}
-            value={cmd.heading}
-            type="number"
-            step="5"
-          />
+      <div className="ifr-command-controls">
+        <div className="desktop-command-controls">
+          <div>
+            <span>Heading (°)</span>
+            <input
+              onInput={this.handleHeadingTgtChange}
+              value={cmd.heading}
+              type="number"
+              step="5"
+            />
+          </div>
+          <div>
+            <span>Direct to </span>
+            <input
+              className="direct-to-input"
+              type="text"
+              value={directToValue}
+              placeholder={directToPlaceholder}
+              list={this.dtcToDataListId}
+              onInput={this.handleDirectToTgtChange}
+            />
+            <datalist id={this.dtcToDataListId}>
+              {cmd.tgt.routeType === routeTypes.INBOUND
+                ? landableRwysArr
+                : null}
+              {allowedWaypoints.map(w => (
+                <option key={w} value={w} />
+              ))}
+              {routes}
+            </datalist>
+          </div>
+          <div>
+            <span>Speed (KTS)</span>
+            <input
+              onInput={this.handleSpeedTgtChange}
+              value={cmd.speed}
+              type="number"
+              min={minSpeed}
+              max={topSpeed}
+              step="10"
+            />
+          </div>
+          <div>
+            <span>Altitude (FT)</span>
+            <input
+              onInput={this.handleAltitudeTgtChange}
+              value={cmd.altitude}
+              type="number"
+              min="2000"
+              max={model.ceiling * 1000}
+              step="1000"
+            />
+          </div>
+          <div>
+            <button onClick={this.props.onCmdExecution}>
+              <FaPaperPlane /> Give Command
+            </button>
+          </div>
         </div>
-        <div>
-          <span>Direct to </span>
-          <input
-            className="direct-to-input"
-            type="text"
-            value={directToValue}
-            placeholder={directToPlaceholder}
-            list={this.dtcToDataListId}
-            onInput={this.handleDirectToTgtChange}
-          />
-          <datalist id={this.dtcToDataListId}>
-            {cmd.tgt.routeType === routeTypes.INBOUND ? landableRwysArr : null}
-            {allowedWaypoints.map(w => (
-              <option key={w} value={w} />
-            ))}
-            {routes}
-          </datalist>
+
+        <div
+          className="touch-command-controls"
+          style={`--touch-control-color:${SettingsStore.touchControlColor};`}
+        >
+          <div className="touch-waypoint-picker">
+            <div className="touch-command-section-title">
+              Fix / waypoint
+              <span>{directToSelection || 'HEADING'}</span>
+            </div>
+            <div
+              className="touch-waypoint-list"
+              role="listbox"
+              aria-label="Select a fix or waypoint"
+            >
+              <button
+                type="button"
+                className={directToSelection ? '' : 'selected'}
+                onClick={this.handleTouchHeadingMode}
+                aria-selected={!directToSelection}
+              >
+                HDG
+              </button>
+              {touchWaypoints.map(waypoint => (
+                <button
+                  type="button"
+                  key={waypoint}
+                  className={
+                    directToSelection === waypoint ? 'selected' : ''
+                  }
+                  onClick={() => this.handleDirectToSelection(waypoint)}
+                  aria-selected={directToSelection === waypoint}
+                >
+                  {waypoint}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="touch-command-grid">
+            <TouchDial
+              label="Heading"
+              unit="°"
+              value={headingValue}
+              min={5}
+              max={360}
+              step={5}
+              digits={3}
+              wrap
+              color={SettingsStore.touchControlColor}
+              onChange={this.handleHeadingTgtValueChange}
+            />
+            <TouchDial
+              label="Speed"
+              unit="KT"
+              value={speedValue}
+              min={minSpeed}
+              max={topSpeed}
+              step={10}
+              digits={3}
+              color={SettingsStore.touchControlColor}
+              onChange={this.handleSpeedTgtValueChange}
+            />
+            <TouchDial
+              label="Altitude"
+              unit="FT"
+              value={altitudeValue}
+              min={2000}
+              max={model.ceiling * 1000}
+              step={1000}
+              digits={5}
+              color={SettingsStore.touchControlColor}
+              onChange={this.handleAltitudeTgtValueChange}
+            />
+            <button
+              type="button"
+              className="touch-command-send"
+              onClick={this.props.onCmdExecution}
+            >
+              <FaPaperPlane />
+              <span>Send</span>
+              <small>Command</small>
+            </button>
+          </div>
         </div>
-        <div>
-          <span>Speed (KTS)</span>
-          <input
-            onInput={this.handleSpeedTgtChange}
-            value={cmd.speed}
-            type="number"
-            min={minSpeed}
-            max={topSpeed}
-            step="10"
-          />
-        </div>
-        <div>
-          <span>Altitude (FT)</span>
-          <input
-            onInput={this.handleAltitudeTgtChange}
-            value={cmd.altitude}
-            type="number"
-            min="2000"
-            max={model.ceiling * 1000}
-            step="1000"
-          />
-        </div>
-        <div>
-          <button onClick={this.props.onCmdExecution}>
-            <FaPaperPlane /> Give Command
-          </button>
-        </div>
-        <div>
+
+        <div className="command-secondary-actions">
           <button
             onClick={this.handleTakeoffTrigger}
             className={cmd.tgt.waiting ? '' : 'hidden'}
           >
             <FaPlane /> Takeoff
           </button>
-        </div>
-        <div>
-          {cmd.tgt.routeType === routeTypes.INBOUND &&
-          landableRwysArr.length > 0 &&
-          landableRwyNamesArr.includes(cmd.tgt.tgtDirection) === false
-            ? 'Land using "Direct to"'
-            : null}
-        </div>
-        <div>
           {cmd.tgt.routeType === routeTypes.INBOUND &&
           landableRwysArr.length > 0 &&
           landableRwyNamesArr.includes(cmd.tgt.tgtDirection) ? (
@@ -322,6 +447,11 @@ class TrafficStack extends Component {
                 <FaPlane /> Go Around
               </button>
             ) : null}
+          {cmd.tgt.routeType === routeTypes.INBOUND &&
+          landableRwysArr.length > 0 &&
+          landableRwyNamesArr.includes(cmd.tgt.tgtDirection) === false
+            ? <span>Choose a runway or fix to set the route.</span>
+            : null}
         </div>
       </div>
     );

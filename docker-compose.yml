@@ -5,6 +5,7 @@ services:
       context: .
       args:
         APP_VERSION: "${APP_VERSION:-2.5.1}"
+        BUILD_COMMIT: "${BUILD_COMMIT:-unknown}"
     ports:
       - "${PORT:-8080}:80"
     restart: unless-stopped

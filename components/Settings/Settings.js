@@ -246,6 +246,14 @@ class Settings extends Component {
             </small>
           </div>
           <div className="mb ColorInput">
+            <span>Touch control display color:</span>
+            <input
+              type="color"
+              value={SettingsStore.touchControlColor}
+              onInput={this.handleChange('touchControlColor')}
+            />
+          </div>
+          <div className="mb ColorInput">
             <span>ILS indicator color:</span>
             <input
               type="color"

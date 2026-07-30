@@ -1,9 +1,11 @@
 FROM node:22-alpine AS build
+ARG BUILD_COMMIT=unknown
 WORKDIR /app
 
 # Preact CLI 3 uses webpack 4, whose hashing requires OpenSSL's legacy provider.
 # This setting exists only in the disposable build stage.
 ENV NODE_OPTIONS=--openssl-legacy-provider
+ENV BUILD_COMMIT=${BUILD_COMMIT}
 
 COPY package.json package-lock.json ./
 RUN npm ci --no-audit --no-fund
@@ -13,8 +15,10 @@ RUN npm run check
 
 FROM nginx:1.28-alpine
 ARG APP_VERSION=2.5.1
+ARG BUILD_COMMIT=unknown
 LABEL org.opencontainers.image.title="ATC Manager Redeux" \
       org.opencontainers.image.version="${APP_VERSION}" \
+      org.opencontainers.image.revision="${BUILD_COMMIT}" \
       org.opencontainers.image.description="Browser-based air traffic control simulation"
 
 COPY --from=build /app/build /usr/share/nginx/html

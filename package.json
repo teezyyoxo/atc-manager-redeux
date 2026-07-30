@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "npm run dev",
-    "build": "preact build --no-prerender --template template.html",
+    "build": "node scripts/prepare-build.js && preact build --no-prerender --template .cache/template.html",
     "serve": "preact serve build",
     "dev": "preact watch --template template.html",
     "lint": "eslint index.js components containers lib schema stores --ext .js",

@@ -104,13 +104,13 @@ The Compose file works with Docker Compose v2 and Podman's Compose provider:
 # Create your untracked local deployment configuration once.
 cp .env.example .env
 
-# Docker
-docker compose up --build -d
-docker compose down
+# Docker (recommended: embeds the commit and checks port availability)
+make compose-up
+make compose-down
 
 # Podman
-podman compose up --build -d
-podman compose down
+make ENGINE=podman compose-up
+make ENGINE=podman compose-down
 ```
 
 Compose reads `.env` automatically. Change `PORT` there whenever the published
@@ -121,15 +121,18 @@ HTTP port needs to move, then redeploy:
 PORT=8081
 APP_VERSION=2.5.1
 
-docker compose up --build -d
+make compose-up
 # or
-podman compose up --build -d
+make ENGINE=podman compose-up
 ```
 
 The real `.env` is ignored by Git; `.env.example` documents the available
 values. `APP_VERSION` controls both the Compose image tag and OCI image-version
-label. Shell overrides such as `PORT=8082 docker compose up --build` continue
-to work.
+label. The Make targets give `.env` priority, embed the current Git commit, and
+try the requested port first. If another process owns it, they select the next
+available port above or below it and print the chosen value. Direct
+`docker compose` and `podman compose` commands still read `.env`, but do not
+perform automatic port fallback or Git revision discovery.
 
 ## Make targets
 
@@ -151,8 +154,8 @@ make ENGINE=podman compose-up
 make ENGINE=podman BUILD_FLAGS="--format docker" build
 ```
 
-`VERSION`, `IMAGE`, `PORT`, `CONTAINER`, and `BUILD_FLAGS` can all be
-overridden. The default image is `atc-manager:2.5.1`.
+`VERSION`, `IMAGE`, `PORT`, `CONTAINER`, `BUILD_COMMIT`, and `BUILD_FLAGS` can
+all be overridden. The default image is `atc-manager:2.5.1`.
 
 ## Mobile and tablet browsers
 
@@ -161,11 +164,20 @@ landscape. The radar supports tap selection and two-finger zoom, the flight
 strip panel uses touch-sized controls, and safe-area insets are respected when
 the app is launched from an iOS home screen.
 
+On touch displays, IFR commands use rotary heading, speed, and altitude dials
+with seven-segment readouts and quick step buttons, so the system keyboard is
+not required. Fixes, runways, SIDs, and STARs use a horizontally scrollable
+tap-to-select list beside a large send-command control. Desktop browsers retain
+the existing keyboard-oriented fields. The touch readout color is configurable
+under appearance settings.
+
 In Safari, use **Share → Add to Home Screen** for a standalone web-app
 experience. Interface scale defaults to the connected display and can be
 overridden under **Settings → Appearance → Interface scale**. That choice,
 radar font size, colors, and the other appearance settings remain local to the
 current browser profile, so one player's device does not change another's.
+The About panel shows the release and source revision as
+`2.5.1+<commit>`, which identifies the exact hotfix build in use.
 
 ## Local development
 

@@ -9,13 +9,22 @@ All notable changes to this project will be documented in this file.
   persisted alongside the existing radar font and appearance settings.
 - Added touch-friendly radar zoom, iOS safe-area support, standalone web-app
   metadata, and responsive iPhone/iPad portrait and landscape layouts.
+- Added touch-only IFR command controls with rotary heading, speed, and
+  altitude dials, seven-segment readouts, quick step buttons, a horizontally
+  scrollable fix/runway picker, and an aligned green send-command control.
+- Added a locally persisted touch-control display color under appearance
+  settings.
 - Added an ignored local `.env` workflow and a tracked `.env.example` for
   quickly changing the Compose HTTP port and image version.
+- Added the source commit to the in-app build label and OCI image revision,
+  allowing multiple 2.5.1 hotfix builds to be identified precisely.
 
 ### Changed
 
 - Updated package, manifest, HTML, Compose, Makefile, Docker image-label, and
   documentation defaults to 2.5.1.
+- Made the Make-based deployment flow load `.env`, pass the current Git commit
+  into the build, and report the actual published HTTP port.
 
 ### Fixed
 
@@ -26,6 +35,9 @@ All notable changes to this project will be documented in this file.
 - Replaced the fixed half-scale viewport and one-time window measurements with
   device-width scaling and flexible radar/sidebar sizing across browser
   resizes and device rotation.
+- Fixed `make run`, `make run-detached`, and `make compose-up` overriding the
+  `.env` HTTP port with 8080; the requested port is now preferred and a nearby
+  available port is selected when it is already occupied.
 
 ## [2.5.0] - 2026-07-29
 

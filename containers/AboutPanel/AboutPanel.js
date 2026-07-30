@@ -2,6 +2,7 @@ import { Component } from 'preact';
 import './AboutPanel.css';
 import { FaCompress } from 'react-icons/fa/index.esm';
 import GitHubButton from 'react-github-button';
+import { getBuildInfo } from '../../lib/build-info';
 
 class AboutPanel extends Component {
   constructor(props) {
@@ -10,6 +11,7 @@ class AboutPanel extends Component {
   }
 
   render() {
+    const build = getBuildInfo();
     return (
       <div
         className={[this.props.expanded ? null : 'hidden', 'about-panel'].join(
@@ -29,6 +31,18 @@ class AboutPanel extends Component {
         />
         <br />
         <br />
+        <div className="build-version">
+          Build:{' '}
+          {build.commit ? (
+            <a
+              href={`https://github.com/teezyyoxo/atc-manager-redeux/commit/${build.commit}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {build.label}
+            </a>
+          ) : build.label}
+        </div>
         ATC Manager 2 is a web based air traffic control game. Manage airspace
         of busy airports like Schiphol or Heathrow in a realistic simulator.
         Check out the{' '}

@@ -131,6 +131,13 @@ input.direct-to-input.invalid::placeholder {
   margin-bottom: 0;
 }
 
+.atc-view .build-version {
+  background: #101c25;
+  border-left: 3px solid #62ff8d;
+  margin-bottom: 10px;
+  padding: 6px 8px;
+}
+
 .atc-view .logs-container {
   height: 300px;
   border: 2px solid #1e606b;
@@ -156,6 +163,10 @@ input.direct-to-input.invalid::placeholder {
   max-height: 45dvh;
   overflow-y: auto;
   padding: 3px;
+}
+
+.touch-command-controls {
+  display: none;
 }
 
 .atc-view .w-100 { 
@@ -249,19 +260,19 @@ input.direct-to-input.invalid::placeholder {
   }
 
   .atc-view-svg {
-    flex: 0 0 52vh;
-    flex-basis: 52dvh;
+    flex: 0 0 44vh;
+    flex-basis: 44dvh;
     width: 100%;
-    height: 52vh;
-    height: 52dvh;
+    height: 44vh;
+    height: 44dvh;
     padding: 6px;
   }
 
   .atc-view .traffic-stack-shell {
-    flex: 1 1 48vh;
+    flex: 1 1 56vh;
     width: 100%;
-    height: 48vh;
-    height: 48dvh;
+    height: 56vh;
+    height: 56dvh;
   }
 
   .atc-view .tutorials-btn-wrapper {
@@ -301,6 +312,333 @@ input.direct-to-input.invalid::placeholder {
   .atc-view .question-mark-btn {
     min-width: 32px;
     min-height: 32px;
+  }
+}
+
+@media (any-pointer: coarse) {
+  .desktop-command-controls {
+    display: none;
+  }
+
+  .touch-command-controls {
+    display: block;
+  }
+
+  .traffic-stack-wrapper {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .traffic-stack {
+    flex: 0 0 120px;
+    min-height: 120px;
+  }
+
+  .traffic-control {
+    flex: 1 1 auto;
+    max-height: none;
+    overflow-y: auto;
+    padding: 6px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .atc-view .atc-view-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .atc-view .atc-view-buttons .gamemetacontrols {
+    display: contents;
+  }
+
+  .atc-view .w-50,
+  .atc-view .w-100 {
+    float: none;
+    width: 100%;
+  }
+
+  .touch-command-section-title {
+    align-items: center;
+    display: flex;
+    font-size: .72rem;
+    font-weight: 700;
+    justify-content: space-between;
+    letter-spacing: .08em;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+  }
+
+  .touch-command-section-title span {
+    color: var(--touch-control-color, #62ff8d);
+  }
+
+  .touch-waypoint-list {
+    display: flex;
+    gap: 6px;
+    margin: 0 -6px 8px;
+    overflow-x: auto;
+    padding: 2px 6px 8px;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .touch-waypoint-list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .touch-waypoint-list button {
+    border: 1px solid #397b86;
+    border-radius: 999px;
+    flex: 0 0 auto;
+    height: 38px;
+    min-width: 58px;
+    padding: 0 12px;
+    scroll-snap-align: start;
+  }
+
+  .touch-waypoint-list button.selected {
+    background: var(--touch-control-color, #62ff8d);
+    border-color: var(--touch-control-color, #62ff8d);
+    color: #071c14;
+  }
+
+  .touch-command-grid {
+    display: grid;
+    gap: 8px;
+    grid-auto-rows: minmax(136px, auto);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .touch-dial-control,
+  .touch-command-send {
+    background: #101c25;
+    border: 1px solid #31545c;
+    border-radius: 14px;
+    min-width: 0;
+  }
+
+  .touch-dial-control {
+    padding: 6px 4px 8px;
+    text-align: center;
+  }
+
+  .touch-dial-label {
+    display: block;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    line-height: 1.2;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+  }
+
+  .touch-dial-row {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+  }
+
+  .atc-view .touch-dial-step {
+    border: 1px solid #31545c;
+    border-radius: 50%;
+    font-size: 1.35rem;
+    height: 32px;
+    line-height: 1;
+    margin: 0 2px;
+    min-height: 32px;
+    padding: 0;
+    width: 32px;
+  }
+
+  .touch-dial {
+    align-items: center;
+    background:
+      radial-gradient(circle at center, #101c25 53%, transparent 55%),
+      conic-gradient(
+        from -135deg,
+        var(--touch-control-color, #62ff8d) 0deg,
+        var(--touch-control-color, #62ff8d) 270deg,
+        #263841 270deg,
+        #263841 360deg
+      );
+    border: 2px solid #43636a;
+    border-radius: 50%;
+    display: flex;
+    flex: 0 0 82px;
+    flex-direction: column;
+    height: 82px;
+    justify-content: center;
+    outline: none;
+    position: relative;
+    touch-action: none;
+    user-select: none;
+    width: 82px;
+    -webkit-user-select: none;
+  }
+
+  .touch-dial:focus {
+    box-shadow: 0 0 0 2px var(--touch-control-color, #62ff8d);
+  }
+
+  .touch-dial-indicator {
+    background: var(--touch-control-color, #62ff8d);
+    border-radius: 3px;
+    height: 10px;
+    left: calc(50% - 2px);
+    position: absolute;
+    top: 2px;
+    transform: rotate(var(--dial-angle)) translateY(1px);
+    transform-origin: 2px 39px;
+    width: 4px;
+  }
+
+  .touch-dial-unit {
+    color: #9db0b5;
+    font-size: .48rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-top: 2px;
+  }
+
+  .seven-segment-display {
+    display: inline-flex;
+    gap: 2px;
+    height: 25px;
+    justify-content: center;
+    line-height: 1;
+  }
+
+  .seven-segment-digit {
+    display: inline-block;
+    height: 25px;
+    position: relative;
+    width: 11px;
+  }
+
+  .seven-segment-digit .segment {
+    background: var(--touch-control-color, #62ff8d);
+    border-radius: 2px;
+    opacity: .1;
+    position: absolute;
+    transition: opacity 80ms linear;
+  }
+
+  .seven-segment-digit .segment-active {
+    box-shadow: 0 0 5px var(--touch-control-color, #62ff8d);
+    opacity: 1;
+  }
+
+  .seven-segment-digit .segment-a,
+  .seven-segment-digit .segment-d,
+  .seven-segment-digit .segment-g {
+    height: 3px;
+    left: 2px;
+    width: 7px;
+  }
+
+  .seven-segment-digit .segment-a {
+    top: 0;
+  }
+
+  .seven-segment-digit .segment-g {
+    top: 11px;
+  }
+
+  .seven-segment-digit .segment-d {
+    bottom: 0;
+  }
+
+  .seven-segment-digit .segment-b,
+  .seven-segment-digit .segment-c,
+  .seven-segment-digit .segment-e,
+  .seven-segment-digit .segment-f {
+    height: 8px;
+    width: 3px;
+  }
+
+  .seven-segment-digit .segment-b {
+    right: 0;
+    top: 2px;
+  }
+
+  .seven-segment-digit .segment-c {
+    bottom: 2px;
+    right: 0;
+  }
+
+  .seven-segment-digit .segment-e {
+    bottom: 2px;
+    left: 0;
+  }
+
+  .seven-segment-digit .segment-f {
+    left: 0;
+    top: 2px;
+  }
+
+  .atc-view .touch-command-send {
+    align-items: center;
+    background: #168a4a;
+    border-color: #36cd78;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    font-size: 1.2rem;
+    height: auto;
+    justify-content: center;
+    letter-spacing: .08em;
+    margin: 0;
+    min-height: 136px;
+    padding: 10px;
+    text-align: center;
+    width: 100%;
+  }
+
+  .atc-view .touch-command-send svg {
+    font-size: 1.7rem;
+    margin-bottom: 8px;
+  }
+
+  .atc-view .touch-command-send small {
+    font-size: .55rem;
+    letter-spacing: .12em;
+    margin-top: 3px;
+  }
+
+  .command-secondary-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding-top: 8px;
+  }
+
+  .command-secondary-actions button {
+    flex: 1 1 120px;
+    margin: 0;
+  }
+
+  .command-secondary-actions span {
+    font-size: .72rem;
+    opacity: .8;
+  }
+}
+
+@media (any-pointer: coarse) and (max-height: 500px) and (orientation: landscape) {
+  .atc-view {
+    --sidebar-width: 42vw;
+  }
+
+  .traffic-stack {
+    flex-basis: 84px;
+    min-height: 84px;
+  }
+
+  .touch-command-grid {
+    grid-auto-rows: minmax(116px, auto);
+  }
+
+  .atc-view .touch-command-send {
+    min-height: 116px;
   }
 }
 
@@ -407,5 +745,24 @@ input.direct-to-input.invalid::placeholder {
     border-top: 3px solid #0f3339;
     border-left: 0;
     box-shadow: 0 -8px 18px rgba(0, 0, 0, .28);
+  }
+}
+
+@media (any-pointer: coarse) {
+  .traffic-stack-wrapper {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .traffic-stack {
+    flex: 0 0 120px;
+    min-height: 120px;
+  }
+}
+
+@media (any-pointer: coarse) and (max-height: 500px) and (orientation: landscape) {
+  .traffic-stack {
+    flex-basis: 84px;
+    min-height: 84px;
   }
 }

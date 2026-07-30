@@ -1,9 +1,15 @@
+-include .env
+
 ENGINE ?= docker
-VERSION ?= 2.5.1
-BUILD_FLAGS ?= --build-arg APP_VERSION=$(VERSION)
+APP_VERSION ?= 2.5.1
+VERSION ?= $(APP_VERSION)
+BUILD_COMMIT ?= $(shell git rev-parse --short HEAD 2>/dev/null || echo unknown)
+BUILD_FLAGS ?= --build-arg APP_VERSION=$(VERSION) --build-arg BUILD_COMMIT=$(BUILD_COMMIT)
 IMAGE ?= atc-manager:$(VERSION)
 PORT ?= 8080
 CONTAINER ?= atc-manager
+
+export APP_VERSION BUILD_COMMIT PORT
 
 .PHONY: build run run-detached stop rm logs ps compose-up compose-down
 
@@ -11,10 +17,14 @@ build:
 	$(ENGINE) build $(BUILD_FLAGS) -t $(IMAGE) .
 
 run: build
-	$(ENGINE) run --pull=never --rm -p $(PORT):80 $(IMAGE)
+	@resolved_port="$$(./scripts/resolve-port.sh none "$(PORT)")"; \
+	echo "Publishing ATC Manager on port $$resolved_port"; \
+	$(ENGINE) run --pull=never --rm -p "$$resolved_port":80 $(IMAGE)
 
 run-detached: build
-	$(ENGINE) run --pull=never -d --name $(CONTAINER) -p $(PORT):80 --restart unless-stopped $(IMAGE)
+	@resolved_port="$$(./scripts/resolve-port.sh none "$(PORT)")"; \
+	echo "Publishing ATC Manager on port $$resolved_port"; \
+	$(ENGINE) run --pull=never -d --name $(CONTAINER) -p "$$resolved_port":80 --restart unless-stopped $(IMAGE)
 
 stop:
 	$(ENGINE) stop $(CONTAINER) || true
@@ -29,7 +39,9 @@ ps:
 	$(ENGINE) ps --format 'table {{.ID}}\t{{.Names}}\t{{.Ports}}'
 
 compose-up:
-	$(ENGINE) compose up --build -d
+	@resolved_port="$$(./scripts/resolve-port.sh "$(ENGINE)" "$(PORT)")"; \
+	echo "Publishing ATC Manager on port $$resolved_port"; \
+	PORT="$$resolved_port" $(ENGINE) compose up --build -d
 
 compose-down:
 	$(ENGINE) compose down

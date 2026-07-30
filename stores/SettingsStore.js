@@ -48,6 +48,7 @@ class SettingsStore extends EventEmitter {
     this.startingEnroutePlanes = 1;
     this.radarFontsize = 14;
     this.interfaceScale = 'auto';
+    this.touchControlColor = '#62ff8d';
     this.ga = false;
     this.enroute = false;
     this.takeoffInOrder = false;
@@ -191,6 +192,7 @@ class SettingsStore extends EventEmitter {
         'distanceCirclesAmount',
         'radarFontsize',
         'interfaceScale',
+        'touchControlColor',
         'distanceCircleColor',
         'ilsPathLength',
         'ilsPathColor',
