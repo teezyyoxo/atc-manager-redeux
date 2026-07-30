@@ -25,6 +25,8 @@ All notable changes to this project will be documented in this file.
   documentation defaults to 2.5.1.
 - Made the Make-based deployment flow load `.env`, pass the current Git commit
   into the build, and report the actual published HTTP port.
+- Enlarged the desktop command fields and replaced the permanently visible
+  mobile utility actions with a translucent floating menu.
 
 ### Fixed
 
@@ -39,6 +41,9 @@ All notable changes to this project will be documented in this file.
   `.env` HTTP port with 8080; the requested port is now preferred and a nearby
   available port is selected when it is already occupied. Compose deployments
   are forcibly recreated and their resulting Docker port mapping is verified.
+- Kept the touch command editor independently scrollable and removed the
+  always-visible mobile menu rows that could conceal the altitude and Send
+  controls.
 
 ## [2.5.0] - 2026-07-29
 

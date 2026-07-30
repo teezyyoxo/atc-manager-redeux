@@ -5,7 +5,9 @@ import {
   FaCog,
   FaPlane,
   FaPaperPlane,
-  FaQuestion
+  FaQuestion,
+  FaBars,
+  FaTimes
 } from 'react-icons/fa/index.esm';
 import GameStore from '../../stores/GameStore';
 import GameMetaControls from '../../components/GameMetaControls/GameMetaControls';
@@ -39,6 +41,7 @@ class TrafficStack extends Component {
       logsExpanded: false,
       aboutExpanded: false,
       infoExpanded: false,
+      mobileMenuExpanded: false,
       cmd: props.cmd,
       textCmd: ''
     };
@@ -140,6 +143,18 @@ class TrafficStack extends Component {
 
   handleInfoExpanded = e => {
     this.setState({ infoExpanded: !this.state.infoExpanded });
+  };
+
+  handleMobileMenuToggle = () => {
+    this.setState(prevstate => ({
+      mobileMenuExpanded: !prevstate.mobileMenuExpanded
+    }));
+  };
+
+  handleMobileMenuAction = () => {
+    if (this.state.mobileMenuExpanded) {
+      this.setState({ mobileMenuExpanded: false });
+    }
   };
 
   handleHeadingTgtChange = e => {
@@ -647,7 +662,13 @@ class TrafficStack extends Component {
           >
             {trafficControl}
           </div>
-          <div className="atc-view-buttons">
+          <div
+            id="mobile-utility-menu"
+            className={`atc-view-buttons ${
+              this.state.mobileMenuExpanded ? 'mobile-menu-open' : ''
+            }`}
+            onClick={this.handleMobileMenuAction}
+          >
             <button
               className="w-100"
               onClick={this.handleExpandSettingsButtonClick}
@@ -674,6 +695,22 @@ class TrafficStack extends Component {
             <GameMetaControls />
           </div>
         </div>
+
+        <button
+          type="button"
+          className="mobile-menu-toggle"
+          onClick={this.handleMobileMenuToggle}
+          aria-controls="mobile-utility-menu"
+          aria-expanded={this.state.mobileMenuExpanded}
+          aria-label={
+            this.state.mobileMenuExpanded
+              ? 'Close game menu'
+              : 'Open game menu'
+          }
+        >
+          {this.state.mobileMenuExpanded ? <FaTimes /> : <FaBars />}
+          <span>{this.state.mobileMenuExpanded ? 'Close' : 'Menu'}</span>
+        </button>
 
         {/* panels */}
         <SettingsPanel
