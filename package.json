@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "atc-manager",
-  "version": "3.0.0-rc.2",
+  "version": "3.0.0-rc.3",
   "license": "MIT",
   "sideEffects": false,
   "engines": {
@@ -12,7 +12,7 @@
     "start": "npm run dev",
     "build": "node scripts/prepare-build.js && preact build --no-prerender --template .cache/template.html",
     "serve": "preact serve build",
-    "dev": "preact watch --template template.html",
+    "dev": "node scripts/prepare-build.js && preact watch --template .cache/template.html",
     "lint": "eslint index.js components containers lib schema stores --ext .js",
     "check": "npm run lint && npm run build",
     "cloc": "cloc components schema stores lib components assets template.html style.css index.js"

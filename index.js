@@ -10,6 +10,7 @@ import { EventEmitter } from 'events';
 import NotFound from 'async!./containers/NotFound/NotFound';
 import EditorsRoot from 'async!./containers/EditorsRoot/EditorsRoot';
 import { GameMessages } from './components/GameMessages/GameMessages';
+import ReleaseNotesModal from './components/ReleaseNotesModal/ReleaseNotesModal';
 // import AptDat from 'async!./containers/AptDat/AptDat';
 import TimelapseRoot from 'async!./containers/TimelapseRoot/TimelapseRoot';
 import TutorialsRoot from './containers/TutorialsRoot/TutorialsRoot';
@@ -44,6 +45,7 @@ export default class App extends Component {
           <NotFound default />
         </Router>
         <GameMessages />
+        <ReleaseNotesModal />
       </main>
     );
   }

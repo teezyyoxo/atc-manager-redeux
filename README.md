@@ -8,7 +8,7 @@ import, or share timelapse files.
 The production app is a static Preact build served by nginx. The same
 multi-stage `Dockerfile` is supported by Docker and Podman.
 
-Current release: **3.0.0-rc.2**
+Current release: **3.0.0-rc.3**
 
 ## Features
 
@@ -23,6 +23,7 @@ Current release: **3.0.0-rc.2**
 - Responsive SPA routing with direct links to game, editor, and timelapse views
 - System-aware light and dark interface themes with a persistent manual override
 - Automatic pause protection when an active game is backgrounded or loses focus
+- Once-per-build New Features announcements sourced from the current changelog
 
 ## What Redeux improves
 
@@ -200,7 +201,7 @@ make ENGINE=podman run PORT=8081
 ```
 
 `VERSION`, `IMAGE`, `PORT`, `CONTAINER`, `BUILD_COMMIT`, and `BUILD_FLAGS` can
-all be overridden. The default image is `atc-manager:3.0.0-rc.2`.
+all be overridden. The default image is `atc-manager:3.0.0-rc.3`.
 
 ## Mobile and tablet browsers
 
@@ -228,8 +229,23 @@ session, backgrounding the page, changing tabs, or putting the device to sleep
 pauses the simulation. Return to the glowing pause dialog and choose
 **Resume session** when ready.
 The About panel shows the release and source revision as
-`3.0.0-rc.2+<commit>`, which identifies the exact release-candidate build in
+`3.0.0-rc.3+<commit>`, which identifies the exact release-candidate build in
 use.
+
+## New Features announcements
+
+After a newly built commit is deployed, the first page load shows the newest
+entry from `CHANGELOG.md` in a responsive New Features dialog. The dialog
+includes the release and exact `release+commit` build identifier shown
+elsewhere in the interface. Close it with the upper-right ×, the full-width
+Close bar, or Escape on a keyboard.
+
+The dismissed build identifier is stored only in the current browser profile.
+The same build remains dismissed across later launches on that device, while a
+different deployed commit automatically appears even when the release version
+has not changed. Clearing site data resets this history. While the dialog is
+open, its blurred overlay blocks pointer and touch interaction with the page
+behind it.
 
 ## Aircraft performance and weather
 
@@ -322,9 +338,9 @@ Podman did not find the requested image locally and tried to pull it. Build it
 first, use the same tag for `build` and `run`, and keep `--pull=never`:
 
 ```bash
-podman build --format docker --build-arg APP_VERSION=3.0.0-rc.2 \
-  -t localhost/atc-manager:3.0.0-rc.2 .
-podman run --pull=never --rm -p 8080:80 localhost/atc-manager:3.0.0-rc.2
+podman build --format docker --build-arg APP_VERSION=3.0.0-rc.3 \
+  -t localhost/atc-manager:3.0.0-rc.3 .
+podman run --pull=never --rm -p 8080:80 localhost/atc-manager:3.0.0-rc.3
 ```
 
 ### Port 8080 is already in use
@@ -332,8 +348,8 @@ podman run --pull=never --rm -p 8080:80 localhost/atc-manager:3.0.0-rc.2
 Publish another host port:
 
 ```bash
-docker run --rm -p 8081:80 atc-manager:3.0.0-rc.2
-podman run --rm -p 8081:80 localhost/atc-manager:3.0.0-rc.2
+docker run --rm -p 8081:80 atc-manager:3.0.0-rc.3
+podman run --rm -p 8081:80 localhost/atc-manager:3.0.0-rc.3
 ```
 
 ### Container build dependency errors

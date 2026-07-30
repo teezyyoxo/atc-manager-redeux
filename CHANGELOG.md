@@ -1,6 +1,29 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [3.0.0-rc.3] - 2026-07-29
+
+### Added
+
+- Added a changelog-driven New Features dialog that appears once for each
+  newly deployed source commit and displays the release plus exact build ID.
+- Added both an upper-right close control and a full-width Close bar, with
+  keyboard focus containment and Escape-key support on desktop.
+
+### Changed
+
+- Embedded the newest changelog release during development and production
+  builds so the announcement content and published release metadata share one
+  source of truth.
+- Made the announcement responsive to phone, tablet, short-landscape, and
+  desktop viewports with safe-area spacing, an independently scrollable body,
+  a blurred backdrop, and blocked background pointer and touch interaction.
+- Persisted the dismissed release-plus-commit identifier in the current
+  browser profile, keeping the same build dismissed on later launches while
+  automatically showing the next deployed commit.
+- Updated application, package, Compose, Make, image, documentation, and build
+  metadata to 3.0.0-rc.3.
+
 ## [3.0.0-rc.2] - 2026-07-29
 
 ### Added
