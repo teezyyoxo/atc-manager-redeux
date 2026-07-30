@@ -10,3 +10,106 @@
   width: 100%;
   height: 100%;
 }
+
+.game-pause-overlay {
+  align-items: center;
+  background: rgba(4, 13, 15, .48);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding:
+    max(20px, env(safe-area-inset-top))
+    max(20px, env(safe-area-inset-right))
+    max(20px, env(safe-area-inset-bottom))
+    max(20px, env(safe-area-inset-left));
+  position: fixed;
+  z-index: 100;
+  -webkit-backdrop-filter: blur(14px) saturate(.72);
+  backdrop-filter: blur(14px) saturate(.72);
+}
+
+.game-pause-modal {
+  background:
+    linear-gradient(145deg, rgba(25, 49, 52, .97), rgba(10, 25, 28, .98));
+  border: 1px solid rgba(107, 240, 183, .72);
+  box-shadow:
+    0 0 0 1px rgba(107, 240, 183, .12),
+    0 0 42px rgba(74, 232, 173, .2),
+    0 24px 80px rgba(0, 0, 0, .58);
+  color: #effaf7;
+  max-width: 440px;
+  padding: clamp(28px, 6vw, 48px);
+  position: relative;
+  text-align: center;
+  width: 100%;
+}
+
+.game-pause-modal::before,
+.game-pause-modal::after {
+  border-color: #6bf0b7;
+  border-style: solid;
+  content: "";
+  height: 18px;
+  pointer-events: none;
+  position: absolute;
+  width: 18px;
+}
+
+.game-pause-modal::before {
+  border-width: 2px 0 0 2px;
+  left: -2px;
+  top: -2px;
+}
+
+.game-pause-modal::after {
+  border-width: 0 2px 2px 0;
+  bottom: -2px;
+  right: -2px;
+}
+
+.game-pause-kicker {
+  color: #6bf0b7;
+  display: block;
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .16em;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.game-pause-modal h1 {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: clamp(2rem, 7vw, 3rem);
+  font-weight: 680;
+  letter-spacing: -.05em;
+  line-height: 1;
+  margin: 0 0 16px;
+}
+
+.game-pause-modal p {
+  color: #a9bfba;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: .95rem;
+  line-height: 1.55;
+  margin: 0 auto 26px;
+  max-width: 320px;
+}
+
+.game-pause-modal button {
+  background: #6bf0b7;
+  color: #062218;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: .88rem;
+  height: 48px;
+  letter-spacing: 0;
+  margin: 0;
+  min-width: 190px;
+  text-transform: none;
+}
+
+.game-pause-modal button:hover,
+.game-pause-modal button:focus {
+  background: #8af7c9;
+  box-shadow: 0 0 26px rgba(107, 240, 183, .3);
+  color: #062218;
+}

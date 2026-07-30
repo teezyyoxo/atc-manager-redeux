@@ -1,13 +1,13 @@
 {
-  "name": "Air Traffic Control Manager 2",
-  "version": "2.5.1",
-  "description": "Web based air traffic control game. Manage airspace of busy airports like Schiphol or Heathrow in a realistic simulator.",
-  "short_name": "ATC Manager 2",
+  "name": "Air Traffic Control Manager 3",
+  "version": "3.0.0-rc.1",
+  "description": "A responsive browser-native air traffic control simulation for desktop, tablet, and mobile.",
+  "short_name": "ATC Manager 3",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "display_override": ["fullscreen", "standalone", "minimal-ui"],
-  "orientation": "landscape",
+  "orientation": "any",
   "icons": [
     {
       "src": "assets/images/meta-icons/android-chrome-36x36.png",
@@ -69,6 +69,6 @@
     }
   },
   "type": "privileged",
-  "theme_color": "#194850",
-  "background_color": "#194850"
+  "theme_color": "#071416",
+  "background_color": "#071416"
 }

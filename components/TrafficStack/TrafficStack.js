@@ -675,22 +675,22 @@ class TrafficStack extends Component {
             >
               <FaCog />
               &nbsp;
-              {this.state.settingsExpanded ? 'Hide options' : 'Expand options'}
+              {this.state.settingsExpanded ? 'Close options' : 'Options'}
             </button>
             <button className="w-100" onClick={this.handleLogsExpanded}>
               <FaCommentDots />
               &nbsp;
-              {this.state.logsExpanded ? 'Hide logs' : 'Expand logs'}
+              {this.state.logsExpanded ? 'Close logs' : 'Logs'}
             </button>
             <button className="w-100" onClick={this.handleAboutExpanded}>
               <FaQuestion />
               &nbsp;
-              {this.state.aboutExpanded ? 'Hide about' : 'Expand about'}
+              {this.state.aboutExpanded ? 'Close about' : 'About'}
             </button>
             <button className="w-100" onClick={this.handleInfoExpanded}>
               <FaInfo />
               &nbsp;
-              {this.state.infoExpanded ? 'Hide info' : 'Expand info'}
+              {this.state.infoExpanded ? 'Close airfield' : 'Airfield info'}
             </button>
             <GameMetaControls />
           </div>

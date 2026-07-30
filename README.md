@@ -1,6 +1,6 @@
-# ATC Manager 2
+# ATC Manager 3
 
-ATC Manager 2 is a browser-based air traffic control game. Manage IFR and VFR
+ATC Manager 3 is a browser-based air traffic control game. Manage IFR and VFR
 traffic around Schiphol, Heathrow, LAX, Palm Springs, and the default airport;
 issue text commands; manage runway traffic; save games; and record, export,
 import, or share timelapse files.
@@ -8,7 +8,7 @@ import, or share timelapse files.
 The production app is a static Preact build served by nginx. The same
 multi-stage `Dockerfile` is supported by Docker and Podman.
 
-Current release: **2.5.1**
+Current release: **3.0.0-rc.1**
 
 ## Features
 
@@ -20,6 +20,8 @@ Current release: **2.5.1**
   file import, and file export
 - Offline precaching and optional web push notifications
 - Responsive SPA routing with direct links to game, editor, and timelapse views
+- System-aware light and dark interface themes with a persistent manual override
+- Automatic pause protection when an active game is backgrounded or loses focus
 
 ## What Redeux improves
 
@@ -81,7 +83,6 @@ Edit `.env` and choose the preferred host port:
 
 ```dotenv
 PORT=7123
-APP_VERSION=2.5.1
 ```
 
 Then deploy with Docker:
@@ -109,7 +110,7 @@ by default; adding `ENGINE=podman` is the only workflow difference for Podman.
 
 Before starting the service, Make:
 
-1. Reads `PORT` and `APP_VERSION` from `.env`.
+1. Reads the preferred `PORT` from `.env`.
 2. Uses the requested port, or finds a nearby free port if it is occupied.
 3. Embeds the current Git commit in the displayed build version.
 4. Rebuilds and forcibly recreates the Compose service.
@@ -155,11 +156,13 @@ and local saves are not replaced by `git pull`.
 
 ### Per-host configuration
 
-The real `.env` is ignored by both Git and the container build. This keeps
-private infrastructure settings out of the repository and image, but also
-means `.env` does not follow the repository to another computer. Create or edit
-it separately on every deployment host, including a server reached through
-SSH.
+The real `.env` is ignored by both Git and the container build. It stores
+host-specific infrastructure settings such as `PORT`, but does not pin the
+application release; Make always takes the current release version from the
+tracked `Makefile`. This keeps upgrades from accidentally rebuilding a new
+commit under an old image tag. Because `.env` does not follow the repository to
+another computer, create or edit it separately on every deployment host,
+including a server reached through SSH.
 
 Check the current host's configured port or override it for one deployment:
 
@@ -196,14 +199,15 @@ make ENGINE=podman run PORT=8081
 ```
 
 `VERSION`, `IMAGE`, `PORT`, `CONTAINER`, `BUILD_COMMIT`, and `BUILD_FLAGS` can
-all be overridden. The default image is `atc-manager:2.5.1`.
+all be overridden. The default image is `atc-manager:3.0.0-rc.1`.
 
 ## Mobile and tablet browsers
 
-The game adapts to iPhone, iPad, and other touch browsers in portrait and
-landscape. The radar supports tap selection and two-finger zoom, the flight
-strip panel uses touch-sized controls, and safe-area insets are respected when
-the app is launched from an iOS home screen.
+The homepage and game adapt to the actual viewport width and height on iPhone,
+iPad, and other touch browsers instead of relying on portrait orientation
+alone. The radar supports tap selection and two-finger zoom, the flight-strip
+panel uses touch-sized controls, and safe-area insets are respected when the
+app is launched from an iOS home screen.
 
 On touch displays, IFR commands use rotary heading, speed, and altitude dials
 with seven-segment readouts and quick step buttons, so the system keyboard is
@@ -217,8 +221,14 @@ experience. Interface scale defaults to the connected display and can be
 overridden under **Settings → Appearance → Interface scale**. That choice,
 radar font size, colors, and the other appearance settings remain local to the
 current browser profile, so one player's device does not change another's.
+System, Light, and Dark themes can be selected from the homepage or Appearance
+settings; System follows the current device preference. During an active
+session, backgrounding the page, changing tabs, or putting the device to sleep
+pauses the simulation. Return to the glowing pause dialog and choose
+**Resume session** when ready.
 The About panel shows the release and source revision as
-`2.5.1+<commit>`, which identifies the exact hotfix build in use.
+`3.0.0-rc.1+<commit>`, which identifies the exact release-candidate build in
+use.
 
 ## Local development
 
@@ -289,9 +299,9 @@ Podman did not find the requested image locally and tried to pull it. Build it
 first, use the same tag for `build` and `run`, and keep `--pull=never`:
 
 ```bash
-podman build --format docker --build-arg APP_VERSION=2.5.1 \
-  -t localhost/atc-manager:2.5.1 .
-podman run --pull=never --rm -p 8080:80 localhost/atc-manager:2.5.1
+podman build --format docker --build-arg APP_VERSION=3.0.0-rc.1 \
+  -t localhost/atc-manager:3.0.0-rc.1 .
+podman run --pull=never --rm -p 8080:80 localhost/atc-manager:3.0.0-rc.1
 ```
 
 ### Port 8080 is already in use
@@ -299,8 +309,8 @@ podman run --pull=never --rm -p 8080:80 localhost/atc-manager:2.5.1
 Publish another host port:
 
 ```bash
-docker run --rm -p 8081:80 atc-manager:2.5.1
-podman run --rm -p 8081:80 localhost/atc-manager:2.5.1
+docker run --rm -p 8081:80 atc-manager:3.0.0-rc.1
+podman run --rm -p 8081:80 localhost/atc-manager:3.0.0-rc.1
 ```
 
 ### Container build dependency errors

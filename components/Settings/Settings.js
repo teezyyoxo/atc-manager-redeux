@@ -3,6 +3,7 @@ import './Settings.css';
 import SettingsStore from '../../stores/SettingsStore';
 import { FaCompress, FaExpand } from 'react-icons/fa/index.esm';
 import { wipeServiceWorkerCache } from '../../lib/persistance';
+import ThemeControl from '../ThemeControl/ThemeControl';
 
 class Settings extends Component {
   constructor(props) {
@@ -187,9 +188,14 @@ class Settings extends Component {
             )}
         </button>
         <div
-          style="border: 1px solid #1e606b; border-radius: 5px; padding: 5px;"
-          className={this.state.appearanceExpanded ? null : 'hidden'}
+          className={`appearance-settings ${
+            this.state.appearanceExpanded ? '' : 'hidden'
+          }`}
         >
+          <div className="mb ThemeInput">
+            <span>Interface theme:</span>
+            <ThemeControl />
+          </div>
           <div className="mb SwitchInput">
             <span>Distance circle</span>
             <label class="switch">

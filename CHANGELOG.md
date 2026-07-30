@@ -1,6 +1,43 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [3.0.0-rc.1] - 2026-07-29
+
+### Added
+
+- Added a persistent System, Light, and Dark interface theme selector. System
+  mode follows the device preference without requiring a reload.
+- Added automatic session pausing when the game page becomes hidden, loses
+  focus, is backgrounded, freezes, or the device begins navigating away.
+- Added a focused pause overlay with a blurred scope, glowing dialog, pause
+  reason, and prominent Resume Session action.
+
+### Changed
+
+- Rebuilt the homepage as a modern responsive control surface with fluid
+  typography, soft radar glows, sharp card geometry, a live scope-inspired
+  hero, clearer session configuration, and consistent tool navigation.
+- Reworked homepage and tutorial navigation around the same theme-aware design
+  language and improved phone, tablet, short-landscape, and desktop layouts
+  using actual viewport dimensions.
+- Modernized the in-game utility labels, enlarged desktop command fields, and
+  moved touch utility actions into a translucent floating menu.
+- Renamed the product to ATC Manager 3 and updated application, manifest,
+  Compose, Make, image, documentation, and build metadata to 3.0.0-rc.1.
+
+### Fixed
+
+- Removed the unsolicited first-launch tutorial prompt. Starting a normal
+  session now enters the game directly; tutorials appear only after an explicit
+  Tutorial selection.
+- Made the touch aircraft list and command editor independently scrollable so
+  altitude and Send Command remain reachable on short mobile displays.
+- Removed the web-app manifest's forced landscape orientation so installed
+  iPhone and tablet sessions can follow the current device dimensions.
+- Prevented a stale per-host `.env` release value from keeping upgraded
+  deployments on an old image tag; `.env` now carries infrastructure settings
+  while the tracked Makefile owns the release version.
+
 ## [2.5.1] - 2026-07-29
 
 ### Added

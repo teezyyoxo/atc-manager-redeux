@@ -22,6 +22,22 @@
   clear: both;
 }
 
+.settings .ThemeInput {
+  align-items: center;
+  clear: both;
+  display: flex;
+  justify-content: space-between;
+}
+
+.settings .ThemeInput .theme-control {
+  margin-left: 10px;
+}
+
+.settings .appearance-settings {
+  border: 1px solid var(--ui-line);
+  padding: 10px;
+}
+
 .settings input[type=color] {
   float: right;
 }

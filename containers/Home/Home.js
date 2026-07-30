@@ -1,18 +1,14 @@
 import { Component } from 'preact';
 import './Home.css';
 import {
-  FaShareAlt,
-  FaEnvelope,
-  FaTwitter,
-  FaInfo,
-  FaMobile,
-  FaSitemap,
-  FaRedditAlien,
-  FaClock,
   FaBuilding,
-  FaSave,
+  FaClock,
+  FaGithub,
+  FaInfo,
   FaPlane,
-  FaGithub
+  FaPlay,
+  FaSave,
+  FaShareAlt
 } from 'react-icons/fa/index.esm';
 import SavedGamesOpen from '../../components/SavedGamesOpen/SavedGamesOpen';
 import { mapsArr, maps } from '../../lib/map';
@@ -25,6 +21,19 @@ import SharingPanel from '../../components/SharingPanel/SharingPanel';
 import AtomFeed from '../../components/AtomFeed/AtomFeed';
 import PushNotifications from '../../components/PushNotifications/PushNotifications';
 import SettingsStore from '../../stores/SettingsStore';
+import ThemeControl from '../../components/ThemeControl/ThemeControl';
+import { getBuildInfo } from '../../lib/build-info';
+
+const ToolCard = ({ href, icon, title, description }) => (
+  <Link className="home-tool-card" href={href}>
+    <span className="home-tool-icon">{icon}</span>
+    <span className="home-tool-copy">
+      <strong>{title}</strong>
+      <small>{description}</small>
+    </span>
+    <span className="home-tool-arrow" aria-hidden="true">↗</span>
+  </Link>
+);
 
 class Home extends Component {
   constructor(props) {
@@ -32,9 +41,6 @@ class Home extends Component {
     this.state = {
       sharing: false
     };
-
-    this.handleMapSelectionChange = this.handleMapSelectionChange.bind(this);
-    this.handleStartClick = this.handleStartClick.bind(this);
   }
 
   componentDidMount() {
@@ -47,21 +53,28 @@ class Home extends Component {
 
   reRender = () => this.setState({});
 
-  handleMapSelectionChange(e) {
+  handleMapSelectionChange = e => {
     SettingsStore.selectedMapId = e.target.value;
     SettingsStore.emit('change');
-    this.setState({ });
-  }
+    this.setState({});
+  };
 
-  handleReturnToGame() {
+  handleReturnToGame = () => {
     route('/game');
-  }
+  };
 
   sharingDone = () => this.setState({ sharing: false });
 
   share = () => this.setState({ sharing: true });
 
-  handleStartClick() {
+  scrollToSection = id => {
+    const section = typeof document !== 'undefined'
+      ? document.getElementById(id)
+      : null;
+    if (section) section.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  handleStartClick = () => {
     if (GameStore.started) {
       const force = confirm(
         'Another game is already in progress. Make sure you have saved your progress. Do you want to continue?'
@@ -76,7 +89,7 @@ class Home extends Component {
     SettingsStore.selectedMapId = selectedMap.id;
     GameStore.startMap(selectedMap.id);
     route('/game');
-  }
+  };
 
   handleTutorialClick = () => {
     route('/tutorials/intro');
@@ -84,207 +97,267 @@ class Home extends Component {
 
   render() {
     const selectedMap = maps[SettingsStore.selectedMapId] || maps.default;
+    const build = getBuildInfo();
     return (
-      <div className="home" style="background-color: #194850">
-        <div className="abs-container">
-          {GameStore.started ? (
-            <button style="top: 0; left: 0" onClick={this.handleReturnToGame}>Return to Game</button>
-          ) : null}
+      <div className="home">
+        <header className="home-header">
+          <Link href="/" className="home-brand" aria-label="ATC Manager home">
+            <span className="home-brand-mark">AM</span>
+            <span>
+              <strong>ATC Manager</strong>
+              <small>Redeux · {build.label}</small>
+            </span>
+          </Link>
+          <nav className="home-nav" aria-label="Primary navigation">
+            {GameStore.started ? (
+              <button
+                type="button"
+                className="home-nav-session"
+                onClick={this.handleReturnToGame}
+              >
+                Return to session
+              </button>
+            ) : null}
+            <Link href="/tutorials">Tutorials</Link>
+            <button
+              type="button"
+              className="home-nav-link"
+              onClick={() => this.scrollToSection('tools')}
+            >
+              Tools
+            </button>
+            <ThemeControl />
+          </nav>
+        </header>
+
+        <div className="home-main">
+          <section className="home-hero">
+            <div className="home-hero-copy">
+              <span className="home-eyebrow">Browser-native ATC simulation</span>
+              <h1>Own the airspace.</h1>
+              <p>
+                Direct arrivals, sequence departures, and keep the picture
+                moving across a live, responsive radar environment.
+              </p>
+              <div className="home-hero-actions">
+                <button
+                  type="button"
+                  className="home-button home-button-primary"
+                  onClick={() => this.scrollToSection('session')}
+                >
+                  Configure session
+                </button>
+                <button
+                  type="button"
+                  className="home-button home-button-secondary"
+                  onClick={this.handleTutorialClick}
+                >
+                  View tutorial
+                </button>
+              </div>
+              <div className="home-hero-meta" aria-label="Game capabilities">
+                <span>IFR + VFR</span>
+                <span>Local saves</span>
+                <span>Touch ready</span>
+              </div>
+            </div>
+
+            <div className="home-radar-preview" aria-hidden="true">
+              <div className="home-radar-grid" />
+              <div className="home-radar-ring ring-one" />
+              <div className="home-radar-ring ring-two" />
+              <div className="home-radar-ring ring-three" />
+              <div className="home-radar-sweep" />
+              <div className="home-radar-aircraft aircraft-one">
+                <span />
+                <strong>AAL1634</strong>
+                <small>11000FT · 300KT</small>
+              </div>
+              <div className="home-radar-aircraft aircraft-two">
+                <span />
+                <strong>CCA136</strong>
+                <small>12000FT · 320KT</small>
+              </div>
+              <div className="home-radar-aircraft aircraft-three">
+                <span />
+                <strong>DLH583</strong>
+                <small>13000FT · 330KT</small>
+              </div>
+              <div className="home-radar-center">
+                <span>EHAM</span>
+                <small>APP</small>
+              </div>
+            </div>
+          </section>
+
+          <section id="session" className="home-session-layout">
+            <div className="home-card home-session-card">
+              <div className="home-section-heading">
+                <div>
+                  <span className="home-kicker">New shift</span>
+                  <h2>Session setup</h2>
+                </div>
+                <span className="home-status">
+                  <i /> Ready
+                </span>
+              </div>
+
+              <label className="home-field-label" for="home-airport">
+                Airport
+              </label>
+              <select
+                id="home-airport"
+                value={selectedMap.id}
+                onInput={this.handleMapSelectionChange}
+              >
+                {mapsArr.map(map => (
+                  <option key={map.id} value={map.id}>
+                    {map.name}
+                  </option>
+                ))}
+              </select>
+
+              <div className="home-airport-notes">
+                {selectedMap.ga === 0 ? (
+                  <small>General aviation is unavailable at this airport.</small>
+                ) : null}
+                {selectedMap.commercial === 0 ? (
+                  <small>Commercial traffic is unavailable at this airport.</small>
+                ) : null}
+              </div>
+
+              <Settings />
+
+              <div className="home-start-actions">
+                <button
+                  type="button"
+                  className="home-button home-button-primary home-start-button"
+                  onClick={this.handleStartClick}
+                >
+                  <FaPlay /> Start session
+                </button>
+                <button
+                  type="button"
+                  className="home-button home-button-secondary"
+                  onClick={this.handleTutorialClick}
+                >
+                  Tutorial
+                </button>
+              </div>
+            </div>
+
+            <aside className="home-card home-saves-card">
+              <div className="home-section-heading">
+                <div>
+                  <span className="home-kicker">Continue</span>
+                  <h2>Saved sessions</h2>
+                </div>
+              </div>
+              <SavedGamesOpen />
+            </aside>
+          </section>
+
+          <section id="tools" className="home-tools-section">
+            <div className="home-section-heading">
+              <div>
+                <span className="home-kicker">Workspace</span>
+                <h2>Tools and training</h2>
+              </div>
+              <p>Everything stays local to this browser unless you export it.</p>
+            </div>
+            <div className="home-tools-grid">
+              <ToolCard
+                href="/editor/save-editor"
+                icon={<FaSave />}
+                title="Save editor"
+                description="Inspect and manage local sessions."
+              />
+              <ToolCard
+                href="/editor/airplane-editor"
+                icon={<FaPlane />}
+                title="Aircraft editor"
+                description="Create and tune aircraft profiles."
+              />
+              <ToolCard
+                href="/editor/operator-editor"
+                icon={<FaBuilding />}
+                title="Operator editor"
+                description="Manage fleets, colors, and callsigns."
+              />
+              <ToolCard
+                href="/timelapse/overview"
+                icon={<FaClock />}
+                title="Timelapses"
+                description="Import, replay, and export recordings."
+              />
+              <ToolCard
+                href="/tutorials"
+                icon={<FaInfo />}
+                title="Tutorials"
+                description="Learn the scope and command workflow."
+              />
+              <button
+                type="button"
+                className="home-tool-card"
+                onClick={this.share}
+              >
+                <span className="home-tool-icon"><FaShareAlt /></span>
+                <span className="home-tool-copy">
+                  <strong>Share</strong>
+                  <small>Send ATC Manager to another device.</small>
+                </span>
+                <span className="home-tool-arrow" aria-hidden="true">↗</span>
+              </button>
+            </div>
+          </section>
+
+          <section className="home-updates">
+            <div className="home-card home-notification-card">
+              <span className="home-kicker">Device</span>
+              <h2>Notifications</h2>
+              <PushNotifications />
+            </div>
+            <div className="home-card home-feed-card">
+              <span className="home-kicker">Updates</span>
+              <h2>Latest from the project</h2>
+              <AtomFeed url={config.feedUrl} />
+            </div>
+          </section>
         </div>
-        <div className="panel">
+
+        <footer className="home-footer">
+          <span>ATC Manager Redeux · Built for focused sessions.</span>
           <div>
-            <h1>ATC Manager 2</h1>
+            <a
+              href="https://github.com/teezyyoxo/atc-manager-redeux"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <FaGithub /> GitHub
+            </a>
+            <a
+              href="https://www.reddit.com/r/ATCManager2"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Community
+            </a>
+            <a
+              href="https://esstudio.site/contact"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Contact
+            </a>
           </div>
-          <div style="padding: 30px 20px;">
-            {config.description}
-          </div>
-        </div>
-        <div className="panel">
-          <SavedGamesOpen />
-        </div>
-        <div className="panel">
-          <h2 className="mb">Start</h2>
-          <span className="mb">Airport:</span>
-          <select
-            className="mb"
-            value={selectedMap.id}
-            onInput={this.handleMapSelectionChange}
-          >
-            {mapsArr.map(map => (
-              <option key={map.id} value={map.id}>
-                {map.name}
-              </option>
-            ))}
-          </select>
-          {selectedMap.ga === 0 ? (
-            <small class="color-red">
-              Airport does not support general aviation.
-            </small>
-          ) : null}
-          {selectedMap.commercial === 0 ? (
-            <small class="color-red">
-              Airport does not support commercial traffic.
-            </small>
-          ) : null}
-          <Settings />
-          <br />
-          <button onClick={this.handleStartClick}>Start</button>
-          <button onClick={this.handleTutorialClick}>Tutorial</button>
-        </div>
-        <div className="panel panel-links" style={{ padding: 3 }}>
-          <Link href="/editor/save-editor">
-            <div class="block-outer">
-              <div class="block-inner">
-                <span className="link-icon-wrapper">
-                  <FaSave />
-                </span>
-                <br />
-                Saves Editor
-              </div>
-            </div>
-          </Link>
-          <Link href="/editor/airplane-editor">
-            <div class="block-outer">
-              <div class="block-inner">
-                <span className="link-icon-wrapper">
-                  <FaPlane />
-                </span>
-                <br />
-                Airplanes Editor
-              </div>
-            </div>
-          </Link>
-          <Link href="/editor/operator-editor">
-            <div class="block-outer">
-              <div class="block-inner">
-                <span className="link-icon-wrapper">
-                  <FaBuilding />
-                </span>
-                <br />
-                Operator Editor
-              </div>
-            </div>
-          </Link>
-          <Link href="/timelapse/overview">
-            <div class="block-outer">
-              <div class="block-inner">
-                <span className="link-icon-wrapper">
-                  <FaClock />
-                </span>
-                <br />
-                Timelapses
-              </div>
-            </div>
-          </Link>
-          <Link href="/tutorials">
-            <div class="block-outer">
-              <div class="block-inner">
-                <span className="link-icon-wrapper">
-                  <FaInfo />
-                </span>
-                <br />
-                Tutorials
-              </div>
-            </div>
-          </Link>
-          <a
-            href="https://play.google.com/store/apps/details?id=com.EchoSierraStudio.ATCManager"
-            target="_blank"
-          >
-            <div class="block-outer">
-              <div class="block-inner">
-                <span className="link-icon-wrapper">
-                  <FaMobile />
-                </span>
-                <br />
-                Mobile App (external)
-              </div>
-            </div>
-          </a>
-          <a href="https://esstudio.site" target="_blank">
-            <div class="block-outer">
-              <div class="block-inner">
-                <span className="link-icon-wrapper">
-                  <FaSitemap />
-                </span>
-                <br />
-                Other Projects (external)
-              </div>
-            </div>
-          </a>
-          <a href="https://esstudio.site/contact" target="_blank">
-            <div class="block-outer">
-              <div class="block-inner">
-                <span className="link-icon-wrapper">
-                  <FaEnvelope />
-                </span>
-                <br />
-                Contact (external)
-              </div>
-            </div>
-          </a>
-          <span className="inline-block">
-            <div class="block-outer" onClick={this.share}>
-              <div class="block-inner">
-                <span className="link-icon-wrapper">
-                  <FaShareAlt />
-                </span>
-                <br />
-                Share
-              </div>
-            </div>
-          </span>
-          <a target="_blank" href="https://www.reddit.com/r/ATCManager2">
-            <div class="block-outer">
-              <div class="block-inner">
-                <span className="link-icon-wrapper">
-                  <FaRedditAlien />
-                </span>
-                <br />
-                Subreddit
-                <br />
-                (external)
-              </div>
-            </div>
-          </a>
-          <a href="https://twitter.com/esstudio_site" target="_blank">
-            <div class="block-outer">
-              <div class="block-inner">
-                <span className="link-icon-wrapper">
-                  <FaTwitter />
-                </span>
-                <br />
-                Twitter (external)
-              </div>
-            </div>
-          </a>
-          <a
-            href="https://github.com/LesterGallagher/atc-manager-2"
-            target="_blank"
-          >
-            <div class="block-outer">
-              <div class="block-inner">
-                <span className="link-icon-wrapper">
-                  <FaGithub />
-                </span>
-                <br />
-                Github (external)
-              </div>
-            </div>
-          </a>
-        </div>
-        <div className="panel panel-feed notification">
-          <PushNotifications />
-        </div>
-        <div className="panel panel-feed" style={{ padding: 3 }}>
-          <AtomFeed url={config.feedUrl} />
-        </div>
+        </footer>
+
         {this.state.sharing ? <div className="panel-open-bg" /> : null}
         {this.state.sharing ? (
           <SharingPanel
             onClose={this.sharingDone}
             promise={Promise.resolve({
-              title: 'ATC Manager 2',
+              title: 'ATC Manager 3',
               text: config.description,
               url: config.url
             })}

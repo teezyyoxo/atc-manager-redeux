@@ -20,14 +20,14 @@ class AboutPanel extends Component {
       >
         <GitHubButton
           type="stargazers"
-          namespace="LesterGallagher"
-          repo="atc-manager-2"
+          namespace="teezyyoxo"
+          repo="atc-manager-redeux"
         />
         &nbsp;
         <GitHubButton
           type="watchers"
-          namespace="LesterGallagher"
-          repo="atc-manager-2"
+          namespace="teezyyoxo"
+          repo="atc-manager-redeux"
         />
         <br />
         <br />
@@ -43,7 +43,7 @@ class AboutPanel extends Component {
             </a>
           ) : build.label}
         </div>
-        ATC Manager 2 is a web based air traffic control game. Manage airspace
+        ATC Manager 3 is a web based air traffic control game. Manage airspace
         of busy airports like Schiphol or Heathrow in a realistic simulator.
         Check out the{' '}
         <a

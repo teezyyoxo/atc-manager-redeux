@@ -174,8 +174,23 @@ input.direct-to-input.invalid::placeholder {
 }
 
 .atc-view .atc-view-buttons {
+  background: #101c25;
+  border-top: 1px solid #31545c;
   flex: 0 0 auto;
-  padding-bottom: env(safe-area-inset-bottom);
+  padding: 5px;
+  padding-bottom: calc(5px + env(safe-area-inset-bottom));
+}
+
+.atc-view .atc-view-buttons button {
+  border: 1px solid transparent;
+  border-radius: 6px;
+  min-height: 34px;
+}
+
+.atc-view .atc-view-buttons button:hover,
+.atc-view .atc-view-buttons button:focus {
+  background: #263b46;
+  border-color: #42636c;
 }
 
 .traffic-control {
@@ -249,37 +264,7 @@ input.direct-to-input.invalid::placeholder {
   margin-top: -3px;
 }
 
-.atc-view .tutorials-btn-wrapper {
-  position: absolute;
-  top: 40px;
-  left: 40px;
-  overflow: hidden;
-  background: #1e606b;
-  max-width: calc(100vw - var(--sidebar-width) - 80px);
-  z-index: 5;
-}
-
-.atc-view .tutorials-btn {
-  height: auto;
-  display: inline-block;
-  vertical-align: middle;
-}
-
-.atc-view .tutorials-btn small {
-  font-size: 0.6em;
-}
-
-.atc-view .tutorials-btn-wrapper-close {
-  font-size: 40px;
-  line-height: 30px;
-  display: inline-block;
-  vertical-align: middle;
-  margin: -3px 0 0 0;
-  padding: 0 6px 0 8px;
-  cursor: pointer;
-}
-
-@media screen and (max-width: 700px) and (orientation: portrait) {
+@media screen and (max-width: 700px) and (min-height: 501px) {
   .atc-view {
     flex-direction: column;
   }
@@ -300,14 +285,9 @@ input.direct-to-input.invalid::placeholder {
     height: 56dvh;
   }
 
-  .atc-view .tutorials-btn-wrapper {
-    top: max(12px, env(safe-area-inset-top));
-    left: max(12px, env(safe-area-inset-left));
-    max-width: calc(100vw - 24px);
-  }
 }
 
-@media screen and (max-height: 500px) and (orientation: landscape) {
+@media screen and (max-height: 500px) {
   .atc-view {
     --sidebar-width: var(--interface-compact-sidebar-width, 220px);
   }
@@ -709,7 +689,7 @@ input.direct-to-input.invalid::placeholder {
   }
 }
 
-@media (any-pointer: coarse) and (max-height: 500px) and (orientation: landscape) {
+@media (any-pointer: coarse) and (max-height: 500px) {
   .atc-view {
     --sidebar-width: 42vw;
   }
@@ -831,7 +811,7 @@ input.direct-to-input.invalid::placeholder {
   background-color: rgb(25, 72, 80);
 }
 
-@media screen and (max-width: 700px) and (orientation: portrait) {
+@media screen and (max-width: 700px) and (min-height: 501px) {
   .traffic-stack-wrapper {
     border-top: 3px solid #0f3339;
     border-left: 0;
@@ -851,7 +831,7 @@ input.direct-to-input.invalid::placeholder {
   }
 }
 
-@media (any-pointer: coarse) and (max-height: 500px) and (orientation: landscape) {
+@media (any-pointer: coarse) and (max-height: 500px) {
   .traffic-stack {
     flex-basis: 84px;
     min-height: 84px;

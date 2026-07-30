@@ -1,7 +1,7 @@
 -include .env
 
 ENGINE ?= docker
-APP_VERSION ?= 2.5.1
+APP_VERSION := 3.0.0-rc.1
 VERSION ?= $(APP_VERSION)
 BUILD_COMMIT ?= $(shell git rev-parse --short HEAD 2>/dev/null || echo unknown)
 BUILD_FLAGS ?= --build-arg APP_VERSION=$(VERSION) --build-arg BUILD_COMMIT=$(BUILD_COMMIT)

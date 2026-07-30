@@ -1,4 +1,173 @@
+.tutorial-hub {
+  background:
+    radial-gradient(circle at 75% 8%, var(--ui-glow), transparent 28rem),
+    var(--ui-bg);
+  color: var(--ui-text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
 
-.TutorialsRoot {
-  overflow: hidden;
+.tutorial-hub-header {
+  align-items: center;
+  border-bottom: 1px solid var(--ui-line);
+  display: flex;
+  justify-content: space-between;
+  margin: 0 auto;
+  max-width: 1120px;
+  padding: 22px clamp(18px, 4vw, 44px);
+}
+
+.tutorial-home-link {
+  align-items: center;
+  color: var(--ui-text);
+  display: inline-flex;
+  font-size: .85rem;
+  font-weight: 700;
+  gap: 10px;
+}
+
+.tutorial-home-link:hover,
+.tutorial-home-link:focus {
+  color: var(--ui-accent);
+}
+
+.tutorial-hub-main {
+  margin: 0 auto;
+  max-width: 1120px;
+  padding: clamp(70px, 11vw, 140px) clamp(18px, 4vw, 44px);
+}
+
+.tutorial-hub-kicker {
+  color: var(--ui-accent);
+  font-family: "Roboto Mono", monospace;
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+.tutorial-hub h1 {
+  font-family: inherit;
+  font-size: clamp(3rem, 8vw, 6.5rem);
+  font-weight: 720;
+  letter-spacing: -.07em;
+  line-height: .94;
+  margin: 18px 0 24px;
+  text-align: left;
+}
+
+.tutorial-hub-main > p {
+  color: var(--ui-muted);
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  line-height: 1.55;
+  margin-bottom: 48px;
+  max-width: 640px;
+}
+
+.tutorial-card-grid {
+  display: grid;
+  gap: 1px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.tutorial-card-link {
+  color: var(--ui-text);
+  display: block;
+}
+
+.tutorial-card {
+  align-items: center;
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line);
+  display: grid;
+  gap: 18px;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+  min-height: 136px;
+  padding: 26px;
+}
+
+.tutorial-card-link:not(.disabled):hover .tutorial-card,
+.tutorial-card-link:not(.disabled):focus .tutorial-card {
+  background: var(--ui-surface-raised);
+  border-color: var(--ui-accent);
+  transform: translateY(-2px);
+}
+
+.tutorial-card-icon {
+  align-items: center;
+  background: var(--ui-glow);
+  color: var(--ui-accent);
+  display: flex;
+  font-size: 1.2rem;
+  height: 48px;
+  justify-content: center;
+  width: 48px;
+}
+
+.tutorial-card > span:nth-child(2) {
+  display: flex;
+  flex-direction: column;
+}
+
+.tutorial-card strong {
+  font-size: 1rem;
+}
+
+.tutorial-card small {
+  color: var(--ui-muted);
+  font-size: .78rem;
+  line-height: 1.45;
+  margin-top: 7px;
+}
+
+.tutorial-card-arrow {
+  color: var(--ui-accent);
+  font-family: "Roboto Mono", monospace;
+  font-size: .75rem;
+}
+
+.tutorial-card-link.disabled {
+  opacity: .48;
+}
+
+@media (max-width: 680px) {
+  .tutorial-hub-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .tutorial-hub-header .theme-control {
+    width: 100%;
+  }
+
+  .tutorial-hub-header .theme-option {
+    flex: 1 1 0;
+  }
+
+  .tutorial-card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tutorial-card {
+    min-height: 116px;
+    padding: 20px;
+  }
+}
+
+@media (max-width: 380px) {
+  .tutorial-card {
+    gap: 12px;
+    grid-template-columns: 42px minmax(0, 1fr);
+  }
+
+  .tutorial-card-icon {
+    height: 42px;
+    width: 42px;
+  }
+
+  .tutorial-card-arrow {
+    display: none;
+  }
 }

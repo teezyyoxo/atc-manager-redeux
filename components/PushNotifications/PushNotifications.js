@@ -145,7 +145,7 @@ class PushNotifications extends Component {
       >
         {this.showButtons() && (
           <div>
-            Do you want to receive notifications from ATC Manager 2?
+            Do you want to receive notifications from ATC Manager 3?
             <button
               onClick={() => this.setState({ status: status.USER_REJECTED })}
               disabled={btnDisabled}

@@ -12,7 +12,7 @@ self.addEventListener('push', event => {
     data = { body: event.data ? event.data.text() : '' };
   }
 
-  const title = data.title || 'ATC Manager 2';
+  const title = data.title || 'ATC Manager 3';
   const options = {
     ...data,
     badge: 'assets/images/meta-icons/mstile-144x144.png',

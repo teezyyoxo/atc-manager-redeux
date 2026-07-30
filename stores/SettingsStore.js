@@ -48,6 +48,7 @@ class SettingsStore extends EventEmitter {
     this.startingEnroutePlanes = 1;
     this.radarFontsize = 14;
     this.interfaceScale = 'auto';
+    this.themePreference = 'system';
     this.touchControlColor = '#62ff8d';
     this.ga = false;
     this.enroute = false;
@@ -65,11 +66,27 @@ class SettingsStore extends EventEmitter {
     }
 
     this.applyInterfaceScale();
+    this.applyTheme();
     this.on('change', this.persist);
     this.on('change', this.applyInterfaceScale);
+    this.on('change', this.applyTheme);
 
     if (typeof window !== 'undefined') {
       window.addEventListener('resize', this.handleViewportResize);
+      this.systemThemeMedia = window.matchMedia
+        ? window.matchMedia('(prefers-color-scheme: dark)')
+        : null;
+      if (this.systemThemeMedia) {
+        if (this.systemThemeMedia.addEventListener) {
+          this.systemThemeMedia.addEventListener(
+            'change',
+            this.handleSystemThemeChange
+          );
+        } else if (this.systemThemeMedia.addListener) {
+          this.systemThemeMedia.addListener(this.handleSystemThemeChange);
+        }
+      }
+      this.applyTheme();
     }
 
     Communications.synth.addEventListener(
@@ -141,6 +158,10 @@ class SettingsStore extends EventEmitter {
     if (this.interfaceScale === 'auto') this.applyInterfaceScale();
   };
 
+  handleSystemThemeChange = () => {
+    if (this.themePreference === 'system') this.applyTheme();
+  };
+
   getInterfaceScale = () => {
     if (this.interfaceScale !== 'auto') {
       const scale = Number(this.interfaceScale);
@@ -151,7 +172,7 @@ class SettingsStore extends EventEmitter {
     const width = window.innerWidth;
     const height = window.innerHeight;
 
-    if (width > height && height <= 500) return 0.9;
+    if (height <= 500) return 0.9;
     if (width >= 1400) return 1.15;
     if (width >= 768) return 1.1;
     if (width <= 480) return 0.95;
@@ -166,6 +187,34 @@ class SettingsStore extends EventEmitter {
     rootStyle.setProperty('--interface-font-size', `${14 * scale}px`);
     rootStyle.setProperty('--interface-sidebar-width', `${250 * scale}px`);
     rootStyle.setProperty('--interface-compact-sidebar-width', `${220 * scale}px`);
+  };
+
+  applyTheme = () => {
+    if (typeof document === 'undefined') return;
+    const root = document.documentElement;
+    const preference = ['system', 'light', 'dark'].includes(
+      this.themePreference
+    )
+      ? this.themePreference
+      : 'system';
+
+    if (preference === 'system') {
+      root.removeAttribute('data-theme');
+      root.style.colorScheme = 'light dark';
+    } else {
+      root.setAttribute('data-theme', preference);
+      root.style.colorScheme = preference;
+    }
+
+    const isDark =
+      preference === 'dark' ||
+      (preference === 'system' &&
+        this.systemThemeMedia &&
+        this.systemThemeMedia.matches);
+    const themeColor = document.querySelector('meta[name="theme-color"]');
+    if (themeColor) {
+      themeColor.setAttribute('content', isDark ? '#071416' : '#eef5f2');
+    }
   };
 
   toJson = () => {
@@ -192,6 +241,7 @@ class SettingsStore extends EventEmitter {
         'distanceCirclesAmount',
         'radarFontsize',
         'interfaceScale',
+        'themePreference',
         'touchControlColor',
         'distanceCircleColor',
         'ilsPathLength',
