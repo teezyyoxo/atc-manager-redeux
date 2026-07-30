@@ -37,7 +37,8 @@ All notable changes to this project will be documented in this file.
   resizes and device rotation.
 - Fixed `make run`, `make run-detached`, and `make compose-up` overriding the
   `.env` HTTP port with 8080; the requested port is now preferred and a nearby
-  available port is selected when it is already occupied.
+  available port is selected when it is already occupied. Compose deployments
+  are forcibly recreated and their resulting Docker port mapping is verified.
 
 ## [2.5.0] - 2026-07-29
 

@@ -138,7 +138,8 @@ perform automatic port fallback or Git revision discovery.
 
 `make` is only a shortcut for the longer Docker or Podman commands in this
 project. You do not need to know Make syntax or edit the `Makefile`. For a
-normal Docker deployment:
+normal Docker deployment, use the exact target `make compose-up` (with a
+hyphen, not `make compose up`):
 
 ```bash
 # First deployment only: create your private configuration.
@@ -156,11 +157,13 @@ Before `make compose-up` starts Docker, it:
 1. Reads `PORT` and `APP_VERSION` from `.env`.
 2. Uses the requested port, or finds a nearby free port if it is occupied.
 3. Embeds the current Git commit in the displayed build version.
-4. Runs `docker compose up --build -d`.
+4. Rebuilds and forcibly recreates the Compose service.
+5. Checks Docker's resulting port mapping and fails if it does not match.
 
-The command prints the port it actually selected. For example, if `.env`
-contains `PORT=7123`, open `http://localhost:7123`. If 7123 is occupied and the
-command selects 7124, open `http://localhost:7124` instead.
+The command prints both `Publishing ATC Manager on port ...` and a final
+`Verified: http://localhost:...` line. For example, if `.env` contains
+`PORT=7123`, open `http://localhost:7123`. If 7123 is occupied and the command
+selects 7124, open `http://localhost:7124` instead.
 
 Keeping `.env` in `.dockerignore` is intentional. Compose and Make read it from
 the host before the image is built, so private local settings do not need to be

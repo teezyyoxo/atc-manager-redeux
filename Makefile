@@ -41,7 +41,14 @@ ps:
 compose-up:
 	@resolved_port="$$(./scripts/resolve-port.sh "$(ENGINE)" "$(PORT)")"; \
 	echo "Publishing ATC Manager on port $$resolved_port"; \
-	PORT="$$resolved_port" $(ENGINE) compose up --build -d
+	PORT="$$resolved_port" $(ENGINE) compose up --build -d --force-recreate; \
+	actual_binding="$$(PORT="$$resolved_port" $(ENGINE) compose port web 80 2>/dev/null | head -n 1)"; \
+	actual_port="$${actual_binding##*:}"; \
+	if [ "$$actual_port" != "$$resolved_port" ]; then \
+		echo "Port verification failed: requested $$resolved_port, Docker published $${actual_port:-nothing}." >&2; \
+		exit 1; \
+	fi; \
+	echo "Verified: http://localhost:$$actual_port"
 
 compose-down:
 	$(ENGINE) compose down
