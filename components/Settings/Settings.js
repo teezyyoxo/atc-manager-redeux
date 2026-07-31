@@ -1,17 +1,62 @@
 import { Component } from 'preact';
-import './Settings.css';
 import SettingsStore from '../../stores/SettingsStore';
 import { FaCompress, FaExpand } from 'react-icons/fa/index.esm';
 import { wipeServiceWorkerCache } from '../../lib/persistance';
 import ThemeControl from '../ThemeControl/ThemeControl';
 
+const SettingRow = ({ label, children, className = '' }) => (
+  <div className={`settings-row ${className}`}>
+    <span className="settings-label">{label}</span>
+    <div className="settings-control">{children}</div>
+  </div>
+);
+
+const ToggleControl = ({ label, checked, onInput }) => (
+  <label className="switch" aria-label={label}>
+    <input type="checkbox" onInput={onInput} checked={checked} />
+    <span className="slider" />
+  </label>
+);
+
+const RangeControl = ({ label, value, suffix, ...props }) => (
+  <div className="range-slider settings-range-control">
+    <input
+      {...props}
+      aria-label={label}
+      className="range-slider__range"
+      type="range"
+      value={value}
+    />
+    <span className="range-slider__value">{value}{suffix}</span>
+  </div>
+);
+
+const colorSettings = [
+  ['touchControlColor', 'Touch Control Display Color'],
+  ['ilsPathColor', 'ILS Indicator Color'],
+  ['dangerColor', 'Danger Color'],
+  ['backgroundColor', 'Background Color'],
+  ['foregroundColor', 'Foreground Color'],
+  ['radarColor', 'Radar Color'],
+  ['sidColor', 'SID Color'],
+  ['starColor', 'STAR Color'],
+  ['inboundTrafficColor', 'Inbound Traffic Color'],
+  ['enrouteTrafficColor', 'Enroute Traffic Color'],
+  ['outboundTrafficColor', 'Outbound Traffic Color'],
+  ['vfrTrafficColor', 'VFR Traffic Color'],
+  ['pathVisualizerColor', 'Path Color'],
+  ['climbColor', 'Climb Color'],
+  ['descendColor', 'Descent Color'],
+  ['msaColor', 'MSA Color']
+];
+
 class Settings extends Component {
   constructor(props) {
-    super();
+    super(props);
     this.state = {
       difficulty: 'normal',
-      expanded: false,
-      appearanceExpanded: false
+      appearanceExpanded: false,
+      speechExpanded: false
     };
   }
 
@@ -27,51 +72,41 @@ class Settings extends Component {
     this.setState({});
   };
 
-  handleNewPlaneIntervalChange = e => {
-    SettingsStore.newPlaneInterval = +e.target.value;
+  handleNewPlaneIntervalChange = event => {
+    SettingsStore.newPlaneInterval = +event.target.value;
     SettingsStore.emit('change');
   };
 
-  handleRadarFontSizeChange = e => {
-    SettingsStore.radarFontsize = +e.target.value;
+  handleRadarFontSizeChange = event => {
+    SettingsStore.radarFontsize = +event.target.value;
     SettingsStore.emit('change');
   };
 
-  handleInterfaceScaleChange = e => {
+  handleInterfaceScaleChange = event => {
     SettingsStore.interfaceScale =
-      e.target.value === 'auto' ? 'auto' : +e.target.value;
+      event.target.value === 'auto' ? 'auto' : +event.target.value;
     SettingsStore.emit('change');
   };
 
-  handleSpeechVoiceChange = e => {
+  handleSpeechVoiceChange = event => {
     SettingsStore.changeATCVoice(SettingsStore.voices.find(voice =>
-      voice.name === e.target.value));
+      voice.name === event.target.value));
   };
 
-  handleSpeechSynthesisSettingChange = e => {
-    SettingsStore.speechsynthesis = e.target.checked;
-    SettingsStore.emit('change');
+  handlePitchChange = event => {
+    SettingsStore.changePitch(+event.target.value);
   };
 
-  handleSpeechRecognitionSettingChange = e => {
-    SettingsStore.speechrecognition = e.target.checked;
-    SettingsStore.emit('change');
+  handleRateChange = event => {
+    SettingsStore.changeRate(+event.target.value);
   };
 
-  handlePitchChange = e => {
-    SettingsStore.changePitch(+e.target.value);
+  handleSpeedChange = event => {
+    SettingsStore.setSpeed(+event.target.value);
   };
 
-  handleRateChange = e => {
-    SettingsStore.changeRate(+e.target.value);
-  };
-
-  handleSpeedChange = e => {
-    SettingsStore.setSpeed(+e.target.value);
-  };
-
-  handleDifficultyChange = e => {
-    switch (e.target.value) {
+  handleDifficultyChange = event => {
+    switch (event.target.value) {
       case 'easy':
         SettingsStore.startingInboundPlanes = 1;
         SettingsStore.startingOutboundPlanes = 1;
@@ -91,460 +126,240 @@ class Settings extends Component {
         SettingsStore.newPlaneInterval = 70;
         break;
     }
-    this.setState({
-      difficulty: e.target.value
-    });
+    this.setState({ difficulty: event.target.value });
     SettingsStore.emit('change');
   };
 
-  handleIlsPathColorChange(e) {
-    SettingsStore.ilsPathColor = e.target.value;
-    SettingsStore.emit('change');
-  }
-
-  handleToggleExpandClick = e => {
-    this.setState({ expanded: !this.state.expanded });
-  };
-
-  handleAppearanceExpanded = e => {
+  handleAppearanceExpanded = () => {
     this.setState({ appearanceExpanded: !this.state.appearanceExpanded });
   };
 
-  handleChange = name => e => {
-    SettingsStore[name] = e.target.value;
+  handleSpeechExpanded = () => {
+    this.setState({ speechExpanded: !this.state.speechExpanded });
+  };
+
+  handleChange = name => event => {
+    SettingsStore[name] = event.target.value;
     SettingsStore.emit('change');
   };
 
-  handleCheckboxChange = name => e => {
-    SettingsStore[name] = !SettingsStore[name];
+  handleCheckboxChange = name => event => {
+    SettingsStore[name] = event.target.checked;
     SettingsStore.emit('change');
   };
 
   clearCaches = async () => {
     await wipeServiceWorkerCache();
     alert('Caches have been cleared. This does not affect your saves.');
-  }
+  };
+
+  renderToggleRow = (name, label, className = '') => (
+    <SettingRow label={label} className={`settings-row-toggle ${className}`}>
+      <ToggleControl
+        label={label}
+        checked={SettingsStore[name]}
+        onInput={this.handleCheckboxChange(name)}
+      />
+    </SettingRow>
+  );
 
   render() {
-    const atcVoiceName = SettingsStore.atcVoice;
+    const atcVoiceName = SettingsStore.atcVoice || '';
     return (
       <div className="settings">
-        <span>Game Speed</span>
-        <div className="range-slider mb">
-          <input
-            className="range-slider__range"
-            type="range"
-            min="0.1"
-            max="10"
-            step="0.1"
-            value={SettingsStore.speed}
-            onInput={this.handleSpeedChange}
-          />
-          <span class="range-slider__value">{SettingsStore.speed}x</span>
-        </div>
-        <div className="mb">
-          <span>Difficulty</span>
-          <select
-            value={this.state.difficulty}
-            onInput={this.handleDifficultyChange}
-          >
-            <option value="easy">Easy</option>
-            <option value="normal">Normal</option>
-            <option value="hard">Hard</option>
-          </select>
-        </div>
-        <div className="mb SwitchInput">
-          <span>General Aviation</span>
-          <label class="switch">
-            <input
-              type="checkbox"
-              onInput={this.handleCheckboxChange('ga')}
-              checked={SettingsStore.ga}
+        <div className="settings-group" aria-label="Session settings">
+          <SettingRow label="Game Speed" className="settings-row-range">
+            <RangeControl
+              label="Game Speed"
+              min="0.1"
+              max="10"
+              step="0.1"
+              value={SettingsStore.speed}
+              suffix="x"
+              onInput={this.handleSpeedChange}
             />
-            <span class="slider" />
-          </label>
-        </div>
-        <div className="mb SwitchInput">
-          <span>Enroute Traffic</span>
-          <label class="switch">
-            <input
-              type="checkbox"
-              onInput={this.handleCheckboxChange('enroute')}
-              checked={SettingsStore.enroute}
-            />
-            <span class="slider" />
-          </label>
+          </SettingRow>
+
+          <SettingRow label="Difficulty" className="settings-row-select">
+            <select
+              aria-label="Difficulty"
+              value={this.state.difficulty}
+              onInput={this.handleDifficultyChange}
+            >
+              <option value="easy">Easy</option>
+              <option value="normal">Normal</option>
+              <option value="hard">Hard</option>
+            </select>
+          </SettingRow>
+
+          {this.renderToggleRow('ga', 'General Aviation')}
+          {this.renderToggleRow('enroute', 'Enroute Traffic')}
+          {SettingsStore.stopSpawn ? null : (
+            <SettingRow
+              label="Aircraft Spawn Interval"
+              className="settings-row-range"
+            >
+              <RangeControl
+                label="Aircraft Spawn Interval"
+                min="10"
+                max="400"
+                step="10"
+                value={SettingsStore.newPlaneInterval}
+                suffix=" sec"
+                onInput={this.handleNewPlaneIntervalChange}
+              />
+            </SettingRow>
+          )}
+          {this.renderToggleRow('stopSpawn', 'Stop Aircraft Spawning')}
+          {this.renderToggleRow('goArounds', 'Go-Arounds')}
+          {this.renderToggleRow('takeoffInOrder', 'Takeoff in Order')}
+          {this.renderToggleRow('millibars', 'Millibars')}
+          {this.renderToggleRow('sidsStars', 'SIDs/STARs')}
+          {this.renderToggleRow('useTextCmd', 'Text Commands')}
         </div>
 
-        <button onClick={this.handleAppearanceExpanded}>
-          {this.state.appearanceExpanded ? (
-            <span>
-              <FaCompress /> Hide Appearance Settings
-            </span>
-          ) : (
-              <span>
-                <FaExpand /> Show Appearance Settings{' '}
-              </span>
-            )}
+        <button
+          type="button"
+          className="settings-section-toggle"
+          aria-expanded={this.state.appearanceExpanded}
+          aria-controls="appearance-settings"
+          onClick={this.handleAppearanceExpanded}
+        >
+          <span>
+            {this.state.appearanceExpanded ? <FaCompress /> : <FaExpand />}
+            Appearance Settings
+          </span>
+          <span aria-hidden="true">
+            {this.state.appearanceExpanded ? '−' : '+'}
+          </span>
         </button>
         <div
-          className={`appearance-settings ${
+          id="appearance-settings"
+          className={`settings-group settings-collapsible ${
             this.state.appearanceExpanded ? '' : 'hidden'
           }`}
         >
-          <div className="mb ThemeInput">
-            <span>Interface Theme</span>
+          <SettingRow label="Interface Theme" className="settings-row-theme">
             <ThemeControl />
-          </div>
-          <div className="mb SwitchInput">
-            <span>Distance Circles</span>
-            <label class="switch">
-              <input
-                type="checkbox"
-                onInput={this.handleCheckboxChange('distanceCircles')}
-                checked={SettingsStore.distanceCircles}
-              />
-              <span class="slider" />
-            </label>
-          </div>
-          <div className="takeoff-in-order mb SwitchInput">
-            <span>Route Visualization</span>
-            <label class="switch">
-              <input
-                type="checkbox"
-                onInput={this.handleCheckboxChange('routeVisualization')}
-                checked={SettingsStore.routeVisualization}
-              />
-              <span class="slider" />
-            </label>
-          </div>
-          <span>Radar Font Size</span>
-          <div className="fontsize-setting range-slider mb">
-            <input
-              className="range-slider__range"
-              type="range"
+          </SettingRow>
+          {this.renderToggleRow('distanceCircles', 'Distance Circles')}
+          {this.renderToggleRow('routeVisualization', 'Route Visualization')}
+          <SettingRow label="Radar Font Size" className="settings-row-range">
+            <RangeControl
+              label="Radar Font Size"
               min="8"
               max="30"
               step="1"
               value={SettingsStore.radarFontsize}
+              suffix=" px"
               onInput={this.handleRadarFontSizeChange}
             />
-            <span class="range-slider__value">
-              {SettingsStore.radarFontsize} pixels
-            </span>
-          </div>
-          <div className="mb">
-            <span>Interface Scale</span>
-            <select
-              value={SettingsStore.interfaceScale}
-              onInput={this.handleInterfaceScaleChange}
+          </SettingRow>
+          <SettingRow label="Interface Scale" className="settings-row-select">
+            <div>
+              <select
+                aria-label="Interface Scale"
+                value={SettingsStore.interfaceScale}
+                onInput={this.handleInterfaceScaleChange}
+              >
+                <option value="auto">Automatic for This Display</option>
+                <option value="0.75">75%</option>
+                <option value="0.9">90%</option>
+                <option value="1">100%</option>
+                <option value="1.1">110%</option>
+                <option value="1.25">125%</option>
+                <option value="1.5">150%</option>
+              </select>
+              <small className="settings-device-note">
+                Saved only in this browser profile.
+              </small>
+            </div>
+          </SettingRow>
+          {colorSettings.map(([name, label]) => (
+            <SettingRow
+              label={label}
+              className="settings-row-color"
+              key={name}
             >
-              <option value="auto">Automatic for This Display</option>
-              <option value="0.75">75%</option>
-              <option value="0.9">90%</option>
-              <option value="1">100%</option>
-              <option value="1.1">110%</option>
-              <option value="1.25">125%</option>
-              <option value="1.5">150%</option>
-            </select>
-            <small className="settings-device-note">
-              Saved only in this browser profile.
-            </small>
-          </div>
-          <div className="mb ColorInput">
-            <span>Touch Control Display Color</span>
-            <input
-              type="color"
-              value={SettingsStore.touchControlColor}
-              onInput={this.handleChange('touchControlColor')}
-            />
-          </div>
-          <div className="mb ColorInput">
-            <span>ILS Indicator Color</span>
-            <input
-              type="color"
-              value={SettingsStore.ilsPathColor}
-              onInput={this.handleIlsPathColorChange}
-            />
-          </div>
-          <div className="mb ColorInput">
-            <span>Danger Color</span>
-            <input
-              type="color"
-              value={SettingsStore.dangerColor}
-              onInput={this.handleChange('dangerColor')}
-            />
-          </div>
-          <div className="mb ColorInput">
-            <span>Background Color</span>
-            <input
-              type="color"
-              value={SettingsStore.backgroundColor}
-              onInput={this.handleChange('backgroundColor')}
-            />
-          </div>
-          <div className="mb ColorInput">
-            <span>Foreground Color</span>
-            <input
-              type="color"
-              value={SettingsStore.foregroundColor}
-              onInput={this.handleChange('foregroundColor')}
-            />
-          </div>
-          <div className="mb ColorInput">
-            <span>Radar Color</span>
-            <input
-              type="color"
-              value={SettingsStore.radarColor}
-              onInput={this.handleChange('radarColor')}
-            />
-          </div>
-          <div className="mb ColorInput">
-            <span>SID Color</span>
-            <input
-              type="color"
-              value={SettingsStore.sidColor}
-              onInput={this.handleChange('sidColor')}
-            />
-          </div>
-          <div className="mb ColorInput">
-            <span>STAR Color</span>
-            <input
-              type="color"
-              value={SettingsStore.starColor}
-              onInput={this.handleChange('starColor')}
-            />
-          </div>
-          <div className="mb ColorInput">
-            <span>Inbound Traffic Color</span>
-            <input
-              type="color"
-              value={SettingsStore.inboundTrafficColor}
-              onInput={this.handleChange('inboundTrafficColor')}
-            />
-          </div>
-          <div className="mb ColorInput">
-            <span>Enroute Traffic Color</span>
-            <input
-              type="color"
-              value={SettingsStore.enrouteTrafficColor}
-              onInput={this.handleChange('enrouteTrafficColor')}
-            />
-          </div>
-          <div className="mb ColorInput">
-            <span>Outbound Traffic Color</span>
-            <input
-              type="color"
-              value={SettingsStore.outboundTrafficColor}
-              onInput={this.handleChange('outboundTrafficColor')}
-            />
-          </div>
-          <div className="mb ColorInput">
-            <span>VFR Traffic Color</span>
-            <input
-              type="color"
-              value={SettingsStore.vfrTrafficColor}
-              onInput={this.handleChange('vfrTrafficColor')}
-            />
-          </div>
-          <div className="mb ColorInput">
-            <span>Path Color</span>
-            <input
-              type="color"
-              value={SettingsStore.pathVisualizerColor}
-              onInput={this.handleChange('pathVisualizerColor')}
-            />
-          </div>
-          <div className="mb ColorInput">
-            <span>Climb Color</span>
-            <input
-              type="color"
-              value={SettingsStore.climbColor}
-              onInput={this.handleChange('climbColor')}
-            />
-          </div>
-          <div className="mb ColorInput">
-            <span>Descent Color</span>
-            <input
-              type="color"
-              value={SettingsStore.descendColor}
-              onInput={this.handleChange('descendColor')}
-            />
-          </div>
-          <div className="mb ColorInput">
-            <span>MSA Color</span>
-            <input
-              type="color"
-              value={SettingsStore.msaColor}
-              onInput={this.handleChange('msaColor')}
-            />
-          </div>
+              <input
+                type="color"
+                aria-label={label}
+                value={SettingsStore[name]}
+                onInput={this.handleChange(name)}
+              />
+            </SettingRow>
+          ))}
         </div>
 
-        <button onClick={this.handleToggleExpandClick}>
-          {this.state.expanded ? (
-            <span>
-              <FaCompress /> Hide Advanced Settings
-            </span>
-          ) : (
-              <span>
-                <FaExpand /> Show Advanced Settings{' '}
-              </span>
-            )}
+        <div className="settings-utility-row">
+          <button type="button" onClick={this.clearCaches}>
+            Clear Caches
+          </button>
+          <small>Does not affect saved sessions.</small>
+        </div>
+
+        <button
+          type="button"
+          className="settings-section-toggle"
+          aria-expanded={this.state.speechExpanded}
+          aria-controls="speech-settings"
+          onClick={this.handleSpeechExpanded}
+        >
+          <span>
+            {this.state.speechExpanded ? <FaCompress /> : <FaExpand />}
+            Speech Synthesis
+          </span>
+          <span aria-hidden="true">{this.state.speechExpanded ? '−' : '+'}</span>
         </button>
         <div
-          style="border: 1px solid #1e606b; border-radius: 5px; padding: 5px;"
-          className={this.state.expanded ? null : 'hidden'}
+          id="speech-settings"
+          className={`settings-group settings-collapsible ${
+            this.state.speechExpanded ? '' : 'hidden'
+          }`}
         >
-          <div className="speechsynthesis-setting mb SwitchInput">
-            <span>Speech Synthesis</span>
-            <label class="switch">
-              <input
-                type="checkbox"
-                onInput={this.handleCheckboxChange('speechsynthesis')}
-                checked={SettingsStore.speechsynthesis} />
-              <span class="slider" />
-            </label>
-          </div>
-          <div className={['speechsynthesis-voices-setting', 'mb',
-            SettingsStore.speechsynthesis ? 'show' : 'hidden'].join(' ')}>
-            <span>Speech Synthesis Voices</span>
-            <select onInput={this.handleSpeechVoiceChange} value={atcVoiceName}>
-              {SettingsStore.voices.map((voice, i) => {
-                return (
-                  <option key={voice.name} value={voice.name}>
-                    {voice.name} - {voice.lang}
-                  </option>
-                );
-              })}
-            </select>
-          </div>
-          <span>Pitch</span>
-          <div className="speechsynthesis-pitch-setting range-slider mb">
-            <input
-              className="range-slider__range"
-              type="range"
-              min="0.1"
-              max="2"
-              step="0.1"
-              value={SettingsStore.pitch}
-              onInput={this.handlePitchChange}
-            />
-            <span class="range-slider__value">{SettingsStore.pitch}x</span>
-          </div>
-          <span>Rate</span>
-          <div className="speechsynthesis-rate-setting range-slider mb">
-            <input
-              className="range-slider__range"
-              type="range"
-              min="0.1"
-              max="2"
-              step="0.1"
-              value={SettingsStore.rate}
-              onInput={this.handleRateChange}
-            />
-            <span class="range-slider__value">{SettingsStore.rate}x</span>
-          </div>
-          {/* <div className="mb">
-          <span>Speech Recognition</span>
-          <label class="switch">
-            <input type="checkbox" onInput={this.handleSpeechRecognitionSettingChange} checked={SettingsStore.speechrecognition} />
-            <span class="slider"></span>
-          </label>
-        </div> */}
-          {SettingsStore.stopSpawn ? null : (
+          {this.renderToggleRow('speechsynthesis', 'Enable Speech Synthesis')}
+          {SettingsStore.speechsynthesis ? (
             <div>
-              <span>Aircraft Spawn Interval</span>
-              <div className="range-slider mb">
-                <input
-                  className="range-slider__range"
-                  type="range"
-                  min="10"
-                  max="400"
-                  step="10"
-                  value={SettingsStore.newPlaneInterval}
-                  onInput={this.handleNewPlaneIntervalChange}
+              <SettingRow label="Voice" className="settings-row-select">
+                <select
+                  aria-label="Speech Synthesis Voice"
+                  onInput={this.handleSpeechVoiceChange}
+                  value={atcVoiceName}
+                >
+                  {SettingsStore.voices.length ? null : (
+                    <option value="">No English Voices Available</option>
+                  )}
+                  {SettingsStore.voices.map(voice => (
+                    <option key={voice.name} value={voice.name}>
+                      {voice.name} — {voice.lang}
+                    </option>
+                  ))}
+                </select>
+              </SettingRow>
+              <SettingRow label="Pitch" className="settings-row-range">
+                <RangeControl
+                  label="Speech Pitch"
+                  min="0.1"
+                  max="2"
+                  step="0.1"
+                  value={SettingsStore.pitch}
+                  suffix="x"
+                  onInput={this.handlePitchChange}
                 />
-                <span class="range-slider__value">
-                  {SettingsStore.newPlaneInterval} seconds
-                </span>
-              </div>
-            </div>
-          )}
-          <div>
-            <div className="mb SwitchInput">
-              <span>Stop Aircraft Spawning</span>
-              <label class="switch">
-                <input
-                  type="checkbox"
-                  onInput={this.handleCheckboxChange('stopSpawn')}
-                  checked={SettingsStore.stopSpawn}
+              </SettingRow>
+              <SettingRow label="Rate" className="settings-row-range">
+                <RangeControl
+                  label="Speech Rate"
+                  min="0.1"
+                  max="2"
+                  step="0.1"
+                  value={SettingsStore.rate}
+                  suffix="x"
+                  onInput={this.handleRateChange}
                 />
-                <span class="slider" />
-              </label>
+              </SettingRow>
             </div>
-            <div className="mb SwitchInput">
-              <span>Go-Arounds</span>
-              <label class="switch">
-                <input
-                  type="checkbox"
-                  onInput={this.handleCheckboxChange('goArounds')}
-                  checked={SettingsStore.goArounds}
-                />
-                <span class="slider" />
-              </label>
-            </div>
-            <div className="takeoff-in-order mb SwitchInput">
-              <span>Takeoff in Order</span>
-              <label class="switch">
-                <input
-                  type="checkbox"
-                  onInput={this.handleCheckboxChange('takeoffInOrder')}
-                  checked={SettingsStore.takeoffInOrder}
-                />
-                <span class="slider" />
-              </label>
-            </div>
-            <div
-              className="mb SwitchInput"
-              title="Use millibars instead of inches of mercury for the airport altimeter"
-            >
-              <span>Millibars</span>
-              <label class="switch">
-                <input
-                  type="checkbox"
-                  onInput={this.handleCheckboxChange('millibars')}
-                  checked={SettingsStore.millibars}
-                />
-                <span class="slider" />
-              </label>
-            </div>
-            <div className="mb SwitchInput">
-              <span>SIDs/STARs</span>
-              <label class="switch">
-                <input
-                  type="checkbox"
-                  onInput={this.handleCheckboxChange('sidsStars')}
-                  checked={SettingsStore.sidsStars}
-                />
-                <span class="slider" />
-              </label>
-            </div>
-            <div className="mb SwitchInput">
-              <span>Text Commands</span>
-              <label class="switch">
-                <input
-                  type="checkbox"
-                  onInput={this.handleCheckboxChange('useTextCmd')}
-                  checked={SettingsStore.useTextCmd}
-                />
-                <span class="slider" />
-              </label>
-            </div>
-            <div className="mb">
-              <button onClick={this.clearCaches} class="button">Clear Caches</button>
-            </div>
-          </div>
+          ) : null}
         </div>
       </div>
     );

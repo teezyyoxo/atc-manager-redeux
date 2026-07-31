@@ -1,6 +1,26 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [3.0.0-rc.7] - 2026-07-31
+
+### Added
+
+- Added a continuously rotating radar sweep and deterministic, one-minute
+  movement paths for the aircraft in the homepage radar preview.
+
+### Changed
+
+- Rebalanced the desktop homepage to bring the hero and workspace closer
+  together, give the lower workspace more usable height, and increase
+  supporting text and tool-card legibility while retaining a single viewport.
+- Rebuilt session configuration as a wider, fluid dialog with larger type,
+  persistent actions, aligned setting rows, right-aligned color controls, and
+  higher-contrast range-slider handles.
+- Distributed the former advanced options into the main settings block and
+  moved speech synthesis into its own collapsible section.
+- Updated application, package, Compose, Make, image, documentation, and build
+  metadata to 3.0.0-rc.7.
+
 ## [3.0.0-rc.6] - 2026-07-31
 
 ### Changed

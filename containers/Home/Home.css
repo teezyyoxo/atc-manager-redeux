@@ -304,15 +304,28 @@
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(107, 240, 183, .28)
+    rgba(107, 240, 183, .82)
   );
+  box-shadow: 0 0 10px rgba(107, 240, 183, .52);
   height: 1px;
   left: 50%;
   position: absolute;
   top: 50%;
-  transform: rotate(-28deg);
+  transform: rotate(-90deg);
   transform-origin: left center;
   width: 44%;
+}
+
+.home-radar-sweep::after {
+  background: var(--ui-accent);
+  border-radius: 50%;
+  box-shadow: 0 0 14px var(--ui-accent);
+  content: "";
+  height: 4px;
+  position: absolute;
+  right: -2px;
+  top: -2px;
+  width: 4px;
 }
 
 .home-radar-aircraft {
@@ -343,13 +356,42 @@
 }
 
 .aircraft-two {
-  right: 11%;
+  left: 68%;
   top: 46%;
 }
 
 .aircraft-three {
-  bottom: 18%;
   left: 32%;
+  top: 70%;
+}
+
+@keyframes home-radar-rotate {
+  from { transform: rotate(-90deg); }
+  to { transform: rotate(270deg); }
+}
+
+@keyframes home-aircraft-path-one {
+  0%, 100% { left: 18%; top: 28%; }
+  18% { left: 25%; top: 18%; }
+  38% { left: 38%; top: 23%; }
+  58% { left: 44%; top: 39%; }
+  78% { left: 31%; top: 50%; }
+}
+
+@keyframes home-aircraft-path-two {
+  0%, 100% { left: 68%; top: 46%; }
+  20% { left: 73%; top: 31%; }
+  42% { left: 62%; top: 20%; }
+  64% { left: 53%; top: 34%; }
+  82% { left: 59%; top: 51%; }
+}
+
+@keyframes home-aircraft-path-three {
+  0%, 100% { left: 32%; top: 70%; }
+  22% { left: 45%; top: 75%; }
+  44% { left: 58%; top: 65%; }
+  66% { left: 52%; top: 51%; }
+  84% { left: 38%; top: 56%; }
 }
 
 .home-radar-center {
@@ -463,7 +505,8 @@
 .home-field-label {
   color: var(--ui-muted);
   font-family: "Roboto Mono", monospace;
-  font-size: .7rem;
+  font-size: .8rem;
+  font-weight: 700;
   letter-spacing: .1em;
   margin-bottom: 8px;
   text-transform: uppercase;
@@ -474,10 +517,11 @@
 .home input[type='number'] {
   background-color: var(--ui-surface-solid);
   border: 1px solid var(--ui-line);
-  border-radius: 0;
+  border-radius: 9px;
   color: var(--ui-text);
   font-family: inherit;
-  min-height: 46px;
+  font-size: .9rem;
+  min-height: 50px;
 }
 
 .home select:focus,
@@ -498,63 +542,23 @@
   margin-top: 7px;
 }
 
+.home-airport-field {
+  background: color-mix(in srgb, var(--ui-surface-solid) 72%, transparent);
+  border: 1px solid var(--ui-line);
+  border-radius: 14px;
+  padding: 14px;
+}
+
 .home .settings {
+  margin-top: 14px;
+}
+
+.home-session-modal > .home-start-actions {
+  background: color-mix(in srgb, var(--ui-surface-solid) 88%, transparent);
   border-top: 1px solid var(--ui-line);
-  margin-top: 28px;
-  padding-top: 26px;
-}
-
-.home .settings > span:first-child,
-.home .settings .mb > span:first-child {
-  color: var(--ui-muted);
-  display: inline-block;
-  font-size: .82rem;
-  margin-bottom: 6px;
-}
-
-.home .settings .mb {
-  margin-bottom: 15px;
-}
-
-.home .settings button {
-  background: var(--ui-surface-raised);
-  border: 1px solid var(--ui-line);
-  color: var(--ui-text);
-  font-family: inherit;
-  font-size: .76rem;
-  height: 40px;
-  letter-spacing: 0;
-  margin: 2px 0 12px;
-  text-transform: none;
-  border-radius: 999px;
-}
-
-.home .settings .range-slider__value {
-  background: var(--ui-surface-raised);
-  color: var(--ui-text);
-}
-
-.home .settings .range-slider__value::after {
-  border-right-color: var(--ui-surface-raised);
-}
-
-.home .settings .slider {
-  background: var(--ui-surface-raised);
-  border: 1px solid var(--ui-line);
-}
-
-.home .settings input:checked + .slider {
-  background: var(--ui-accent-strong);
-}
-
-.home .settings input[type='color'] {
-  border: 1px solid var(--ui-line);
-}
-
-.home-start-actions {
-  border-top: 1px solid var(--ui-line);
-  margin-top: 26px;
-  padding-top: 24px;
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 16px clamp(22px, 4vw, 38px);
 }
 
 .home-start-button {
@@ -815,9 +819,9 @@
   display: flex;
   flex-direction: column;
   font-family: "Roboto Mono", monospace;
-  max-height: min(820px, calc(100dvh - 40px));
+  max-height: min(880px, calc(100dvh - 40px));
   overflow: hidden;
-  width: min(720px, 100%);
+  width: min(840px, 100%);
 }
 
 .home-session-modal-header {
@@ -826,12 +830,12 @@
   display: flex;
   flex: 0 0 auto;
   justify-content: space-between;
-  padding: 24px clamp(22px, 4vw, 34px) 20px;
+  padding: 26px clamp(22px, 4vw, 38px) 22px;
 }
 
 .home-session-modal-header h2 {
   font-family: "Roboto Mono", monospace;
-  font-size: clamp(1.5rem, 4vw, 2.1rem);
+  font-size: clamp(1.8rem, 4vw, 2.3rem);
   letter-spacing: -.045em;
   line-height: 1.05;
   margin: 6px 0 0;
@@ -865,12 +869,30 @@
 
 .home-session-modal-body {
   -webkit-overflow-scrolling: touch;
+  flex: 1 1 auto;
+  min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding: 24px clamp(22px, 4vw, 34px) 30px;
+  padding: 20px clamp(22px, 4vw, 38px) 22px;
 }
 
 @media (prefers-reduced-motion: no-preference) {
+  .home-radar-sweep {
+    animation: home-radar-rotate 7.5s linear infinite;
+  }
+
+  .aircraft-one {
+    animation: home-aircraft-path-one 60s linear infinite;
+  }
+
+  .aircraft-two {
+    animation: home-aircraft-path-two 60s linear infinite;
+  }
+
+  .aircraft-three {
+    animation: home-aircraft-path-three 60s linear infinite;
+  }
+
   .home-session-overlay {
     animation: home-modal-backdrop-in .18s ease-out both;
   }
@@ -899,12 +921,12 @@
 
   .home-main {
     display: grid;
-    gap: 14px 18px;
+    gap: 12px 20px;
     grid-template-areas:
       "hero hero"
       "continue tools";
-    grid-template-columns: minmax(260px, .65fr) minmax(0, 2fr);
-    padding-bottom: 14px;
+    grid-template-columns: minmax(280px, .7fr) minmax(0, 2fr);
+    padding-bottom: 10px;
     width: 100%;
   }
 
@@ -913,16 +935,16 @@
     grid-area: hero;
     grid-template-columns: minmax(0, 1.15fr) minmax(300px, .7fr);
     min-height: 0;
-    padding: 16px 0 20px;
+    padding: 10px 0 12px;
   }
 
   .home-hero h1 {
-    font-size: clamp(3.7rem, 6.3vw, 6.2rem);
+    font-size: clamp(3.9rem, 6.4vw, 6.35rem);
     margin: 12px 0 16px;
   }
 
   .home-hero-copy > p {
-    font-size: clamp(.96rem, 1.25vw, 1.12rem);
+    font-size: clamp(1rem, 1.3vw, 1.16rem);
     line-height: 1.42;
     margin-bottom: 18px;
   }
@@ -932,20 +954,21 @@
   }
 
   .home-hero-meta {
+    font-size: .72rem;
     margin-top: 16px;
   }
 
   .home-radar-preview {
     justify-self: end;
-    max-width: 440px;
-    width: min(100%, 39dvh);
+    max-width: 520px;
+    width: min(100%, 44dvh);
   }
 
   .home-continue-section {
     grid-area: continue;
     margin: 0;
     min-height: 0;
-    padding: 17px;
+    padding: 21px;
   }
 
   .home-continue-section .home-section-heading {
@@ -956,16 +979,19 @@
   }
 
   .home-continue-section .home-section-heading > p {
-    font-size: .72rem;
+    font-size: .82rem;
+    line-height: 1.4;
     text-align: left;
   }
 
   .home-continue-section .savedgamesopen-list {
-    max-height: 116px;
+    max-height: 150px;
     overflow-y: auto;
   }
 
   .home-tools-section {
+    display: flex;
+    flex-direction: column;
     grid-area: tools;
     min-width: 0;
     padding: 0;
@@ -973,7 +999,12 @@
 
   .home-tools-section > .home-section-heading {
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
+  }
+
+  .home-tools-section > .home-section-heading > p {
+    font-size: .82rem;
+    line-height: 1.4;
   }
 
   .home-section-heading h2,
@@ -982,31 +1013,33 @@
   }
 
   .home-tools-grid {
+    flex: 1 1 auto;
     gap: 6px;
+    grid-auto-rows: minmax(86px, 1fr);
   }
 
   .home .home-tool-card {
-    gap: 10px;
-    grid-template-columns: 36px minmax(0, 1fr) auto;
-    min-height: 72px;
-    padding: 10px 12px;
+    gap: 12px;
+    grid-template-columns: 40px minmax(0, 1fr) auto;
+    min-height: 86px;
+    padding: 13px 15px;
   }
 
   .home-tool-icon {
     border-radius: 9px;
-    font-size: 1rem;
-    height: 36px;
-    width: 36px;
+    font-size: 1.08rem;
+    height: 40px;
+    width: 40px;
   }
 
   .home-tool-copy strong {
-    font-size: .82rem;
+    font-size: .92rem;
   }
 
   .home-tool-copy small {
-    font-size: .66rem;
-    line-height: 1.28;
-    margin-top: 2px;
+    font-size: .77rem;
+    line-height: 1.35;
+    margin-top: 3px;
   }
 
   .home-footer {
@@ -1027,7 +1060,7 @@
 
   .home-main {
     flex: 1 1 auto;
-    grid-template-rows: minmax(0, 1fr) auto;
+    grid-template-rows: minmax(0, 1.45fr) minmax(220px, .75fr);
     min-height: 0;
   }
 

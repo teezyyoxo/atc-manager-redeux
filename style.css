@@ -1,5 +1,6 @@
 
 @import './components/ReleaseNotesModal/ReleaseNotesModal.css';
+@import './components/Settings/Settings.css';
 
  :root {
   color-scheme: dark;

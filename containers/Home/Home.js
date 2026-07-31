@@ -392,48 +392,54 @@ class Home extends Component {
                 </button>
               </header>
               <div className="home-session-modal-body">
-                <label className="home-field-label" for="home-airport">
-                  Airport
-                </label>
-                <select
-                  id="home-airport"
-                  value={selectedMap.id}
-                  onInput={this.handleMapSelectionChange}
-                  ref={element => {
-                    this.sessionSelect = element;
-                  }}
-                >
-                  {mapsArr.map(map => (
-                    <option key={map.id} value={map.id}>
-                      {map.name}
-                    </option>
-                  ))}
-                </select>
-                <div className="home-airport-notes">
-                  {selectedMap.ga === 0 ? (
-                    <small>General aviation is unavailable at this airport.</small>
-                  ) : null}
-                  {selectedMap.commercial === 0 ? (
-                    <small>Commercial traffic is unavailable at this airport.</small>
-                  ) : null}
+                <div className="home-airport-field">
+                  <label className="home-field-label" for="home-airport">
+                    Airport
+                  </label>
+                  <select
+                    id="home-airport"
+                    value={selectedMap.id}
+                    onInput={this.handleMapSelectionChange}
+                    ref={element => {
+                      this.sessionSelect = element;
+                    }}
+                  >
+                    {mapsArr.map(map => (
+                      <option key={map.id} value={map.id}>
+                        {map.name}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="home-airport-notes">
+                    {selectedMap.ga === 0 ? (
+                      <small>
+                        General aviation is unavailable at this airport.
+                      </small>
+                    ) : null}
+                    {selectedMap.commercial === 0 ? (
+                      <small>
+                        Commercial traffic is unavailable at this airport.
+                      </small>
+                    ) : null}
+                  </div>
                 </div>
                 <Settings />
-                <div className="home-start-actions">
-                  <button
-                    type="button"
-                    className="home-button home-button-primary home-start-button"
-                    onClick={this.handleStartClick}
-                  >
-                    <FaPlay /> Start Session
-                  </button>
-                  <button
-                    type="button"
-                    className="home-button home-button-secondary"
-                    onClick={this.closeSession}
-                  >
-                    Cancel
-                  </button>
-                </div>
+              </div>
+              <div className="home-start-actions">
+                <button
+                  type="button"
+                  className="home-button home-button-primary home-start-button"
+                  onClick={this.handleStartClick}
+                >
+                  <FaPlay /> Start Session
+                </button>
+                <button
+                  type="button"
+                  className="home-button home-button-secondary"
+                  onClick={this.closeSession}
+                >
+                  Cancel
+                </button>
               </div>
             </section>
           </div>
