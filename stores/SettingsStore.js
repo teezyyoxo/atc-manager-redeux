@@ -2,7 +2,19 @@ import { EventEmitter } from 'events';
 import Communications from '../lib/communications';
 import { loadState, saveState } from '../lib/persistance';
 
-const colorPalettes = ['approach', 'oceanic', 'amber', 'violet'];
+const colorPalettes = [
+  'approach',
+  'oceanic',
+  'amber',
+  'violet',
+  'tower-green',
+  'cobalt',
+  'crimson',
+  'rose',
+  'arctic',
+  'graphite',
+  'sandstone'
+];
 const interfaceFonts = [
   'ibm-plex-mono',
   'jetbrains-mono',
@@ -216,19 +228,18 @@ class SettingsStore extends EventEmitter {
     root.setAttribute('data-palette', colorPalette);
     root.setAttribute('data-interface-font', interfaceFont);
 
-    if (preference === 'system') {
-      root.removeAttribute('data-theme');
-      root.style.colorScheme = 'light dark';
-    } else {
-      root.setAttribute('data-theme', preference);
-      root.style.colorScheme = preference;
-    }
+    const systemPrefersDark = this.systemThemeMedia
+      ? this.systemThemeMedia.matches
+      : typeof window !== 'undefined' && window.matchMedia
+        ? window.matchMedia('(prefers-color-scheme: dark)').matches
+        : true;
+    const effectiveTheme = preference === 'system'
+      ? systemPrefersDark ? 'dark' : 'light'
+      : preference;
+    root.setAttribute('data-theme', effectiveTheme);
+    root.style.colorScheme = effectiveTheme;
 
-    const isDark =
-      preference === 'dark' ||
-      (preference === 'system' &&
-        this.systemThemeMedia &&
-        this.systemThemeMedia.matches);
+    const isDark = effectiveTheme === 'dark';
     const themeColor = document.querySelector('meta[name="theme-color"]');
     if (themeColor) {
       const backgroundColor = window.getComputedStyle(root)

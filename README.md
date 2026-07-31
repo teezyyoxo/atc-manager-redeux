@@ -8,7 +8,7 @@ import, or share timelapse files.
 The production app is a static Preact build served by nginx. The same
 multi-stage `Dockerfile` is supported by Docker and Podman.
 
-Current release: **3.0.0-rc.9**
+Current release: **3.0.0-rc.10**
 
 ## Features
 
@@ -245,7 +245,7 @@ make ENGINE=podman run PORT=8081
 ```
 
 `VERSION`, `IMAGE`, `PORT`, `CONTAINER`, `BUILD_COMMIT`, and `BUILD_FLAGS` can
-all be overridden. The default image is `atc-manager:3.0.0-rc.9`.
+all be overridden. The default image is `atc-manager:3.0.0-rc.10`.
 
 ## Mobile and tablet browsers
 
@@ -270,13 +270,14 @@ settings remain local to the current browser profile, so one player's device
 does not change another's. The bundled IBM Plex Mono, JetBrains Mono, and Share
 Tech Mono fonts work without an external font service. System, Light, and Dark
 display modes can be selected from the homepage or Appearance settings; System
-follows the current device preference. Each selectable color theme includes
-coordinated dark and light palettes. During an active
+follows the current device preference. Eleven selectable color themes include
+coordinated dark and light palettes and persist in the current browser. During
+an active
 session, backgrounding the page, changing tabs, or putting the device to sleep
 pauses the simulation. Return to the glowing pause dialog and choose
 **Resume session** when ready.
 The About panel shows the release and source revision as
-`3.0.0-rc.9+<commit>`, which identifies the exact release-candidate build in
+`3.0.0-rc.10+<commit>`, which identifies the exact release-candidate build in
 use.
 
 ## New Features announcements
@@ -385,9 +386,9 @@ Podman did not find the requested image locally and tried to pull it. Build it
 first, use the same tag for `build` and `run`, and keep `--pull=never`:
 
 ```bash
-podman build --format docker --build-arg APP_VERSION=3.0.0-rc.9 \
-  -t localhost/atc-manager:3.0.0-rc.9 .
-podman run --pull=never --rm -p 8080:80 localhost/atc-manager:3.0.0-rc.9
+podman build --format docker --build-arg APP_VERSION=3.0.0-rc.10 \
+  -t localhost/atc-manager:3.0.0-rc.10 .
+podman run --pull=never --rm -p 8080:80 localhost/atc-manager:3.0.0-rc.10
 ```
 
 ### Port 8080 is already in use
@@ -395,8 +396,8 @@ podman run --pull=never --rm -p 8080:80 localhost/atc-manager:3.0.0-rc.9
 Publish another host port:
 
 ```bash
-docker run --rm -p 8081:80 atc-manager:3.0.0-rc.9
-podman run --rm -p 8081:80 localhost/atc-manager:3.0.0-rc.9
+docker run --rm -p 8081:80 atc-manager:3.0.0-rc.10
+podman run --rm -p 8081:80 localhost/atc-manager:3.0.0-rc.10
 ```
 
 ### Container build dependency errors

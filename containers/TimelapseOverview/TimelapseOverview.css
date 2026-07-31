@@ -1,4 +1,28 @@
 
 .TimelapseOverview {
-    overflow: hidden;
+  overflow: visible;
+}
+
+.timelapse-library-header {
+  align-items: center;
+  display: flex;
+  gap: 24px;
+  justify-content: space-between;
+}
+
+.timelapse-library-header h3 {
+  font-size: clamp(1.55rem, 3vw, 2.15rem);
+  letter-spacing: -.04em;
+  margin: 8px 0 6px;
+}
+
+.timelapse-library-header p {
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  .timelapse-library-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
 }

@@ -15,10 +15,9 @@ import TimelapseRoot from 'async!./containers/TimelapseRoot/TimelapseRoot';
 import TutorialsRoot from './containers/TutorialsRoot/TutorialsRoot';
 import TutorialsIntro from './containers/TutorialsIntro/TutorialsIntro';
 import TutorialsTextCommands from './containers/TutorialsTextCommands/TutorialsTextCommands';
-import { loadCSS, loadJS } from './lib/lazy-load';
+import { loadJS } from './lib/lazy-load';
 
 if (typeof window !== 'undefined') {
-  loadCSS('https://fonts.googleapis.com/css?family=Roboto+Mono');
   loadJS('https://buttons.github.io/buttons.js');
 }
 

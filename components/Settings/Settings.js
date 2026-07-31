@@ -60,7 +60,14 @@ const colorPalettes = [
   ['approach', 'Approach Mint'],
   ['oceanic', 'Oceanic Blue'],
   ['amber', 'Amber Scope'],
-  ['violet', 'Violet Dusk']
+  ['violet', 'Violet Dusk'],
+  ['tower-green', 'Tower Green'],
+  ['cobalt', 'Cobalt Night'],
+  ['crimson', 'Crimson Vector'],
+  ['rose', 'Rose Quartz'],
+  ['arctic', 'Arctic Ice'],
+  ['graphite', 'Graphite'],
+  ['sandstone', 'Desert Sand']
 ];
 
 class Settings extends Component {
@@ -68,7 +75,7 @@ class Settings extends Component {
     super(props);
     this.state = {
       difficulty: 'normal',
-      appearanceExpanded: false
+      appearanceExpanded: !!props.appearanceInitiallyExpanded
     };
   }
 

@@ -38,6 +38,13 @@ class WorkspaceShell extends Component {
             <h1>{title}</h1>
             {description ? <p>{description}</p> : null}
           </section>
+          <nav className="workspace-tool-switcher" aria-label="Tools and training">
+            <Link href="/editor/save-editor">Saves</Link>
+            <Link href="/editor/airplane-editor">Aircraft</Link>
+            <Link href="/editor/operator-editor">Operators</Link>
+            <Link href="/timelapse/overview">Timelapses</Link>
+            <Link href="/tutorials">Tutorials</Link>
+          </nav>
           <div className="workspace-content">{children}</div>
         </div>
       </div>

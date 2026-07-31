@@ -1,50 +1,19 @@
 
-.AirplaneEditor {
-    
-  background-color: rgb(25, 72, 80); 
-  overflow: hidden;
-  min-height: 100vh;
-  padding-bottom: 50px;
-}
-
-.AirplaneEditor {
-  background-color: rgb(25, 72, 80); 
-  overflow: hidden;
-  min-height: 100vh;
-  padding-bottom: 50px;
-}
-
 .AirplaneEditor .warning-message {
-    color: red;
+  color: #e5867b;
 }
 
 .AirplaneEditor textarea.line-nums  {
- background: url(http://i.imgur.com/2cOaJ.png);
- background-attachment: local;
- background-repeat: no-repeat;
- padding-left: 35px;
- padding-top: 10px;
- border-color:#ccc;
- line-height:16px;
- white-space: nowrap;
+  font-family: var(--ui-scope-font);
+  line-height: 1.55;
   overflow: auto;
-  overflow: auto;
+  padding: 18px;
+  resize: vertical;
+  white-space: pre;
 }
 
 .AirplaneEditor .spinner {
   animation:spin 4s linear infinite;
-}
-
-.AirplaneEditor .edit-save-box {
-  height: 600px!important;
-  overflow-y: auto;
-}
-
-.AirplaneEditor form.edit-save-box {
-  padding: 5px 10px 5px 5px;
-  border: 1px solid #1e606b;
-  border-radius: 5px;
-  margin-bottom: 5px;
 }
 
 .AirplaneEditor form.edit-save-box p {
@@ -74,7 +43,8 @@
 .AirplaneEditor .array-item-move-down::after { content: 'Move Down'; }
 .AirplaneEditor .array-item-remove::after { content: 'Remove'; }
 
-.AirplaneEditor form.edit-save-box label, legend {
+.AirplaneEditor form.edit-save-box label,
+.AirplaneEditor form.edit-save-box legend {
   font-size: 1rem;
   font-weight: normal;
 }

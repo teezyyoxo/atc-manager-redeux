@@ -1,6 +1,34 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [3.0.0-rc.10] - 2026-07-31
+
+### Added
+
+- Added seven mode-aware color themes—Tower Green, Cobalt Night, Crimson
+  Vector, Rose Quartz, Arctic Ice, Graphite, and Desert Sand—for eleven total
+  palettes with coordinated System, Light, and Dark appearances.
+- Added a dedicated homepage Settings action and modal plus a functional Tools
+  launcher with direct access to every local workspace.
+- Added five randomized, one-minute homepage radar scenarios for EHAM, EGLL,
+  KLAX, KPSP, and EHZM, with distinct traffic, randomized paths, live altitude
+  and airspeed trends, and configurable two-second blurred transitions.
+
+### Changed
+
+- Rebuilt the Save, Aircraft, and Operator editors around task-oriented
+  toolbars, empty states, structured and JSON editing modes, clearer local
+  persistence actions, responsive review forms, and shared tool navigation.
+- Reworked the timelapse library and Tutorials hub with modern responsive
+  controls, useful empty states, accessible recording actions, and a structured
+  training path.
+- Increased homepage eyebrow, capability, hero, section-heading, and navigation
+  sizing, and removed the Share workspace card and its inactive homepage flow.
+- Removed the remaining external Roboto Mono request now that interface fonts
+  are bundled with the application.
+- Updated application, package, Compose, Make, image, documentation, and build
+  metadata to 3.0.0-rc.10.
+
 ## [3.0.0-rc.9] - 2026-07-31
 
 ### Added

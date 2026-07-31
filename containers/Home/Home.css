@@ -95,6 +95,50 @@
   gap: clamp(10px, 2vw, 24px);
 }
 
+.home-nav-tools {
+  display: inline-flex;
+  position: relative;
+}
+
+.home-nav-tools .home-nav-link {
+  width: 100%;
+}
+
+.home-nav-link svg {
+  margin-right: 6px;
+}
+
+.home-tools-menu {
+  background: color-mix(in srgb, var(--ui-surface-solid) 94%, transparent);
+  border: 1px solid var(--ui-line);
+  border-radius: 14px;
+  box-shadow: 0 20px 50px var(--ui-shadow);
+  display: grid;
+  min-width: 220px;
+  overflow: hidden;
+  padding: 7px;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  z-index: 20;
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+}
+
+.home-tools-menu a {
+  border-radius: 9px;
+  color: var(--ui-muted);
+  font-family: var(--ui-scope-font);
+  font-size: .78rem;
+  padding: 10px 12px;
+}
+
+.home-tools-menu a:hover,
+.home-tools-menu a:focus {
+  background: var(--ui-surface-raised);
+  color: var(--ui-text);
+}
+
 .home-nav > a,
 .home-nav-link,
 .home-nav-session {
@@ -146,10 +190,14 @@
   color: var(--ui-accent);
   display: inline-block;
   font-family: var(--ui-scope-font);
-  font-size: .7rem;
+  font-size: .82rem;
   font-weight: 700;
   letter-spacing: .14em;
   text-transform: uppercase;
+}
+
+.home-eyebrow {
+  font-size: .94rem;
 }
 
 .home-hero h1 {
@@ -228,7 +276,7 @@
   display: flex;
   flex-wrap: wrap;
   font-family: var(--ui-scope-font);
-  font-size: .66rem;
+  font-size: .76rem;
   gap: 20px;
   margin-top: 34px;
   text-transform: uppercase;
@@ -264,6 +312,10 @@
   overflow: hidden;
   position: relative;
   width: 100%;
+}
+
+.home-radar-preview.is-transitioning {
+  opacity: .7;
 }
 
 .home-radar-preview::after {
@@ -351,6 +403,16 @@
   font-size: clamp(.52rem, 1.15vw, .72rem);
   line-height: 1.2;
   position: absolute;
+  left: var(--radar-x0);
+  top: var(--radar-y0);
+}
+
+.home-radar-aircraft.is-departure {
+  color: var(--ui-accent);
+}
+
+.home-radar-aircraft.is-transit {
+  color: var(--ui-muted);
 }
 
 .home-radar-aircraft > span {
@@ -365,19 +427,11 @@
   opacity: .68;
 }
 
-.aircraft-one {
-  left: 18%;
-  top: 28%;
-}
-
-.aircraft-two {
-  left: 68%;
-  top: 46%;
-}
-
-.aircraft-three {
-  left: 32%;
-  top: 70%;
+.home-radar-aircraft em {
+  font-size: .82em;
+  font-style: normal;
+  font-weight: 400;
+  opacity: .72;
 }
 
 @keyframes home-radar-rotate {
@@ -385,28 +439,17 @@
   to { transform: rotate(270deg); }
 }
 
-@keyframes home-aircraft-path-one {
-  0%, 100% { left: 18%; top: 28%; }
-  18% { left: 25%; top: 18%; }
-  38% { left: 38%; top: 23%; }
-  58% { left: 44%; top: 39%; }
-  78% { left: 31%; top: 50%; }
+@keyframes home-aircraft-random-path {
+  0% { left: var(--radar-x0); top: var(--radar-y0); }
+  25% { left: var(--radar-x1); top: var(--radar-y1); }
+  50% { left: var(--radar-x2); top: var(--radar-y2); }
+  75% { left: var(--radar-x3); top: var(--radar-y3); }
+  100% { left: var(--radar-x4); top: var(--radar-y4); }
 }
 
-@keyframes home-aircraft-path-two {
-  0%, 100% { left: 68%; top: 46%; }
-  20% { left: 73%; top: 31%; }
-  42% { left: 62%; top: 20%; }
-  64% { left: 53%; top: 34%; }
-  82% { left: 59%; top: 51%; }
-}
-
-@keyframes home-aircraft-path-three {
-  0%, 100% { left: 32%; top: 70%; }
-  22% { left: 45%; top: 75%; }
-  44% { left: 58%; top: 65%; }
-  66% { left: 52%; top: 51%; }
-  84% { left: 38%; top: 56%; }
+@keyframes home-radar-scenario-transition {
+  0%, 100% { filter: blur(0); opacity: 1; transform: scale(1); }
+  50% { filter: blur(14px); opacity: .18; transform: scale(.975); }
 }
 
 .home-radar-center {
@@ -485,7 +528,7 @@
 .home-card h2 {
   color: var(--ui-text);
   font-family: var(--ui-scope-font);
-  font-size: clamp(1.55rem, 2.6vw, 2.2rem);
+  font-size: clamp(1.75rem, 2.8vw, 2.45rem);
   font-weight: 690;
   letter-spacing: -.045em;
   line-height: 1.05;
@@ -686,7 +729,7 @@
 }
 
 .home-tool-copy strong {
-  font-size: .95rem;
+  font-size: 1.03rem;
   line-height: 1.25;
 }
 
@@ -747,58 +790,6 @@
 .home-footer a svg:last-child:not(:first-child) {
   font-size: .62rem;
   opacity: .7;
-}
-
-.home .sharing-panel {
-  background:
-    linear-gradient(145deg, var(--ui-surface-solid), var(--ui-surface-raised));
-  border: 1px solid var(--ui-accent);
-  border-radius: 20px;
-  box-shadow: 0 24px 80px var(--ui-shadow);
-  color: var(--ui-text);
-  max-width: calc(100vw - 28px);
-  padding: 54px clamp(18px, 4vw, 34px) 28px;
-  width: 700px;
-  z-index: 20;
-}
-
-.home .sharing-panel input,
-.home .sharing-panel textarea {
-  background: var(--ui-surface);
-  border: 1px solid var(--ui-line);
-  border-radius: 12px;
-  color: var(--ui-text);
-  padding: 10px 12px;
-  width: 100%;
-}
-
-.home .sharing-panel button,
-.home .sharing-panel a .resp-sharing-button {
-  border: 1px solid var(--ui-line);
-  border-radius: 999px;
-  font-family: inherit;
-  letter-spacing: 0;
-  text-transform: none;
-}
-
-.home .sharing-panel .close {
-  align-items: center;
-  background: var(--ui-surface);
-  display: flex;
-  height: 40px;
-  justify-content: center;
-  right: 10px;
-  top: 10px;
-  width: 40px;
-}
-
-.home .panel-open-bg {
-  background: rgba(4, 13, 15, .68);
-  inset: 0;
-  position: fixed;
-  z-index: 19;
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
 }
 
 .home-session-open,
@@ -892,20 +883,18 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
+  .home-radar-preview.is-transitioning {
+    animation: home-radar-scenario-transition
+      var(--radar-transition-duration, 2000ms) ease-in-out both;
+  }
+
   .home-radar-sweep {
     animation: home-radar-rotate 7.5s linear infinite;
   }
 
-  .aircraft-one {
-    animation: home-aircraft-path-one 60s linear infinite;
-  }
-
-  .aircraft-two {
-    animation: home-aircraft-path-two 60s linear infinite;
-  }
-
-  .aircraft-three {
-    animation: home-aircraft-path-three 60s linear infinite;
+  .home-radar-aircraft {
+    animation: home-aircraft-random-path
+      var(--radar-flight-duration, 60000ms) linear forwards;
   }
 
   .home-session-overlay {
@@ -945,7 +934,7 @@
   .home-nav > a,
   .home-nav-link,
   .home-nav-session {
-    font-size: .86rem;
+    font-size: .9rem;
   }
 
   .home-main {
@@ -968,7 +957,7 @@
   }
 
   .home-hero h1 {
-    font-size: clamp(4rem, 6.5vw, 6.5rem);
+    font-size: clamp(4.25rem, 6.8vw, 6.8rem);
     margin: 12px 0 16px;
   }
 
@@ -984,7 +973,7 @@
   }
 
   .home-hero-meta {
-    font-size: .74rem;
+    font-size: .84rem;
     margin-top: 16px;
   }
 
@@ -1039,7 +1028,7 @@
 
   .home-section-heading h2,
   .home-card h2 {
-    font-size: clamp(1.4rem, 1.85vw, 1.82rem);
+    font-size: clamp(1.65rem, 2vw, 2rem);
   }
 
   .home-tools-grid {
@@ -1063,7 +1052,7 @@
   }
 
   .home-tool-copy strong {
-    font-size: .96rem;
+    font-size: 1.04rem;
   }
 
   .home-tool-copy small {
@@ -1109,6 +1098,16 @@
   .home-nav {
     flex-wrap: wrap;
     justify-content: flex-end;
+  }
+
+  .home-nav-tools {
+    display: flex;
+  }
+
+  .home-tools-menu {
+    left: 0;
+    right: auto;
+    top: calc(100% + 5px);
   }
 
   .home-hero {

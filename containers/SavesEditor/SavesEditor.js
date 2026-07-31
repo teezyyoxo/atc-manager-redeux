@@ -31,7 +31,8 @@ class SavesEditor extends Component {
     const save = this.state.saves[saveName] || null;
     this.setState({
       saveName,
-      json: save !== null ? JSON.stringify(save, null, 4) : ''
+      json: save !== null ? JSON.stringify(save, null, 4) : '',
+      editingObj: save
     });
   };
 
@@ -122,6 +123,7 @@ class SavesEditor extends Component {
     this.setState(prevstate => {
       prevstate.editingObj = e.formData;
       prevstate.saves[prevstate.saveName] = e.formData;
+      prevstate.json = JSON.stringify(e.formData, null, 4);
       return prevstate;
     });
   };
@@ -131,21 +133,38 @@ class SavesEditor extends Component {
       (this.state.saveName && this.state.saves[this.state.saveName]) || null;
     return (
       <div className="SavesEditor">
-        <div className="panel">
-          <h1>Saves Editor</h1>
-          <select
-            value={this.state.saveName}
-            onInput={this.handleInputChanged}
-          >
-            <option value="">Choose Save:</option>
-            {Object.keys(this.state.saves).map(key => (
-              <option key={key} value={key}>
-                {key}
-              </option>
-            ))}
-          </select>
-          <br />
-          <br />
+        <div className="panel editor-surface">
+          <div className="editor-toolbar">
+            <label className="editor-picker">
+              <span>Session</span>
+              <select
+                value={this.state.saveName}
+                onInput={this.handleInputChanged}
+              >
+                <option value="">Select a Saved Session</option>
+                {Object.keys(this.state.saves).map(key => (
+                  <option key={key} value={key}>{key}</option>
+                ))}
+              </select>
+            </label>
+            <label className="editor-mode-control">
+              <span>Raw JSON</span>
+              <span className="switch">
+                <input
+                  type="checkbox"
+                  onInput={this.handleRawJSONSwitchInput}
+                  checked={this.state.rawJSON}
+                />
+                <span className="slider" />
+              </span>
+            </label>
+          </div>
+          {!save && !this.state.json ? (
+            <div className="editor-empty-state">
+              <strong>No Session Selected</strong>
+              <p>Select a local save above or import a JSON file to begin.</p>
+            </div>
+          ) : null}
           {this.state.rawJSON ? (
             <textarea
               onInput={this.handleJsonTextareaInput}
@@ -153,59 +172,53 @@ class SavesEditor extends Component {
               value={this.state.json}
             />
           ) : null}
-          {this.state.rawJSON || !save ? null : (
-            <span>
+          {this.state.rawJSON || !this.state.editingObj ? null : (
+            <div className="editor-form-canvas">
               <SchemaForm
-                formData={save}
+                formData={this.state.editingObj}
                 onChange={this.handleEditingObjectChange}
                 schema={mapSaveSchema}
                 className="edit-save-box"
               />
-            </span>
+            </div>
           )}
-          <span>Raw JSON</span>
-          <label class="switch">
-            <input
-              type="checkbox"
-              onInput={this.handleRawJSONSwitchInput}
-              checked={this.state.rawJSON}
-            />
-            <span class="slider" />
-          </label>
-          <div className="warning-message">
-            {this.state.warningMessage}&nbsp;
+          <div className="editor-feedback" aria-live="polite">
+            {this.state.warningMessage ? (
+              <span className="warning-message">{this.state.warningMessage}</span>
+            ) : null}
+            {this.state.infoMessage ? (
+              <span className="info-message">{this.state.infoMessage}</span>
+            ) : null}
           </div>
-          <div className="info-message">{this.state.infoMessage}&nbsp;</div>
-          <button
-            onClick={this.handleSaveFileClick}
-            disabled={this.state.debouncing || this.state.json === ''}
-          >
-            Save to File
-          </button>
-          <input
-            onChange={this.readFromFile}
-            id="saveseditor"
-            className="inputfile"
-            type="file"
-            accept=".json"
-          />
-          <label for="saveseditor">Open File</label>
-          <CopyToClipboard text={this.state.json} onCopy={this.handleCopy}>
-            <button disabled={this.state.debouncing || this.state.json === ''}>
-              Copy to Clipboard
+          <div className="editor-actions">
+            <input
+              onChange={this.readFromFile}
+              id="saveseditor"
+              className="inputfile"
+              type="file"
+              accept=".json"
+            />
+            <label for="saveseditor">Import JSON</label>
+            <button
+              onClick={this.handleSaveFileClick}
+              disabled={this.state.debouncing || this.state.json === ''}
+            >
+              Export JSON
             </button>
-          </CopyToClipboard>
-          <button
-            disabled={this.state.debouncing || this.state.editingObj === null}
-            onClick={this.handleSaveClick}
-          >
-            {this.state.debouncing ? (
-              <FaSpinner className="spinner" />
-            ) : (
-              <FaPaperPlane />
-            )}{' '}
-            Save
-          </button>
+            <CopyToClipboard text={this.state.json} onCopy={this.handleCopy}>
+              <button disabled={this.state.debouncing || this.state.json === ''}>
+                Copy JSON
+              </button>
+            </CopyToClipboard>
+            <button
+              className="editor-primary-action"
+              disabled={this.state.debouncing || this.state.editingObj === null}
+              onClick={this.handleSaveClick}
+            >
+              {this.state.debouncing ? <FaSpinner className="spinner" /> : <FaPaperPlane />}{' '}
+              Save to Browser
+            </button>
+          </div>
         </div>
       </div>
     );

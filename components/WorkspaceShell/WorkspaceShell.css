@@ -1,7 +1,11 @@
 .workspace-page {
   background:
     radial-gradient(circle at 78% 4%, var(--ui-glow), transparent 30rem),
-    radial-gradient(circle at 6% 30%, rgba(126, 145, 255, .1), transparent 28rem),
+    radial-gradient(
+      circle at 6% 30%,
+      color-mix(in srgb, var(--ui-secondary) 10%, transparent),
+      transparent 28rem
+    ),
     var(--ui-bg);
   color: var(--ui-text);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -133,6 +137,34 @@
   max-width: 700px;
 }
 
+.workspace-tool-switcher {
+  display: flex;
+  gap: 7px;
+  margin: calc(clamp(30px, 5vw, 52px) * -.45) 0 clamp(24px, 4vw, 38px);
+  overflow-x: auto;
+  padding: 4px 0;
+  scrollbar-width: thin;
+}
+
+.workspace-tool-switcher a {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line);
+  border-radius: 999px;
+  color: var(--ui-muted);
+  flex: 0 0 auto;
+  font-family: var(--ui-scope-font);
+  font-size: .72rem;
+  font-weight: 700;
+  padding: 8px 13px;
+}
+
+.workspace-tool-switcher a:hover,
+.workspace-tool-switcher a:focus {
+  background: var(--ui-surface-raised);
+  border-color: var(--ui-accent);
+  color: var(--ui-text);
+}
+
 .workspace-content .EditorsRoot,
 .workspace-content .SavesEditor,
 .workspace-content .AirplaneEditor,
@@ -163,6 +195,154 @@
   width: 100%;
   -webkit-backdrop-filter: blur(18px);
   backdrop-filter: blur(18px);
+}
+
+.workspace-content .editor-surface {
+  padding: 0;
+  overflow: hidden;
+}
+
+.workspace-content .editor-toolbar {
+  align-items: end;
+  background: color-mix(in srgb, var(--ui-surface-solid) 74%, transparent);
+  border-bottom: 1px solid var(--ui-line);
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(240px, 1fr) auto;
+  padding: 20px;
+}
+
+.workspace-content .editor-picker,
+.workspace-content .editor-mode-control {
+  margin: 0;
+}
+
+.workspace-content .editor-picker > span,
+.workspace-content .editor-mode-control > span:first-child {
+  color: var(--ui-muted);
+  display: block;
+  font-family: var(--ui-scope-font);
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.workspace-content .editor-picker select {
+  min-height: 46px;
+  width: 100%;
+}
+
+.workspace-content .editor-mode-control {
+  align-items: center;
+  background: var(--ui-surface-raised);
+  border: 1px solid var(--ui-line);
+  border-radius: 12px;
+  display: flex;
+  gap: 12px;
+  min-height: 46px;
+  padding: 7px 10px 7px 14px;
+}
+
+.workspace-content .editor-mode-control > span:first-child {
+  color: var(--ui-text);
+  margin: 0;
+  white-space: nowrap;
+}
+
+.workspace-content .editor-mode-control .switch {
+  margin: 0;
+}
+
+.workspace-content .editor-inline-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  grid-column: 1 / -1;
+}
+
+.workspace-content .editor-empty-state {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 280px;
+  padding: 46px 24px;
+  text-align: center;
+}
+
+.workspace-content .editor-empty-state strong {
+  color: var(--ui-text);
+  font-size: 1.2rem;
+}
+
+.workspace-content .editor-empty-state p {
+  margin: 8px 0 0;
+}
+
+.workspace-content .editor-form-canvas,
+.workspace-content .editor-surface > .edit-save-box {
+  margin: 20px;
+}
+
+.workspace-content .editor-feedback {
+  display: grid;
+  font-family: var(--ui-scope-font);
+  font-size: .76rem;
+  gap: 6px;
+  min-height: 0;
+  padding: 0 20px;
+}
+
+.workspace-content .editor-feedback:empty {
+  display: none;
+}
+
+.workspace-content .editor-feedback .info-message {
+  color: var(--ui-accent);
+}
+
+.workspace-content .editor-actions {
+  align-items: center;
+  background: color-mix(in srgb, var(--ui-surface-solid) 74%, transparent);
+  border-top: 1px solid var(--ui-line);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+  padding: 16px 20px;
+}
+
+.workspace-content .editor-actions > * {
+  margin: 0 !important;
+}
+
+.workspace-content .editor-actions .editor-primary-action {
+  background: var(--ui-accent);
+  color: var(--ui-accent-ink);
+  margin-left: auto !important;
+}
+
+.workspace-content .editor-submission-panel {
+  display: grid;
+  gap: 18px;
+}
+
+.workspace-content .editor-submission-panel h3 {
+  font-size: 1.35rem;
+  letter-spacing: -.025em;
+  margin: 0;
+}
+
+.workspace-content .editor-submission-panel > p {
+  margin: -10px 0 0;
+}
+
+.workspace-content .editor-submission-panel form {
+  display: grid;
+  gap: 10px;
+  margin: 0;
 }
 
 .workspace-content .panel > h1:first-child,
@@ -328,6 +508,19 @@
 
   .workspace-main {
     padding-top: 50px;
+  }
+
+  .workspace-content .editor-toolbar {
+    align-items: stretch;
+    grid-template-columns: 1fr;
+  }
+
+  .workspace-content .editor-mode-control {
+    justify-content: space-between;
+  }
+
+  .workspace-content .editor-actions .editor-primary-action {
+    margin-left: 0 !important;
   }
 }
 

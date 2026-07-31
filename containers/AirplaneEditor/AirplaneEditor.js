@@ -178,102 +178,113 @@ class AirplaneEditor extends Component {
 
     return (
       <div className="AirplaneEditor">
-        <div className="panel">
-          <h1>Airplane Editor</h1>
-
-          <select
-            value={this.state.plane ? this.state.plane.id : ''}
-            onInput={this.handleInputChanged}
-          >
-            <option value="">Choose Airplane:</option>
-            {Object.keys(airplanesById).map(id => (
-              <option key={id} value={id}>
-                {airplanesById[id].name}
-              </option>
-            ))}
-          </select>
-          <br />
-          <br />
-          <button onClick={this.handleNewPlaneClick}>New</button>
-          {this.state.plane ? (
-            <button onClick={this.handlePlaneDeleteClick}>
-              {defaultAirplanes.map(x => x.id).includes(this.state.plane.id)
-                ? 'Reset'
-                : 'Remove'}
-            </button>
+        <div className="panel editor-surface">
+          <div className="editor-toolbar">
+            <label className="editor-picker">
+              <span>Aircraft Profile</span>
+              <select
+                value={this.state.plane ? this.state.plane.id : ''}
+                onInput={this.handleInputChanged}
+              >
+                <option value="">Select an Aircraft</option>
+                {Object.keys(airplanesById).map(id => (
+                  <option key={id} value={id}>{airplanesById[id].name}</option>
+                ))}
+              </select>
+            </label>
+            <label className="editor-mode-control">
+              <span>Raw JSON</span>
+              <span className="switch">
+                <input
+                  type="checkbox"
+                  onInput={this.handleRawJSONSwitchInput}
+                  checked={this.state.rawJSON}
+                />
+                <span className="slider" />
+              </span>
+            </label>
+            <div className="editor-inline-actions">
+              <button onClick={this.handleNewPlaneClick}>New Aircraft</button>
+              {this.state.plane ? (
+                <button onClick={this.handlePlaneDeleteClick}>
+                  {defaultAirplanes.map(x => x.id).includes(this.state.plane.id)
+                    ? 'Reset Profile'
+                    : 'Remove Profile'}
+                </button>
+              ) : null}
+            </div>
+          </div>
+          {!this.state.plane ? (
+            <div className="editor-empty-state">
+              <strong>No Aircraft Selected</strong>
+              <p>Select a profile, create a new aircraft, or import JSON.</p>
+            </div>
           ) : null}
-          <br />
-          <br />
           <textarea
             onInput={this.handleJsonTextareaInput}
             className={`edit-save-box line-nums ${this.state.rawJSON ||
               'hidden'}`}
             value={this.state.json}
           />
-          <SchemaForm
-            formData={this.state.plane}
-            onChange={this.handleEditingObjectChange}
-            schema={airplaneSchema}
-            className={`edit-save-box ${this.state.rawJSON && 'hidden'}`}
-          />
-          <span>Raw JSON</span>
-          <label class="switch">
-            <input
-              type="checkbox"
-              onInput={this.handleRawJSONSwitchInput}
-              checked={this.state.rawJSON}
-            />
-            <span class="slider" />
-          </label>
-          <div className="warning-message">
-            {this.state.warningMessage}&nbsp;
+          {this.state.plane ? (
+            <div className="editor-form-canvas">
+              <SchemaForm
+                formData={this.state.plane}
+                onChange={this.handleEditingObjectChange}
+                schema={airplaneSchema}
+                className={`edit-save-box ${this.state.rawJSON && 'hidden'}`}
+              />
+            </div>
+          ) : null}
+          <div className="editor-feedback" aria-live="polite">
+            {this.state.warningMessage ? (
+              <span className="warning-message">{this.state.warningMessage}</span>
+            ) : null}
+            {this.state.infoMessage ? (
+              <span className="info-message">{this.state.infoMessage}</span>
+            ) : null}
           </div>
-          <div className="info-message">{this.state.infoMessage}&nbsp;</div>
-          <button
-            onClick={this.handleSaveFileClick}
-            disabled={this.state.debouncing || this.state.json === ''}
-          >
-            Save to File
-          </button>
-          <input
-            onChange={this.readFromFile}
-            id="saveseditor"
-            className="inputfile"
-            type="file"
-            accept=".json"
-          />
-          <label for="saveseditor">Open File</label>
-          <CopyToClipboard text={this.state.json} onCopy={this.handleCopy}>
-            <button disabled={this.state.debouncing || this.state.json === ''}>
-              Copy to Clipboard
+          <div className="editor-actions">
+            <input
+              onChange={this.readFromFile}
+              id="airplane-editor-file"
+              className="inputfile"
+              type="file"
+              accept=".json"
+            />
+            <label for="airplane-editor-file">Import JSON</label>
+            <button
+              onClick={this.handleSaveFileClick}
+              disabled={this.state.debouncing || this.state.json === ''}
+            >
+              Export JSON
             </button>
-          </CopyToClipboard>
-          <button
-            disabled={this.state.debouncing || this.state.plane === null}
-            onClick={this.handleSaveClick}
-          >
-            {this.state.debouncing ? (
-              <FaSpinner className="spinner" />
-            ) : (
-              <FaPaperPlane />
-            )}{' '}
-            Save
-          </button>
+            <CopyToClipboard text={this.state.json} onCopy={this.handleCopy}>
+              <button disabled={this.state.debouncing || this.state.json === ''}>
+                Copy JSON
+              </button>
+            </CopyToClipboard>
+            <button
+              className="editor-primary-action"
+              disabled={this.state.debouncing || this.state.plane === null}
+              onClick={this.handleSaveClick}
+            >
+              {this.state.debouncing ? <FaSpinner className="spinner" /> : <FaPaperPlane />}{' '}
+              Save to Browser
+            </button>
+          </div>
         </div>
-        <div className="panel">
-          <h4 style="margin-bottom: 5px;">Submit for approval</h4>
-          <small style="display: block; margin-bottom: 20px;">
-            Submit currently selected airplane for approval.
-          </small>
+        <div className="panel editor-submission-panel">
+          <h3>Submit for Approval</h3>
+          <p>Send the currently selected aircraft profile for review.</p>
 
           <form
             action="https://getsimpleform.com/messages?form_api_token=edde415b219f71f64840e6a3dbd3ff7d"
-            style="margin-bottom: 0;"
             method="post"
-            redirect={url + '/#/editor/airplane-submission-success'}
+            redirect={url + '/editor/airplane-submission-success'}
           >
-            <div>Email*</div>
-            <input type="email" name="email" required />
+            <label for="aircraft-review-email">Email</label>
+            <input id="aircraft-review-email" type="email" name="email" required />
             <input name="content_type" type="hidden" value="plane" />
             <input
               name="content"
@@ -282,16 +293,12 @@ class AirplaneEditor extends Component {
                 this.state.plane && JSON.stringify(this.state.plane, null, 4)
               }
             />
-            <br />
-            <br />
-            <div>Sources*</div>
+            <label for="aircraft-review-sources">Sources</label>
             <small>
               Links or text pointing to sources you have used to create or edit
               an airplane so we can verify the data.
             </small>
-            <textarea name="message" required minLength="20" />
-            <br />
-            <br />
+            <textarea id="aircraft-review-sources" name="message" required minLength="20" />
             <button
               disabled={this.state.debouncing || this.state.plane === null}
               type="submit"
