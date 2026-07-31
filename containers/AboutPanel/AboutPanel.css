@@ -1,4 +1,21 @@
 
-.AboutPanel {
-    
+.game-about-modal .build-version {
+  background: rgba(3, 16, 19, .58);
+  border-left: 3px solid #62ff8d;
+  margin-bottom: 14px;
+  padding: 9px 11px;
+}
+
+.game-about-modal a {
+  color: #79f3c0;
+}
+
+.game-about-modal li {
+  margin-bottom: 3px;
+}
+
+.game-about-modal h5 {
+  color: #effaf7;
+  font-size: 1.05rem;
+  margin: 22px 0 8px;
 }

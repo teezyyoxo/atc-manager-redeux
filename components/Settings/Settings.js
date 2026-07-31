@@ -134,6 +134,11 @@ class Settings extends Component {
     SettingsStore.setSpeed(+event.target.value);
   };
 
+  handleAutosaveIntervalChange = event => {
+    SettingsStore.autosaveIntervalMinutes = +event.target.value;
+    SettingsStore.emit('change');
+  };
+
   handleDifficultyChange = event => {
     switch (event.target.value) {
       case 'easy':
@@ -241,6 +246,22 @@ class Settings extends Component {
           {this.renderToggleRow('millibars', 'Millibars')}
           {this.renderToggleRow('sidsStars', 'SIDs/STARs')}
           {this.renderToggleRow('useTextCmd', 'Text Commands')}
+          {this.renderToggleRow('autosaveEnabled', 'Autosave')}
+          {SettingsStore.autosaveEnabled ? (
+            <SettingRow label="Autosave Interval" className="settings-row-select">
+              <select
+                aria-label="Autosave Interval"
+                value={SettingsStore.autosaveIntervalMinutes}
+                onInput={this.handleAutosaveIntervalChange}
+              >
+                <option value="1">Every Minute</option>
+                <option value="2">Every 2 Minutes</option>
+                <option value="5">Every 5 Minutes</option>
+                <option value="10">Every 10 Minutes</option>
+                <option value="15">Every 15 Minutes</option>
+              </select>
+            </SettingRow>
+          ) : null}
         </div>
 
         <button

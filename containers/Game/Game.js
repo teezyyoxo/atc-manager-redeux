@@ -5,14 +5,15 @@ import GameStore from '../../stores/GameStore';
 import SettingsStore from '../../stores/SettingsStore';
 import { maps } from '../../lib/map';
 import { route } from 'preact-router';
-import { saveCurrentGame } from '../../lib/game-save';
+import { saveCurrentGame, saveEvents } from '../../lib/game-save';
 
 class Game extends Component {
   constructor(props) {
     super();
     this.state = {
       ready: GameStore.started,
-      paused: GameStore.paused
+      paused: GameStore.paused,
+      pauseOverlaySuppressed: GameStore.pauseOverlaySuppressed
     };
     this.pauseReason = null;
     this.name = maps[SettingsStore.selectedMapId]
@@ -31,6 +32,7 @@ class Game extends Component {
         this.handleVisibilityChange
       );
       document.addEventListener('freeze', this.handleLifecyclePause);
+      document.addEventListener('keydown', this.handleModalKeyDown);
     }
     if (typeof window !== 'undefined') {
       window.addEventListener('blur', this.handleWindowBlur);
@@ -38,7 +40,15 @@ class Game extends Component {
     }
 
     if (!GameStore.started) GameStore.startMap(this.name);
-    this.setState({ ready: true, paused: GameStore.paused });
+    this.setState({
+      ready: true,
+      paused: GameStore.paused,
+      pauseOverlaySuppressed: GameStore.pauseOverlaySuppressed
+    });
+    this.autosaveElapsed = 0;
+    this.autosaveLastTick = Date.now();
+    this.autosaveTimer = window.setInterval(this.handleAutosaveTick, 1000);
+    saveEvents.on('saved', this.handleSaveActivity);
   }
 
   componentWillUnmount() {
@@ -51,7 +61,10 @@ class Game extends Component {
         this.handleVisibilityChange
       );
       document.removeEventListener('freeze', this.handleLifecyclePause);
+      document.removeEventListener('keydown', this.handleModalKeyDown);
     }
+    window.clearInterval(this.autosaveTimer);
+    saveEvents.removeListener('saved', this.handleSaveActivity);
     if (typeof window !== 'undefined') {
       window.removeEventListener('blur', this.handleWindowBlur);
       window.removeEventListener('pagehide', this.handleLifecyclePause);
@@ -60,10 +73,59 @@ class Game extends Component {
   }
 
   handleGameStoreChange = () => {
-    if (this.state.paused !== GameStore.paused) {
+    if (
+      this.state.paused !== GameStore.paused ||
+      this.state.pauseOverlaySuppressed !== GameStore.pauseOverlaySuppressed
+    ) {
       this.setState({
-        paused: GameStore.paused
+        paused: GameStore.paused,
+        pauseOverlaySuppressed: GameStore.pauseOverlaySuppressed
       });
+    }
+  };
+
+  handleSaveActivity = () => {
+    this.autosaveElapsed = 0;
+    this.autosaveLastTick = Date.now();
+  };
+
+  handleAutosaveTick = () => {
+    const now = Date.now();
+    const elapsed = now - this.autosaveLastTick;
+    this.autosaveLastTick = now;
+    if (!SettingsStore.autosaveEnabled) {
+      this.autosaveElapsed = 0;
+      return;
+    }
+    if (!GameStore.started || GameStore.paused) return;
+    this.autosaveElapsed += elapsed;
+    const interval = Math.max(
+      1,
+      Number(SettingsStore.autosaveIntervalMinutes) || 5
+    ) * 60 * 1000;
+    if (this.autosaveElapsed >= interval) {
+      this.autosaveElapsed = 0;
+      saveCurrentGame({ type: 'auto' });
+    }
+  };
+
+  handleModalKeyDown = event => {
+    const pauseModalVisible = this.state.paused &&
+      !this.state.pauseOverlaySuppressed;
+    if (!pauseModalVisible || event.key !== 'Tab' || !this.pauseDialog) return;
+    const controls = this.pauseDialog.querySelectorAll(
+      'button:not([disabled]), [href], input:not([disabled]), ' +
+      'select:not([disabled]), textarea:not([disabled])'
+    );
+    if (!controls.length) return;
+    const first = controls[0];
+    const last = controls[controls.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
     }
   };
 
@@ -118,23 +180,35 @@ class Game extends Component {
 
   render() {
     if (!this.state.ready) return <div className="loader mid" />;
+    const pauseModalVisible = this.state.paused &&
+      !this.state.pauseOverlaySuppressed;
+    const initialPause = GameStore.initialPause;
     return (
       <div className="Game">
-        <div id="atc-game">
+        <div
+          id="atc-game"
+          inert={pauseModalVisible}
+          aria-hidden={pauseModalVisible ? 'true' : null}
+        >
           <AtcView />
         </div>
-        {this.state.paused ? (
+        {pauseModalVisible ? (
           <div className="game-pause-overlay">
             <div
               className="game-pause-modal"
               role="dialog"
               aria-modal="true"
               aria-labelledby="game-pause-title"
+              ref={element => { this.pauseDialog = element; }}
             >
-              <span className="game-pause-kicker">Simulation Hold</span>
+              <span className="game-pause-kicker">
+                {initialPause ? 'Ready Check' : 'Simulation Hold'}
+              </span>
               <h1 id="game-pause-title">Session Paused</h1>
               <p>
-                {this.pauseReason ||
+                {initialPause
+                  ? 'New sessions begin paused. Review the traffic picture, then resume when you are ready to start the clock.'
+                  : this.pauseReason ||
                   'Traffic and simulation time are safely stopped.'}
               </p>
               <div className="game-pause-actions">

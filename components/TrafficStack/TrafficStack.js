@@ -72,6 +72,7 @@ class TrafficStack extends Component {
   }
 
   handleKeyPress = e => {
+    if (GameStore.paused) return;
     if (e.key === 'Enter' && this.state.cmd.tgt) {
       if (SettingsStore.useTextCmd) this.onCmdTextParse();
       else this.props.onCmdExecution();
@@ -97,13 +98,28 @@ class TrafficStack extends Component {
   };
 
   handleExpandSettingsButtonClick = () => {
-    this.setState({ settingsExpanded: !this.state.settingsExpanded }, () =>
-      this.props.onChange(this.state.cmd)
-    );
+    const opening = !this.state.settingsExpanded;
+    if (opening) {
+      this.optionsResumeOnClose = !GameStore.paused;
+      if (this.optionsResumeOnClose) GameStore.pause(true);
+    }
+    this.setState({ settingsExpanded: opening, aboutExpanded: false }, () => {
+      if (!opening && this.optionsResumeOnClose) GameStore.resume();
+      this.optionsResumeOnClose = false;
+      this.props.onChange(this.state.cmd);
+    });
   };
 
   handleAboutExpanded = () => {
-    this.setState({ aboutExpanded: !this.state.aboutExpanded });
+    const opening = !this.state.aboutExpanded;
+    if (opening) {
+      this.aboutResumeOnClose = !GameStore.paused;
+      if (this.aboutResumeOnClose) GameStore.pause(true);
+    }
+    this.setState({ aboutExpanded: opening, settingsExpanded: false }, () => {
+      if (!opening && this.aboutResumeOnClose) GameStore.resume();
+      this.aboutResumeOnClose = false;
+    });
   };
 
   handleLogsExpanded = () => {

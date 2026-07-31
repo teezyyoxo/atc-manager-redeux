@@ -1,0 +1,108 @@
+.game-tool-modal-open {
+  overflow: hidden;
+}
+
+.game-tool-modal-overlay {
+  align-items: center;
+  background: rgba(3, 12, 15, .54);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  position: fixed;
+  z-index: 130;
+  -webkit-backdrop-filter: blur(15px) saturate(.72);
+  backdrop-filter: blur(15px) saturate(.72);
+}
+
+.game-tool-modal {
+  background: linear-gradient(145deg, rgba(20, 43, 47, .98), rgba(8, 22, 25, .99));
+  border: 1px solid rgba(107, 240, 183, .55);
+  border-radius: 18px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, .62), 0 0 34px rgba(74, 232, 173, .12);
+  color: #effaf7;
+  display: flex;
+  flex-direction: column;
+  max-height: min(88vh, 820px);
+  max-height: min(88dvh, 820px);
+  max-width: 780px;
+  overflow: hidden;
+  width: min(100%, 780px);
+}
+
+.game-tool-modal-header {
+  align-items: center;
+  border-bottom: 1px solid rgba(107, 240, 183, .18);
+  display: flex;
+  flex: 0 0 auto;
+  justify-content: space-between;
+  padding: 20px 22px;
+}
+
+.game-tool-modal-kicker {
+  color: #6bf0b7;
+  display: block;
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .15em;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+}
+
+.game-tool-modal-header h2 {
+  color: #effaf7;
+  font-family: var(--interface-font-family);
+  font-size: clamp(1.55rem, 4vw, 2.15rem);
+  line-height: 1.05;
+  margin: 0;
+}
+
+.game-tool-modal-close {
+  align-items: center;
+  background: transparent;
+  border: 1px solid rgba(169, 191, 186, .3);
+  border-radius: 999px;
+  color: #cfe1dd;
+  display: flex;
+  font-size: 1.5rem;
+  height: 42px;
+  justify-content: center;
+  margin: 0;
+  min-height: 42px;
+  min-width: 42px;
+  padding: 0;
+  width: 42px;
+}
+
+.game-tool-modal-close:hover,
+.game-tool-modal-close:focus {
+  background: rgba(107, 240, 183, .1);
+  border-color: #6bf0b7;
+  color: #fff;
+}
+
+.game-tool-modal-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 22px;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 700px) {
+  .game-tool-modal-overlay {
+    align-items: stretch;
+    padding: max(8px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
+  }
+
+  .game-tool-modal {
+    max-height: none;
+    width: 100%;
+  }
+
+  .game-tool-modal-header,
+  .game-tool-modal-body {
+    padding: 17px;
+  }
+}

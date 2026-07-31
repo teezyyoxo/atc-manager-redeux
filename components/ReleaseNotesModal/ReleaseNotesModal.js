@@ -57,11 +57,6 @@ class ReleaseNotesModal extends Component {
 
   handleKeyDown = event => {
     if (!this.state.open) return;
-    if (event.key === 'Escape') {
-      event.preventDefault();
-      this.handleClose();
-      return;
-    }
     if (event.key !== 'Tab' || !this.dialog) return;
 
     const controls = this.dialog.querySelectorAll(
@@ -96,17 +91,10 @@ class ReleaseNotesModal extends Component {
     });
   };
 
-  handleOverlayClick = event => {
-    if (event.target === event.currentTarget) this.handleClose();
-  };
-
   render() {
     if (!this.state.open || !this.notes) return null;
     return (
-      <div
-        className="release-notes-overlay"
-        onClick={this.handleOverlayClick}
-      >
+      <div className="release-notes-overlay">
         <section
           className="release-notes-modal"
           role="dialog"
@@ -163,14 +151,6 @@ class ReleaseNotesModal extends Component {
               Full Changelog <span aria-hidden="true">↗</span>
             </a>
           </div>
-
-          <button
-            className="release-notes-close-bar"
-            type="button"
-            onClick={this.handleClose}
-          >
-            Close
-          </button>
         </section>
       </div>
     );

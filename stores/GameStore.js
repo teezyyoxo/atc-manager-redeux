@@ -41,6 +41,8 @@ class GameStore extends EventEmitter {
     super();
     this.traffic = [];
     this.paused = false;
+    this.pauseOverlaySuppressed = false;
+    this.initialPause = false;
     this.started = false;
     this.interval = null;
     this.log = [];
@@ -54,6 +56,7 @@ class GameStore extends EventEmitter {
     this._remove = [];
     this._spawnPlaneCounter = 0;
     this.mapName = null;
+    this.saveName = null;
     this.disableTakoffsOnRwysSet = {};
     this.zoom = 1;
     this.voiceCommands = null;
@@ -97,15 +100,31 @@ class GameStore extends EventEmitter {
     this.distanceVialations = 0;
     this.msaViolations = 0;
     const map = this.map = loadMap(mapName);
+    const weather = map.weather || {};
+    const windSpeedRange = weather.windSpeedRange || [0, 12];
+    const altimeterRange = weather.altimeterRange || [29, 31];
+    const windCenters = weather.windDirectionCenters || [];
+    const windCenter = windCenters.length
+      ? windCenters[Math.floor(Math.random() * windCenters.length)]
+      : Math.random() * 360;
+    const windVariation = Number(weather.windDirectionVariation) || 180;
+    this.saveName = null;
     this.id = mapName;
-    this.winddir = Math.random() * 360;
-    this.altimeter = (29 + Math.random() * 2).toFixed(2);
+    this.winddir = wrapHeadig(
+      windCenter + (Math.random() - .5) * windVariation * 2
+    );
+    this.altimeter = (
+      altimeterRange[0] +
+      Math.random() * (altimeterRange[1] - altimeterRange[0])
+    ).toFixed(2);
     this.atis = Math.floor(Math.random() * 26);
-    this.windspd = Math.random() * 12;
+    this.windspd = windSpeedRange[0] +
+      Math.random() * (windSpeedRange[1] - windSpeedRange[0]);
     this.setup(map);
 
     this.createInitialPlanes();
-    this.resume();
+    this.initialPause = true;
+    this.pause();
   }
 
   createInitialPlanes = () => {
@@ -144,6 +163,7 @@ class GameStore extends EventEmitter {
     const state = loadState();
     const game = state.games[saveName];
     this.startSaved(game);
+    this.saveName = saveName;
   };
 
   startSaved = game => {
@@ -626,16 +646,22 @@ class GameStore extends EventEmitter {
     this.interval = null;
     this.traffic = [];
     this.started = false;
+    this.initialPause = false;
+    this.pauseOverlaySuppressed = false;
+    this.saveName = null;
     this.emit('change');
   }
 
-  pause() {
+  pause(suppressOverlay = false) {
     this.paused = true;
+    this.pauseOverlaySuppressed = suppressOverlay;
     this.emit('change');
   }
 
   resume() {
     this.paused = false;
+    this.initialPause = false;
+    this.pauseOverlaySuppressed = false;
     this.emit('change');
   }
 

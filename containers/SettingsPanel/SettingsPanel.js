@@ -1,7 +1,7 @@
 import { Component } from 'preact';
 import './SettingsPanel.css';
 import Settings from '../../components/Settings/Settings';
-import { FaCompress } from 'react-icons/fa/index.esm';
+import GameToolModal from '../../components/GameToolModal/GameToolModal';
 
 class SettingsPanel extends Component {
   constructor(props) {
@@ -10,20 +10,17 @@ class SettingsPanel extends Component {
   }
 
   render() {
+    if (!this.props.expanded) return null;
     return (
-      <div
-        className={[
-          this.props.expanded ? null : 'hidden',
-          'settings-panel'
-        ].join(' ')}
+      <GameToolModal
+        title="Options"
+        titleId="game-options-title"
+        kicker="Session Controls"
+        onClose={this.props.onToggle}
+        className="game-options-modal"
       >
-        <h5>Settings</h5>
-        <hr />
-        <Settings />
-        <button onClick={this.props.onToggle}>
-          <FaCompress /> Hide Options
-        </button>
-      </div>
+        <Settings appearanceInitiallyExpanded />
+      </GameToolModal>
     );
   }
 }

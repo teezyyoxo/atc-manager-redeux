@@ -165,6 +165,7 @@ class Home extends Component {
       toolsOpen: false
     };
     this.modalPreviousFocus = null;
+    this.inertElements = [];
   }
 
   componentDidMount() {
@@ -241,6 +242,7 @@ class Home extends Component {
     document.documentElement.classList.add('home-session-open');
     document.addEventListener('keydown', this.handleSessionKeyDown);
     this.setState({ sessionOpen: true, settingsOpen: false, toolsOpen: false }, () => {
+      this.lockModalBackground();
       if (this.sessionSelect) this.sessionSelect.focus();
     });
   };
@@ -250,6 +252,7 @@ class Home extends Component {
     document.documentElement.classList.add('home-session-open');
     document.addEventListener('keydown', this.handleSessionKeyDown);
     this.setState({ settingsOpen: true, sessionOpen: false, toolsOpen: false }, () => {
+      this.lockModalBackground();
       if (this.settingsClose) this.settingsClose.focus();
     });
   };
@@ -258,6 +261,24 @@ class Home extends Component {
     if (typeof document === 'undefined') return;
     document.documentElement.classList.remove('home-session-open');
     document.removeEventListener('keydown', this.handleSessionKeyDown);
+    this.unlockModalBackground();
+  };
+
+  lockModalBackground = () => {
+    if (typeof document === 'undefined') return;
+    const root = document.querySelector('.home');
+    if (!root) return;
+    this.inertElements = Array.from(root.children).filter(
+      element =>
+        !element.classList.contains('home-session-overlay') &&
+        !element.hasAttribute('inert')
+    );
+    this.inertElements.forEach(element => element.setAttribute('inert', ''));
+  };
+
+  unlockModalBackground = () => {
+    this.inertElements.forEach(element => element.removeAttribute('inert'));
+    this.inertElements = [];
   };
 
   closeSession = () => {
@@ -286,12 +307,6 @@ class Home extends Component {
 
   handleSessionKeyDown = event => {
     if (!this.state.sessionOpen && !this.state.settingsOpen) return;
-    if (event.key === 'Escape') {
-      event.preventDefault();
-      if (this.state.settingsOpen) this.closeSettings();
-      else this.closeSession();
-      return;
-    }
     const dialog = this.state.settingsOpen
       ? this.settingsDialog
       : this.sessionDialog;
@@ -310,14 +325,6 @@ class Home extends Component {
       event.preventDefault();
       first.focus();
     }
-  };
-
-  handleSessionOverlayClick = event => {
-    if (event.target === event.currentTarget) this.closeSession();
-  };
-
-  handleSettingsOverlayClick = event => {
-    if (event.target === event.currentTarget) this.closeSettings();
   };
 
   handleStartClick = () => {
@@ -566,10 +573,7 @@ class Home extends Component {
         </footer>
 
         {this.state.settingsOpen ? (
-          <div
-            className="home-session-overlay"
-            onClick={this.handleSettingsOverlayClick}
-          >
+          <div className="home-session-overlay">
             <section
               className="home-session-modal home-settings-modal"
               role="dialog"
@@ -603,10 +607,7 @@ class Home extends Component {
           </div>
         ) : null}
         {this.state.sessionOpen ? (
-          <div
-            className="home-session-overlay"
-            onClick={this.handleSessionOverlayClick}
-          >
+          <div className="home-session-overlay">
             <section
               className="home-session-modal"
               role="dialog"

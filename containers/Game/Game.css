@@ -142,8 +142,9 @@
 }
 
 .game-pause-modal .game-pause-danger {
-  border-color: rgba(255, 138, 128, .38);
-  color: #ffb1a9;
+  background: transparent;
+  border-color: #ff8a80;
+  color: #ff8a80;
 }
 
 .game-pause-modal .game-pause-danger:hover,

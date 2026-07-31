@@ -1,6 +1,35 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [3.0.0-rc.11] - 2026-07-31
+
+### Added
+
+- Added KLGA and KJFK with airport-specific runways, coastal weather profiles,
+  wind-driven runway use, traffic mixes, scope geography, SIDs, STARs, and
+  minimum-sector altitudes.
+- Added browser-persisted autosave controls. Autosave advances only while a
+  session is running, reuses a stable airport-and-time save name, and provides
+  quiet status feedback through the in-game Save control.
+- Added desktop Shift + Save support for an explicit, isolated Save As dialog
+  that creates a separate named snapshot without changing the autosave target.
+
+### Changed
+
+- New sessions now begin paused behind a ready-check dialog before simulation
+  time or traffic movement starts.
+- Rebuilt in-session Options and About as responsive, independently scrolling
+  modal dialogs that silently hold the simulation while open.
+- Save now writes immediately to the active session save, autosave consistently
+  overwrites that same session save, and Shift + Save creates a separate named
+  save without redirecting later autosaves.
+- Made every blurred modal block background pointer and keyboard input and
+  removed backdrop and Escape-key dismissal in favor of visible controls.
+- Restyled Exit Without Saving as a transparent red-outline action and split
+  the Pause / Exit label so its separator is no longer part of either label.
+- Updated application, package, Compose, Make, image, documentation, and build
+  metadata to 3.0.0-rc.11.
+
 ## [3.0.0-rc.10] - 2026-07-31
 
 ### Added

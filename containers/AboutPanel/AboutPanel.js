@@ -1,8 +1,8 @@
 import { Component } from 'preact';
 import './AboutPanel.css';
-import { FaCompress } from 'react-icons/fa/index.esm';
 import GitHubButton from 'react-github-button';
 import { getBuildInfo } from '../../lib/build-info';
+import GameToolModal from '../../components/GameToolModal/GameToolModal';
 
 class AboutPanel extends Component {
   constructor(props) {
@@ -11,12 +11,15 @@ class AboutPanel extends Component {
   }
 
   render() {
+    if (!this.props.expanded) return null;
     const build = getBuildInfo();
     return (
-      <div
-        className={[this.props.expanded ? null : 'hidden', 'about-panel'].join(
-          ' '
-        )}
+      <GameToolModal
+        title="About ATC Manager"
+        titleId="game-about-title"
+        kicker="Project Information"
+        onClose={this.props.onToggle}
+        className="game-about-modal"
       >
         <GitHubButton
           type="stargazers"
@@ -339,7 +342,7 @@ class AboutPanel extends Component {
         <button onClick={this.props.onToggle}>
           <FaCompress /> Hide Panel
         </button>
-      </div>
+      </GameToolModal>
     );
   }
 }

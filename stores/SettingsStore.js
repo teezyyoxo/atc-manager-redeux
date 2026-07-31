@@ -76,6 +76,8 @@ class SettingsStore extends EventEmitter {
     this.takeoffInOrder = false;
     this.goArounds = false;
     this.stopSpawn = false;
+    this.autosaveEnabled = false;
+    this.autosaveIntervalMinutes = 5;
     this.defaultSettings = JSON.parse(this.toJson());
 
     const persistedSettings = loadState().settings;
@@ -273,6 +275,8 @@ class SettingsStore extends EventEmitter {
         'useTextCmd',
         'goArounds',
         'stopSpawn',
+        'autosaveEnabled',
+        'autosaveIntervalMinutes',
         'distanceCirclesAmount',
         'radarFontsize',
         'interfaceScale',
