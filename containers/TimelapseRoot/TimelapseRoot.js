@@ -130,7 +130,7 @@ class TimelapseRoot extends Component {
         title={showOverview ? 'Timelapses' : this.state.name || 'Timelapse'}
         description={
           showOverview
-            ? 'Import, review, replay, and export recordings stored in this browser.'
+            ? 'Recordings are optional and begin only when you start the in-session recorder. Import, review, replay, or export them here.'
             : 'Review traffic, inspect session events, or resume control from any point.'
         }
       >

@@ -34,7 +34,7 @@ import { rndArr } from '../lib/util';
 import { parseRoute, mostSuitableLeg } from '../lib/sidstar';
 import { TakeoffRunwayAssignment } from '../lib/maps/runway-assignment';
 import { minimumSeperationDistance } from './gamestore-helpers/seperation';
-import { runwayWindComponents, windVector } from '../lib/weather';
+import { groundVelocity, runwayWindComponents } from '../lib/weather';
 
 class GameStore extends EventEmitter {
   constructor() {
@@ -738,13 +738,15 @@ class GameStore extends EventEmitter {
 
     const model = airplanesById[airplane.typeId];
     const s = config.globalSpeed * SettingsStore.speed;
-    const dx = Math.sin((airplane.heading * Math.PI) / 180);
-    const dy = Math.cos((airplane.heading * Math.PI) / 180);
-    const wind = windVector(this.winddir, this.windspd);
     const heightAboveAirport = airplane.altitude - (this.airport.elevation || 0);
     const windEffect = Math.max(0, Math.min(1, heightAboveAirport / 1000));
-    const groundVelocityX = dx * airplane.speed + wind.x * windEffect;
-    const groundVelocityY = dy * airplane.speed + wind.y * windEffect;
+    const velocity = groundVelocity(
+      airplane.heading,
+      airplane.speed,
+      this.winddir,
+      this.windspd,
+      windEffect
+    );
     let tgtHeading = airplane.heading;
     let spdChange = 0;
     let altChange = Math.min(
@@ -760,13 +762,13 @@ class GameStore extends EventEmitter {
         : airplane.tgtSpeed;
     let landing = false;
 
-    airplane.x += groundVelocityX * s * config.baseAirplaneSpeed;
-    airplane.y += groundVelocityY * s * config.baseAirplaneSpeed;
+    airplane.x += velocity.x * s * config.baseAirplaneSpeed;
+    airplane.y += velocity.y * s * config.baseAirplaneSpeed;
     airplane.groundSpeed = Math.sqrt(
-      Math.pow(groundVelocityX, 2) + Math.pow(groundVelocityY, 2)
+      Math.pow(velocity.x, 2) + Math.pow(velocity.y, 2)
     );
     airplane.groundTrack =
-      (Math.atan2(groundVelocityX, groundVelocityY) * 180) / Math.PI;
+      (Math.atan2(velocity.x, velocity.y) * 180) / Math.PI;
     airplane.groundTrack = (airplane.groundTrack + 360) % 360;
 
     const isAtManeuveringSpeed =

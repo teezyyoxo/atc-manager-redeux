@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "atc-manager",
-  "version": "3.0.0-rc.4",
+  "version": "3.0.0-rc.5",
   "license": "MIT",
   "sideEffects": false,
   "engines": {
@@ -33,7 +33,6 @@
   },
   "dependencies": {
     "file-saver": "^2.0.5",
-    "history": "^5.1.0",
     "jsondiffpatch": "^0.7.6",
     "preact": "^10.29.7",
     "preact-router": "^3.2.1",

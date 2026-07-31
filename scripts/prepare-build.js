@@ -80,8 +80,7 @@ const template = fs
   .replace(
     '__RELEASE_NOTES__',
     encodeURIComponent(JSON.stringify(releaseNotes))
-  )
-  .replace('__CHANGELOG__', encodeURIComponent(JSON.stringify(changelog)));
+  );
 
 const templateVersion = template.match(
   /<meta name="application-version" content="([^"]+)"/

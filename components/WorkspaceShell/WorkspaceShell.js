@@ -1,6 +1,7 @@
 import { Component } from 'preact';
 import { Link } from 'preact-router';
 import ThemeControl from '../ThemeControl/ThemeControl';
+import { openReleaseNotes } from '../ReleaseNotesModal/ReleaseNotesModal';
 import './WorkspaceShell.css';
 
 class WorkspaceShell extends Component {
@@ -26,7 +27,7 @@ class WorkspaceShell extends Component {
           <nav className="workspace-nav" aria-label="Workspace navigation">
             <Link href="/">Home</Link>
             <Link href="/tutorials">Training</Link>
-            <Link href="/whats-new">What’s new</Link>
+            <button type="button" onClick={openReleaseNotes}>What’s new</button>
             <ThemeControl />
           </nav>
         </header>

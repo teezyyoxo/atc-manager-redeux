@@ -18,11 +18,10 @@ import Settings from '../../components/Settings/Settings';
 import { router } from '../../index';
 import config from '../../lib/config';
 import SharingPanel from '../../components/SharingPanel/SharingPanel';
-import AtomFeed from '../../components/AtomFeed/AtomFeed';
-import PushNotifications from '../../components/PushNotifications/PushNotifications';
 import SettingsStore from '../../stores/SettingsStore';
 import ThemeControl from '../../components/ThemeControl/ThemeControl';
-import { getBuildInfo, getReleaseNotes } from '../../lib/build-info';
+import { getBuildInfo } from '../../lib/build-info';
+import { openReleaseNotes } from '../../components/ReleaseNotesModal/ReleaseNotesModal';
 
 const ToolCard = ({ href, icon, title, description }) => (
   <Link className="home-tool-card" href={href}>
@@ -39,8 +38,10 @@ class Home extends Component {
   constructor(props) {
     super();
     this.state = {
-      sharing: false
+      sharing: false,
+      sessionOpen: false
     };
+    this.sessionPreviousFocus = null;
   }
 
   componentDidMount() {
@@ -49,6 +50,7 @@ class Home extends Component {
 
   componentWillUnmount() {
     router.removeListener('change', this.reRender);
+    this.finishSessionClose();
   }
 
   reRender = () => this.setState({});
@@ -74,6 +76,61 @@ class Home extends Component {
     if (section) section.scrollIntoView({ behavior: 'smooth' });
   };
 
+  openSession = () => {
+    this.sessionPreviousFocus = document.activeElement;
+    document.documentElement.classList.add('home-session-open');
+    document.addEventListener('keydown', this.handleSessionKeyDown);
+    this.setState({ sessionOpen: true }, () => {
+      if (this.sessionSelect) this.sessionSelect.focus();
+    });
+  };
+
+  finishSessionClose = () => {
+    if (typeof document === 'undefined') return;
+    document.documentElement.classList.remove('home-session-open');
+    document.removeEventListener('keydown', this.handleSessionKeyDown);
+  };
+
+  closeSession = () => {
+    this.finishSessionClose();
+    this.setState({ sessionOpen: false }, () => {
+      if (
+        this.sessionPreviousFocus &&
+        typeof this.sessionPreviousFocus.focus === 'function'
+      ) {
+        this.sessionPreviousFocus.focus();
+      }
+    });
+  };
+
+  handleSessionKeyDown = event => {
+    if (!this.state.sessionOpen) return;
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      this.closeSession();
+      return;
+    }
+    if (event.key !== 'Tab' || !this.sessionDialog) return;
+    const controls = this.sessionDialog.querySelectorAll(
+      'button:not([disabled]), [href], input:not([disabled]), ' +
+      'select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    );
+    if (!controls.length) return;
+    const first = controls[0];
+    const last = controls[controls.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  };
+
+  handleSessionOverlayClick = event => {
+    if (event.target === event.currentTarget) this.closeSession();
+  };
+
   handleStartClick = () => {
     if (GameStore.started) {
       const force = confirm(
@@ -87,6 +144,7 @@ class Home extends Component {
     }
     const selectedMap = maps[SettingsStore.selectedMapId] || maps.default;
     SettingsStore.selectedMapId = selectedMap.id;
+    this.finishSessionClose();
     GameStore.startMap(selectedMap.id);
     route('/game');
   };
@@ -98,13 +156,6 @@ class Home extends Component {
   render() {
     const selectedMap = maps[SettingsStore.selectedMapId] || maps.default;
     const build = getBuildInfo();
-    const latestRelease = getReleaseNotes();
-    const latestItems = latestRelease
-      ? latestRelease.sections.reduce(
-        (items, section) => items.concat(section.items),
-        []
-      ).slice(0, 3)
-      : [];
     return (
       <div className="home">
         <header className="home-header">
@@ -126,7 +177,13 @@ class Home extends Component {
               </button>
             ) : null}
             <Link href="/tutorials">Tutorials</Link>
-            <Link href="/whats-new">What’s new</Link>
+            <button
+              type="button"
+              className="home-nav-link"
+              onClick={openReleaseNotes}
+            >
+              What’s new
+            </button>
             <button
               type="button"
               className="home-nav-link"
@@ -151,7 +208,7 @@ class Home extends Component {
                 <button
                   type="button"
                   className="home-button home-button-primary"
-                  onClick={() => this.scrollToSection('session')}
+                  onClick={this.openSession}
                 >
                   Configure session
                 </button>
@@ -198,71 +255,15 @@ class Home extends Component {
             </div>
           </section>
 
-          <section id="session" className="home-session-layout">
-            <div className="home-card home-session-card">
-              <div className="home-section-heading">
-                <div>
-                  <span className="home-kicker">New shift</span>
-                  <h2>Session setup</h2>
-                </div>
-                <span className="home-status">
-                  <i /> Ready
-                </span>
+          <section className="home-card home-continue-section">
+            <div className="home-section-heading">
+              <div>
+                <span className="home-kicker">Continue</span>
+                <h2>Saved sessions</h2>
               </div>
-
-              <label className="home-field-label" for="home-airport">
-                Airport
-              </label>
-              <select
-                id="home-airport"
-                value={selectedMap.id}
-                onInput={this.handleMapSelectionChange}
-              >
-                {mapsArr.map(map => (
-                  <option key={map.id} value={map.id}>
-                    {map.name}
-                  </option>
-                ))}
-              </select>
-
-              <div className="home-airport-notes">
-                {selectedMap.ga === 0 ? (
-                  <small>General aviation is unavailable at this airport.</small>
-                ) : null}
-                {selectedMap.commercial === 0 ? (
-                  <small>Commercial traffic is unavailable at this airport.</small>
-                ) : null}
-              </div>
-
-              <Settings />
-
-              <div className="home-start-actions">
-                <button
-                  type="button"
-                  className="home-button home-button-primary home-start-button"
-                  onClick={this.handleStartClick}
-                >
-                  <FaPlay /> Start session
-                </button>
-                <button
-                  type="button"
-                  className="home-button home-button-secondary"
-                  onClick={this.handleTutorialClick}
-                >
-                  Tutorial
-                </button>
-              </div>
+              <p>Resume a locally saved shift from this browser.</p>
             </div>
-
-            <aside className="home-card home-saves-card">
-              <div className="home-section-heading">
-                <div>
-                  <span className="home-kicker">Continue</span>
-                  <h2>Saved sessions</h2>
-                </div>
-              </div>
-              <SavedGamesOpen />
-            </aside>
+            <SavedGamesOpen />
           </section>
 
           <section id="tools" className="home-tools-section">
@@ -296,7 +297,7 @@ class Home extends Component {
                 href="/timelapse/overview"
                 icon={<FaClock />}
                 title="Timelapses"
-                description="Import, replay, and export recordings."
+                description="Optional recordings you start manually in a session."
               />
               <ToolCard
                 href="/tutorials"
@@ -319,40 +320,6 @@ class Home extends Component {
             </div>
           </section>
 
-          {latestRelease ? (
-            <section className="home-card home-whats-new">
-              <div className="home-whats-new-heading">
-                <div>
-                  <span className="home-kicker">Latest release</span>
-                  <h2>What’s new in {latestRelease.version}</h2>
-                </div>
-                <Link
-                  href="/whats-new"
-                  className="home-button home-button-secondary"
-                >
-                  Full changelog
-                </Link>
-              </div>
-              <ul>
-                {latestItems.map((item, index) => (
-                  <li key={index}>{item}</li>
-                ))}
-              </ul>
-            </section>
-          ) : null}
-
-          <section className="home-updates">
-            <div className="home-card home-notification-card">
-              <span className="home-kicker">Device</span>
-              <h2>Notifications</h2>
-              <PushNotifications />
-            </div>
-            <div className="home-card home-feed-card">
-              <span className="home-kicker">Updates</span>
-              <h2>Latest from the project</h2>
-              <AtomFeed url={config.feedUrl} />
-            </div>
-          </section>
         </div>
 
         <footer className="home-footer">
@@ -392,6 +359,81 @@ class Home extends Component {
               url: config.url
             })}
           />
+        ) : null}
+        {this.state.sessionOpen ? (
+          <div
+            className="home-session-overlay"
+            onClick={this.handleSessionOverlayClick}
+          >
+            <section
+              className="home-session-modal"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="home-session-title"
+              ref={element => {
+                this.sessionDialog = element;
+              }}
+            >
+              <header className="home-session-modal-header">
+                <div>
+                  <span className="home-kicker">New shift</span>
+                  <h2 id="home-session-title">Configure session</h2>
+                </div>
+                <button
+                  type="button"
+                  className="home-session-close"
+                  aria-label="Close session configuration"
+                  onClick={this.closeSession}
+                >
+                  ×
+                </button>
+              </header>
+              <div className="home-session-modal-body">
+                <label className="home-field-label" for="home-airport">
+                  Airport
+                </label>
+                <select
+                  id="home-airport"
+                  value={selectedMap.id}
+                  onInput={this.handleMapSelectionChange}
+                  ref={element => {
+                    this.sessionSelect = element;
+                  }}
+                >
+                  {mapsArr.map(map => (
+                    <option key={map.id} value={map.id}>
+                      {map.name}
+                    </option>
+                  ))}
+                </select>
+                <div className="home-airport-notes">
+                  {selectedMap.ga === 0 ? (
+                    <small>General aviation is unavailable at this airport.</small>
+                  ) : null}
+                  {selectedMap.commercial === 0 ? (
+                    <small>Commercial traffic is unavailable at this airport.</small>
+                  ) : null}
+                </div>
+                <Settings />
+                <div className="home-start-actions">
+                  <button
+                    type="button"
+                    className="home-button home-button-primary home-start-button"
+                    onClick={this.handleStartClick}
+                  >
+                    <FaPlay /> Start session
+                  </button>
+                  <button
+                    type="button"
+                    className="home-button home-button-secondary"
+                    onClick={this.closeSession}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </section>
+          </div>
         ) : null}
       </div>
     );

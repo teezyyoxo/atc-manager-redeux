@@ -1,6 +1,5 @@
 import { Component } from 'preact';
 import './NotFound.css';
-import { history } from '../../index';
 import { route } from 'preact-router';
 
 class NotFound extends Component {
@@ -18,7 +17,7 @@ class NotFound extends Component {
           <br />
           <br />
           <button onclick={() => route('/')}>Home</button>
-          <button onclick={() => history.goBack()}>Back</button>
+          <button onclick={() => window.history.back()}>Back</button>
         </div>
       </div>
     );

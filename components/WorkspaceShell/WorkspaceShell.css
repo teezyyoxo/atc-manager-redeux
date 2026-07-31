@@ -71,16 +71,26 @@
   gap: 10px;
 }
 
-.workspace-nav > a {
+.workspace-nav > a,
+.workspace-nav > button {
+  background: transparent;
+  border: 0;
   border-radius: 999px;
   color: var(--ui-muted);
+  font-family: "Roboto Mono", monospace;
   font-size: .78rem;
   font-weight: 680;
+  height: auto;
+  letter-spacing: 0;
+  margin: 0;
   padding: 8px 11px;
+  text-transform: none;
 }
 
 .workspace-nav > a:hover,
-.workspace-nav > a:focus {
+.workspace-nav > a:focus,
+.workspace-nav > button:hover,
+.workspace-nav > button:focus {
   background: var(--ui-surface);
   color: var(--ui-text);
 }
@@ -301,7 +311,8 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .workspace-nav > a {
+  .workspace-nav > a,
+  .workspace-nav > button {
     border: 1px solid var(--ui-line);
     text-align: center;
   }

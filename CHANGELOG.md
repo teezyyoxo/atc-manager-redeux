@@ -1,6 +1,38 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [3.0.0-rc.5] - 2026-07-31
+
+### Added
+
+- Added a selected-aircraft projected track vector for heading assignments.
+  The four-minute projection uses commanded heading, current airspeed, session
+  wind, and the same near-field wind taper as live aircraft movement.
+- Added a responsive, centered session-configuration dialog with a blurred
+  backdrop, keyboard focus containment, Escape dismissal, and independently
+  sized desktop and mobile layouts.
+
+### Changed
+
+- Consolidated What’s new into an explicitly invoked navigation modal, removed
+  its homepage and standalone-page variants, and restyled its type with the
+  radar-scope-inspired monospace interface font.
+- Tightened the homepage into a shorter hero, saved-session continuation area,
+  and tool grid; removed the empty release, notification, and project-feed
+  blocks; and changed primary actions to the scope-style interface font.
+- Updated application, package, Compose, Make, image, documentation, and build
+  metadata to 3.0.0-rc.5.
+
+### Fixed
+
+- Replaced the conflicting hash-history integration with preact-router’s
+  browser history so navigation updates the URL and direct route refreshes use
+  the server’s existing SPA fallback correctly.
+- Added a root document base so map and tutorial assets resolve correctly after
+  refreshing a nested browser-history route.
+- Shared the ground-velocity calculation between aircraft movement and the
+  projected track vector so wind drift is represented consistently.
+
 ## [3.0.0-rc.4] - 2026-07-30
 
 ### Added

@@ -1,30 +1,11 @@
 import { Component } from 'preact';
-import {
-  getBuildInfo,
-  getReleaseNotes,
-  shouldAnnounceBuild
-} from '../../lib/build-info';
+import { getBuildInfo, getReleaseNotes } from '../../lib/build-info';
 import './ReleaseNotesModal.css';
 
-const storageKey = 'atc-manager-3-last-seen-release-build';
+const openEvent = 'atc-manager:open-release-notes';
 
-const readLastSeenBuild = () => {
-  if (typeof window === 'undefined') return null;
-  try {
-    return window.localStorage.getItem(storageKey);
-  } catch (error) {
-    console.warn('Unable to read the last viewed release build.', error);
-    return null;
-  }
-};
-
-const rememberBuild = label => {
-  if (typeof window === 'undefined') return;
-  try {
-    window.localStorage.setItem(storageKey, label);
-  } catch (error) {
-    console.warn('Unable to remember the last viewed release build.', error);
-  }
+export const openReleaseNotes = () => {
+  if (typeof window !== 'undefined') window.dispatchEvent(new Event(openEvent));
 };
 
 class ReleaseNotesModal extends Component {
@@ -38,10 +19,16 @@ class ReleaseNotesModal extends Component {
   }
 
   componentDidMount() {
-    if (!shouldAnnounceBuild(readLastSeenBuild(), this.build, this.notes)) {
-      return;
-    }
+    window.addEventListener(openEvent, this.handleOpen);
+  }
 
+  componentWillUnmount() {
+    window.removeEventListener(openEvent, this.handleOpen);
+    this.finishClose();
+  }
+
+  handleOpen = () => {
+    if (!this.notes || this.state.open) return;
     this.previousFocus = document.activeElement;
     document.documentElement.classList.add('release-notes-open');
     document.addEventListener('keydown', this.handleKeyDown);
@@ -49,13 +36,13 @@ class ReleaseNotesModal extends Component {
       this.lockBackground();
       if (this.closeIcon) this.closeIcon.focus();
     });
-  }
+  };
 
-  componentWillUnmount() {
+  finishClose = () => {
     this.unlockBackground();
     document.documentElement.classList.remove('release-notes-open');
     document.removeEventListener('keydown', this.handleKeyDown);
-  }
+  };
 
   lockBackground = () => {
     this.inertElements = Array.from(
@@ -99,10 +86,7 @@ class ReleaseNotesModal extends Component {
   };
 
   handleClose = () => {
-    rememberBuild(this.build.label);
-    this.unlockBackground();
-    document.documentElement.classList.remove('release-notes-open');
-    document.removeEventListener('keydown', this.handleKeyDown);
+    this.finishClose();
     this.setState({ open: false }, () => {
       if (
         this.previousFocus &&
@@ -113,8 +97,8 @@ class ReleaseNotesModal extends Component {
     });
   };
 
-  preventBackgroundInteraction = event => {
-    if (event.target === event.currentTarget) event.preventDefault();
+  handleOverlayClick = event => {
+    if (event.target === event.currentTarget) this.handleClose();
   };
 
   render() {
@@ -122,8 +106,7 @@ class ReleaseNotesModal extends Component {
     return (
       <div
         className="release-notes-overlay"
-        onClick={this.preventBackgroundInteraction}
-        onTouchMove={this.preventBackgroundInteraction}
+        onClick={this.handleOverlayClick}
       >
         <section
           className="release-notes-modal"

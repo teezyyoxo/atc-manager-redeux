@@ -1,7 +1,6 @@
 import { Component } from 'preact';
 import './TutorialsIntro.css';
 import { route } from 'preact-router';
-import { history } from '../../index';
 import { loadState, saveState } from '../../lib/persistance';
 import WorkspaceShell from '../../components/WorkspaceShell/WorkspaceShell';
 
@@ -236,7 +235,7 @@ class TutorialsIntro extends Component {
           <button className="button" onClick={() => route('/tutorials')}>
             All Tutorials
           </button>
-          <button className="button" onClick={() => history.goBack()}>
+          <button className="button" onClick={() => window.history.back()}>
             Done
           </button>
           </div>

@@ -1,7 +1,6 @@
 import { Component } from 'preact';
 import './TutorialsTextCommands.css';
 import { route } from 'preact-router';
-import { history } from '../../index';
 import WorkspaceShell from '../../components/WorkspaceShell/WorkspaceShell';
 
 class TutorialsTextCommands extends Component {
@@ -117,7 +116,7 @@ class TutorialsTextCommands extends Component {
           <button className="button" onClick={() => route('/tutorials')}>
             All Tutorials
           </button>
-          <button className="button" onClick={() => history.goBack()}>
+          <button className="button" onClick={() => window.history.back()}>
             Done
           </button>
           </div>

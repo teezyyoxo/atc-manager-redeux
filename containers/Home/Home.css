@@ -96,7 +96,7 @@
 .home-nav-session {
   background: transparent;
   color: var(--ui-muted);
-  font-family: inherit;
+  font-family: "Roboto Mono", monospace;
   font-size: .82rem;
   font-weight: 650;
   height: auto;
@@ -132,11 +132,9 @@
 .home-hero {
   align-items: center;
   display: grid;
-  gap: clamp(40px, 7vw, 96px);
+  gap: clamp(36px, 5vw, 68px);
   grid-template-columns: minmax(0, 1fr) minmax(360px, .8fr);
-  min-height: min(720px, calc(100vh - 104px));
-  min-height: min(720px, calc(100dvh - 104px));
-  padding: clamp(56px, 8vw, 110px) 0;
+  padding: clamp(36px, 5vw, 68px) 0 clamp(48px, 6vw, 78px);
 }
 
 .home-eyebrow,
@@ -182,13 +180,13 @@
   align-items: center;
   border: 1px solid transparent;
   display: inline-flex;
-  font-family: inherit;
+  font-family: "Roboto Mono", monospace;
   font-size: .86rem;
   font-weight: 700;
   gap: 9px;
   height: 48px;
   justify-content: center;
-  letter-spacing: 0;
+  letter-spacing: .025em;
   margin: 0;
   padding: 0 20px;
   text-transform: none;
@@ -254,7 +252,7 @@
   box-shadow:
     0 30px 80px var(--ui-shadow),
     inset 0 0 70px rgba(74, 232, 173, .05);
-  max-width: 500px;
+  max-width: 460px;
   overflow: hidden;
   position: relative;
   width: 100%;
@@ -394,14 +392,6 @@
   padding: 2px 5px;
   position: relative;
   z-index: 1;
-}
-
-.home-session-layout {
-  align-items: start;
-  display: grid;
-  gap: 20px;
-  grid-template-columns: minmax(0, 1.55fr) minmax(300px, .75fr);
-  padding: 34px 0 clamp(74px, 10vw, 130px);
 }
 
 .home-card {
@@ -571,9 +561,8 @@
   min-width: 190px;
 }
 
-.home-saves-card {
-  position: sticky;
-  top: 20px;
+.home-continue-section {
+  margin-bottom: clamp(48px, 6vw, 72px);
 }
 
 .home .savedgamesopen {
@@ -621,7 +610,7 @@
 }
 
 .home-tools-section {
-  padding-bottom: clamp(74px, 10vw, 130px);
+  padding-bottom: clamp(48px, 6vw, 72px);
 }
 
 .home-tools-grid {
@@ -692,56 +681,6 @@
 .home-tool-arrow {
   color: var(--ui-muted);
   font-size: 1.1rem;
-}
-
-.home-whats-new {
-  margin-bottom: 20px;
-}
-
-.home-whats-new-heading {
-  align-items: flex-start;
-  display: flex;
-  gap: 24px;
-  justify-content: space-between;
-  margin-bottom: 24px;
-}
-
-.home-whats-new ul {
-  display: grid;
-  gap: 12px;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.home-whats-new li {
-  color: var(--ui-muted);
-  font-size: .88rem;
-  line-height: 1.55;
-  padding-left: 18px;
-  position: relative;
-}
-
-.home-whats-new li::before {
-  background: var(--ui-accent);
-  border-radius: 50%;
-  content: "";
-  height: 5px;
-  left: 0;
-  position: absolute;
-  top: .66em;
-  width: 5px;
-}
-
-.home-updates {
-  display: grid;
-  gap: 20px;
-  grid-template-columns: minmax(260px, .7fr) minmax(0, 1.3fr);
-}
-
-.home-notification-card,
-.home-feed-card {
-  min-height: 230px;
 }
 
 .home-footer {
@@ -826,6 +765,113 @@
   backdrop-filter: blur(12px);
 }
 
+.home-session-open,
+.home-session-open body {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+.home-session-overlay {
+  align-items: center;
+  background: rgba(3, 11, 13, .58);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding:
+    max(20px, env(safe-area-inset-top))
+    max(20px, env(safe-area-inset-right))
+    max(20px, env(safe-area-inset-bottom))
+    max(20px, env(safe-area-inset-left));
+  position: fixed;
+  z-index: 9000;
+  -webkit-backdrop-filter: blur(18px) saturate(.75);
+  backdrop-filter: blur(18px) saturate(.75);
+}
+
+.home-session-modal {
+  background:
+    linear-gradient(145deg, var(--ui-surface-solid), var(--ui-surface-raised));
+  border: 1px solid color-mix(in srgb, var(--ui-accent) 58%, transparent);
+  border-radius: 20px;
+  box-shadow: 0 0 50px var(--ui-glow), 0 30px 90px var(--ui-shadow);
+  color: var(--ui-text);
+  display: flex;
+  flex-direction: column;
+  max-height: min(820px, calc(100dvh - 40px));
+  overflow: hidden;
+  width: min(720px, 100%);
+}
+
+.home-session-modal-header {
+  align-items: flex-start;
+  border-bottom: 1px solid var(--ui-line);
+  display: flex;
+  flex: 0 0 auto;
+  justify-content: space-between;
+  padding: 24px clamp(22px, 4vw, 34px) 20px;
+}
+
+.home-session-modal-header h2 {
+  font-family: "Roboto Mono", monospace;
+  font-size: clamp(1.5rem, 4vw, 2.1rem);
+  letter-spacing: -.045em;
+  line-height: 1.05;
+  margin: 6px 0 0;
+}
+
+.home .home-session-close {
+  align-items: center;
+  background: transparent;
+  border: 1px solid var(--ui-line);
+  border-radius: 50%;
+  color: var(--ui-muted);
+  display: flex;
+  flex: 0 0 42px;
+  font-family: "Roboto Mono", monospace;
+  font-size: 1.6rem;
+  font-weight: 400;
+  height: 42px;
+  justify-content: center;
+  letter-spacing: 0;
+  margin: 0 0 0 18px;
+  padding: 0 0 3px;
+  text-transform: none;
+}
+
+.home .home-session-close:hover,
+.home .home-session-close:focus {
+  background: var(--ui-accent);
+  border-color: var(--ui-accent);
+  color: var(--ui-accent-ink);
+}
+
+.home-session-modal-body {
+  -webkit-overflow-scrolling: touch;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 24px clamp(22px, 4vw, 34px) 30px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .home-session-overlay {
+    animation: home-modal-backdrop-in .18s ease-out both;
+  }
+
+  .home-session-modal {
+    animation: home-modal-in .24s cubic-bezier(.2, .8, .2, 1) both;
+  }
+}
+
+@keyframes home-modal-backdrop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes home-modal-in {
+  from { opacity: 0; transform: translateY(12px) scale(.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
 @media (max-width: 900px) {
   .home-header {
     align-items: flex-start;
@@ -845,14 +891,6 @@
   .home-radar-preview {
     justify-self: center;
     max-width: 580px;
-  }
-
-  .home-session-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .home-saves-card {
-    position: static;
   }
 
   .home-tools-grid {
@@ -902,8 +940,8 @@
   }
 
   .home-hero {
-    gap: 44px;
-    padding: 58px 0 76px;
+    gap: 38px;
+    padding: 38px 0 54px;
   }
 
   .home-hero h1 {
@@ -929,10 +967,6 @@
     width: min(100%, calc(100vw - 32px));
   }
 
-  .home-session-layout {
-    padding-top: 20px;
-  }
-
   .home-card {
     padding: 22px 18px;
   }
@@ -943,21 +977,11 @@
     gap: 10px;
   }
 
-  .home-whats-new-heading {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .home-whats-new-heading .home-button {
-    width: 100%;
-  }
-
   .home-section-heading > p {
     text-align: left;
   }
 
-  .home-tools-grid,
-  .home-updates {
+  .home-tools-grid {
     grid-template-columns: 1fr;
   }
 
@@ -969,6 +993,29 @@
   .home-footer {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .home-session-overlay {
+    align-items: stretch;
+    padding:
+      max(10px, env(safe-area-inset-top))
+      max(10px, env(safe-area-inset-right))
+      max(10px, env(safe-area-inset-bottom))
+      max(10px, env(safe-area-inset-left));
+  }
+
+  .home-session-modal {
+    border-radius: 16px;
+    max-height: calc(100dvh - 20px);
+    width: 100%;
+  }
+
+  .home-session-modal-header {
+    padding: 19px 18px 16px;
+  }
+
+  .home-session-modal-body {
+    padding: 20px 18px 24px;
   }
 }
 
