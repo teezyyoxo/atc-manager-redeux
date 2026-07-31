@@ -628,8 +628,12 @@
 }
 
 .home .savedgamesopen {
-  color: transparent;
-  font-size: 0;
+  color: var(--ui-text);
+  font-size: inherit;
+}
+
+.home .savedgamesopen-label {
+  display: none;
 }
 
 .home .savedgamesopen-list {
@@ -649,16 +653,6 @@
   border: 1px solid var(--ui-line);
   color: var(--ui-text);
   border-radius: 12px;
-}
-
-.home .savedgamesopen .save-img,
-.home .savedgamesopen .trash {
-  fill: var(--ui-muted);
-}
-
-.home .savedgamesopen .save:hover .save-img,
-.home .savedgamesopen .save:hover .trash {
-  fill: var(--ui-accent);
 }
 
 .home .PushNotifications {
@@ -1128,38 +1122,48 @@
 
 @media (max-width: 600px) {
   .home-header {
-    align-items: stretch;
-    flex-direction: column;
-    gap: 16px;
+    align-items: center;
+    flex-direction: row;
+    gap: 10px;
+    padding:
+      calc(12px + env(safe-area-inset-top))
+      calc(16px + env(safe-area-inset-right))
+      12px
+      calc(16px + env(safe-area-inset-left));
   }
 
   .home-nav {
-    display: grid;
-    gap: 8px;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    justify-content: stretch;
+    display: flex;
+    flex: 0 0 auto;
+    gap: 7px;
+    justify-content: flex-end;
+    margin-left: auto;
   }
 
   .home-nav > a,
-  .home-nav-link,
+  .home-nav > .home-nav-link,
+  .home-nav > .home-nav-tools {
+    display: none;
+  }
+
   .home-nav-session {
     align-items: center;
     border: 1px solid var(--ui-line);
     display: flex;
+    font-size: .64rem;
     justify-content: center;
-    min-height: 40px;
-    padding: 7px 10px;
+    min-height: 34px;
+    padding: 5px 9px;
     border-radius: 999px;
   }
 
   .home-nav .theme-control {
-    grid-column: 1 / -1;
-    justify-content: stretch;
-    width: 100%;
+    justify-content: center;
+    width: auto;
   }
 
   .home-nav .theme-option {
-    flex: 1 1 0;
+    flex: 0 0 28px;
   }
 
   .home-main {
@@ -1197,6 +1201,10 @@
 
   .home-card {
     padding: 22px 18px;
+  }
+
+  .home-continue-section .home-section-heading {
+    margin-bottom: 16px;
   }
 
   .home-section-heading {

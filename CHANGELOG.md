@@ -1,6 +1,21 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [3.0.0-rc.14] - 2026-07-31
+
+### Changed
+
+- Moved mobile game wind, time, and menu access into a thin, safe-area-aware
+  top navigation bar.
+- Reworked mobile touch commands into one compact row for heading, speed, and
+  altitude with a slim full-width Send Command action beneath it.
+- Simplified the mobile homepage header, protected it from the iOS system clock,
+  and replaced the text display-mode selector with system, sun, and moon icons.
+- Reduced saved sessions to compact horizontal rows and added selectable mobile
+  actions to resume, edit, or delete each session.
+- Updated application, package, Compose, Make, image, documentation, and build
+  metadata to 3.0.0-rc.14.
+
 ## [3.0.0-rc.13] - 2026-07-31
 
 ### Changed

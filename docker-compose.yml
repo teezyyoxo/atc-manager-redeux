@@ -1,10 +1,10 @@
 services:
   web:
-    image: "atc-manager:${APP_VERSION:-3.0.0-rc.13}"
+    image: "atc-manager:${APP_VERSION:-3.0.0-rc.14}"
     build:
       context: .
       args:
-        APP_VERSION: "${APP_VERSION:-3.0.0-rc.13}"
+        APP_VERSION: "${APP_VERSION:-3.0.0-rc.14}"
         BUILD_COMMIT: "${BUILD_COMMIT:-unknown}"
     ports:
       - "${PORT:-8080}:80"

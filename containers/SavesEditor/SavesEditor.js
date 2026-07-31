@@ -10,17 +10,25 @@ import {
   sendMessageInfo
 } from '../../components/GameMessages/GameMessages';
 import persistanceSchema from '../../schema/persistance';
+import { getParameterByName } from '../../lib/util';
 const mapSaveSchema = persistanceSchema.definitions.mapSave;
 
 class SavesEditor extends Component {
   constructor(props) {
     super();
 
+    const saves = loadState().games;
+    const requestedSave = getParameterByName('save');
+    const saveName = requestedSave && saves[requestedSave]
+      ? requestedSave
+      : '';
+    const editingObj = saveName ? saves[saveName] : null;
+
     this.state = {
-      json: '',
-      saveName: '',
-      saves: loadState().games,
-      editingObj: null,
+      json: editingObj ? JSON.stringify(editingObj, null, 4) : '',
+      saveName,
+      saves,
+      editingObj,
       debouncing: false,
       rawJSON: false
     };

@@ -32,6 +32,7 @@ import { sendMessageError } from '../GameMessages/GameMessages';
 import communications from '../../lib/communications';
 import { route } from 'preact-router';
 import TouchDial from '../TouchDial/TouchDial';
+import { lpad } from '../../lib/util';
 
 class TrafficStack extends Component {
   constructor(props) {
@@ -645,6 +646,8 @@ class TrafficStack extends Component {
 
   render() {
     const trafficStack = this.renderTrafficStack();
+    const hours = Math.floor(GameStore.time / 3600);
+    const minutes = Math.floor((GameStore.time % 3600) / 60);
 
     const trafficControl = SettingsStore.useTextCmd
       ? this.renderTextCmdControl()
@@ -656,6 +659,33 @@ class TrafficStack extends Component {
 
     return (
       <div className="traffic-stack-shell">
+        <div className="mobile-game-navbar">
+          <div
+            className="mobile-game-status"
+            aria-label="Current weather and time"
+          >
+            <span>
+              Wind {lpad(`${Math.floor(GameStore.winddir)}`, '0', 3)}° ·{' '}
+              {Math.floor(GameStore.windspd)} KT
+            </span>
+            <time>{lpad(`${hours}`, '0', 2)}:{lpad(`${minutes}`, '0', 2)}</time>
+          </div>
+          <button
+            type="button"
+            className="mobile-menu-toggle"
+            onClick={this.handleMobileMenuToggle}
+            aria-controls="mobile-utility-menu"
+            aria-expanded={this.state.mobileMenuExpanded}
+            aria-label={
+              this.state.mobileMenuExpanded
+                ? 'Close game menu'
+                : 'Open game menu'
+            }
+          >
+            {this.state.mobileMenuExpanded ? <FaTimes /> : <FaBars />}
+            <span>{this.state.mobileMenuExpanded ? 'Close' : 'Menu'}</span>
+          </button>
+        </div>
         <div className="traffic-stack-wrapper">
           <div
             className="traffic-stack"
@@ -666,8 +696,7 @@ class TrafficStack extends Component {
               {Math.floor(GameStore.windspd)}KTS
             </div>
             <div className="time">
-              time: {Math.floor(GameStore.time / 3600)}:
-              {Math.floor((GameStore.time % 3600) / 60)}
+              time: {hours}:{lpad(`${minutes}`, '0', 2)}
             </div>
             {trafficStack}
           </div>
@@ -711,22 +740,6 @@ class TrafficStack extends Component {
             <GameMetaControls />
           </div>
         </div>
-
-        <button
-          type="button"
-          className="mobile-menu-toggle"
-          onClick={this.handleMobileMenuToggle}
-          aria-controls="mobile-utility-menu"
-          aria-expanded={this.state.mobileMenuExpanded}
-          aria-label={
-            this.state.mobileMenuExpanded
-              ? 'Close game menu'
-              : 'Open game menu'
-          }
-        >
-          {this.state.mobileMenuExpanded ? <FaTimes /> : <FaBars />}
-          <span>{this.state.mobileMenuExpanded ? 'Close' : 'Menu'}</span>
-        </button>
 
         {/* panels */}
         <SettingsPanel

@@ -882,28 +882,47 @@ small, p, span {
   display: none;
 }
 
+.visually-hidden {
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
 .theme-control {
   align-items: center;
   background: var(--ui-surface-raised);
   border: 1px solid var(--ui-line);
   display: inline-flex;
-  gap: 2px;
+  gap: 1px;
   padding: 3px;
   border-radius: 999px;
 }
 
 .theme-control .theme-option {
+  align-items: center;
   background: transparent;
   border: 0;
   color: var(--ui-muted);
   font-family: inherit;
+  display: inline-flex;
   font-size: .72rem;
-  height: 30px;
+  height: 28px;
+  justify-content: center;
   letter-spacing: .04em;
   margin: 0;
-  padding: 0 10px;
+  padding: 0;
   text-transform: none;
   border-radius: 999px;
+  width: 28px;
+}
+
+.theme-control .theme-option svg {
+  height: 12px;
+  width: 12px;
 }
 
 .theme-control .theme-option:hover,

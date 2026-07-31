@@ -2,62 +2,138 @@
 .savedgamesopen .savedgamesopen-list {
   border: 2px solid #1e606b;
   border-radius: 3px;
+  display: grid;
+  gap: 6px;
 }
 
 .savedgamesopen .save {
-  border-top: 1px solid #1e606b;
-  padding: 5px;
-  display: block;
+  align-items: center;
+  border: 1px solid #1e606b;
+  border-radius: 9px;
+  display: flex;
+  gap: 8px;
+  min-height: 48px;
+  padding: 5px 6px 5px 12px;
   background-color: rgba(44, 62, 80, 0);
-  transition: all 500ms ease;
+  transition: all 180ms ease;
   transition-property: opacity, background-color;
 }
 
-.savedgamesopen .save:first-of-type {
-  border-top: none;
-}
-
-.savedgamesopen .save:hover {
+.savedgamesopen .save:hover,
+.savedgamesopen .save.is-selected {
   background-color: rgba(44, 62, 80, 1);
   color: #fff;
 }
 
-.savedgamesopen .save:hover .save-img  {
-  fill: #ffffff;
-}
-
-.savedgamesopen .save:hover .trash  {
-  fill: #ffffff;
-}
-
-.savedgamesopen .save::after {
-  content: "";
-  display: block;
-  clear: both;
-}
-
-.savedgamesopen .save .save-name {
+.savedgamesopen .save-select {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  display: flex;
+  flex: 1 1 auto;
+  font: inherit;
+  gap: 10px;
+  height: 36px;
+  justify-content: space-between;
   margin: 0;
-  float: left;
-  display: block;
+  min-width: 0;
+  padding: 0;
+  text-align: left;
+  text-transform: none;
 }
 
-.savedgamesopen .trash {
-  height: 2.5em;
+.savedgamesopen .save-name {
   display: block;
-  float: right;
-  fill: rgba(44, 62, 80, 1);
-  transition: all 500ms ease;
-  transition-property: fill;
-  cursor: pointer;
+  font-size: .82rem;
+  font-weight: 700;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.savedgamesopen .save-img {
-  height: 2.5em;
-  float: right;
-  display: block;
-  fill: rgba(44, 62, 80, 1);
-  transition: all 500ms ease;
-  transition-property: fill;
-  cursor: pointer;
+.savedgamesopen .save-select-hint {
+  display: none;
+}
+
+.savedgamesopen .save-actions {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 4px;
+}
+
+.savedgamesopen .save-action {
+  align-items: center;
+  border: 1px solid #31545c;
+  border-radius: 999px;
+  display: inline-flex;
+  font-size: .68rem;
+  gap: 5px;
+  height: 34px;
+  justify-content: center;
+  margin: 0;
+  min-width: 34px;
+  padding: 0;
+  width: 34px;
+}
+
+.savedgamesopen .save-action span {
+  display: none;
+}
+
+.savedgamesopen .save-resume {
+  border-color: #36cd78;
+}
+
+.savedgamesopen .save-delete {
+  color: #e5867b;
+}
+
+@media (max-width: 600px) {
+  .savedgamesopen .save {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 0;
+    min-height: 44px;
+    padding: 4px 8px 4px 11px;
+  }
+
+  .savedgamesopen .save-select {
+    flex: 0 0 36px;
+    width: 100%;
+  }
+
+  .savedgamesopen .save-select-hint {
+    color: #9db0b5;
+    display: inline;
+    flex: 0 0 auto;
+    font-size: .62rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+
+  .savedgamesopen .save.is-selected .save-select-hint {
+    color: #62ff8d;
+  }
+
+  .savedgamesopen .save-actions {
+    display: none;
+    gap: 5px;
+    padding: 4px 0 3px;
+  }
+
+  .savedgamesopen .save.is-selected .save-actions {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .savedgamesopen .save-action {
+    padding: 0 8px;
+    width: 100%;
+  }
+
+  .savedgamesopen .save-action span {
+    display: inline;
+  }
 }

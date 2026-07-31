@@ -499,11 +499,12 @@
 
   .workspace-nav .theme-control {
     grid-column: 1 / -1;
-    width: 100%;
+    justify-self: end;
+    width: auto;
   }
 
   .workspace-nav .theme-option {
-    flex: 1 1 0;
+    flex: 0 0 28px;
   }
 
   .workspace-main {

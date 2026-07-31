@@ -1,10 +1,11 @@
 import { Component } from 'preact';
 import SettingsStore from '../../stores/SettingsStore';
+import { FaAdjust, FaMoon, FaSun } from 'react-icons/fa/index.esm';
 
 const themes = [
-  { value: 'system', label: 'System' },
-  { value: 'light', label: 'Light' },
-  { value: 'dark', label: 'Dark' }
+  { value: 'system', label: 'System', icon: <FaAdjust /> },
+  { value: 'light', label: 'Light', icon: <FaSun /> },
+  { value: 'dark', label: 'Dark', icon: <FaMoon /> }
 ];
 
 class ThemeControl extends Component {
@@ -39,8 +40,11 @@ class ThemeControl extends Component {
             }
             onClick={() => this.handleThemeChange(theme.value)}
             aria-pressed={SettingsStore.themePreference === theme.value}
+            aria-label={`${theme.label} display mode`}
+            title={theme.label}
           >
-            {theme.label}
+            {theme.icon}
+            <span className="visually-hidden">{theme.label}</span>
           </button>
         ))}
       </div>
