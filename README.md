@@ -156,6 +156,50 @@ git pull --ff-only && make ENGINE=podman compose-down && make ENGINE=podman comp
 Using `&&` stops the sequence if any command fails. The untracked `.env` file
 and local saves are not replaced by `git pull`.
 
+### Reclaiming Docker build cache
+
+Docker retains unused build layers so later builds can reuse them. Release
+updates normally benefit from that cache, but old dependency layers can
+accumulate over time and eventually cause an `ENOSPC: no space left on device`
+error during `npm ci`. Check Docker's current usage without changing anything:
+
+```bash
+docker system df
+```
+
+When the builder has accumulated substantial reclaimable data, remove only its
+unused build cache:
+
+```bash
+docker builder prune
+```
+
+This does not remove running containers, named volumes, or local browser saves.
+It can make the next image build slower because dependencies may need to be
+downloaded again. It is maintenance for a full or heavily used Docker store,
+not a step required for every upgrade.
+
+To include cleanup in the explicit stop-and-start workflow, use:
+
+```bash
+git pull --ff-only && make compose-down && docker builder prune -f && make compose-up
+```
+
+The `-f` option only skips the prune confirmation. Using `&&` is important: the
+service is not rebuilt if the pull, shutdown, or cleanup fails. For the normal
+upgrade without cleanup, continue using:
+
+```bash
+git pull --ff-only && make compose-down && make compose-up
+```
+
+There is no advantage to switching to raw `docker compose up` after pruning.
+`make compose-up` already invokes `docker compose up --build` and additionally
+loads host configuration, embeds the Git revision, finds an available port,
+forces service recreation, and verifies the published address. Use raw Compose
+only when diagnosing the Make wrapper itself or on a host where Make is not
+available.
+
 ### Per-host configuration
 
 The real `.env` is ignored by both Git and the container build. It stores
