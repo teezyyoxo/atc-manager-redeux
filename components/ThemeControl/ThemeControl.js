@@ -27,7 +27,7 @@ class ThemeControl extends Component {
 
   render() {
     return (
-      <div className="theme-control" aria-label="Color theme">
+      <div className="theme-control" aria-label="Display mode">
         {themes.map(theme => (
           <button
             type="button"

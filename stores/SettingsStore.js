@@ -2,6 +2,13 @@ import { EventEmitter } from 'events';
 import Communications from '../lib/communications';
 import { loadState, saveState } from '../lib/persistance';
 
+const colorPalettes = ['approach', 'oceanic', 'amber', 'violet'];
+const interfaceFonts = [
+  'ibm-plex-mono',
+  'jetbrains-mono',
+  'share-tech-mono'
+];
+
 class SettingsStore extends EventEmitter {
   constructor() {
     super();
@@ -49,6 +56,8 @@ class SettingsStore extends EventEmitter {
     this.radarFontsize = 14;
     this.interfaceScale = 'auto';
     this.themePreference = 'system';
+    this.colorPalette = 'approach';
+    this.interfaceFont = 'ibm-plex-mono';
     this.touchControlColor = '#62ff8d';
     this.ga = false;
     this.enroute = false;
@@ -192,11 +201,20 @@ class SettingsStore extends EventEmitter {
   applyTheme = () => {
     if (typeof document === 'undefined') return;
     const root = document.documentElement;
+    const colorPalette = colorPalettes.includes(this.colorPalette)
+      ? this.colorPalette
+      : 'approach';
+    const interfaceFont = interfaceFonts.includes(this.interfaceFont)
+      ? this.interfaceFont
+      : 'ibm-plex-mono';
     const preference = ['system', 'light', 'dark'].includes(
       this.themePreference
     )
       ? this.themePreference
       : 'system';
+
+    root.setAttribute('data-palette', colorPalette);
+    root.setAttribute('data-interface-font', interfaceFont);
 
     if (preference === 'system') {
       root.removeAttribute('data-theme');
@@ -213,7 +231,13 @@ class SettingsStore extends EventEmitter {
         this.systemThemeMedia.matches);
     const themeColor = document.querySelector('meta[name="theme-color"]');
     if (themeColor) {
-      themeColor.setAttribute('content', isDark ? '#071416' : '#eef5f2');
+      const backgroundColor = window.getComputedStyle(root)
+        .getPropertyValue('--ui-bg')
+        .trim();
+      themeColor.setAttribute(
+        'content',
+        backgroundColor || (isDark ? '#071416' : '#eef5f2')
+      );
     }
   };
 
@@ -242,6 +266,8 @@ class SettingsStore extends EventEmitter {
         'radarFontsize',
         'interfaceScale',
         'themePreference',
+        'colorPalette',
+        'interfaceFont',
         'touchControlColor',
         'distanceCircleColor',
         'ilsPathLength',

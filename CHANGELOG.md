@@ -1,6 +1,24 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [3.0.0-rc.9] - 2026-07-31
+
+### Added
+
+- Bundled IBM Plex Mono, JetBrains Mono, and Share Tech Mono for fully offline
+  interface-font selection, with each browser profile retaining its choice.
+- Added Approach Mint, Oceanic Blue, Amber Scope, and Violet Dusk color themes,
+  each with purpose-built System, Light, and Dark mode palettes.
+
+### Changed
+
+- Restored the flight-strip bar's original monospace typography and local text
+  treatment so interface-font preferences do not affect operational cards.
+- Made the homepage radar glow, sweep, grid, rings, and background washes
+  respond consistently to the selected color theme.
+- Updated application, package, Compose, Make, image, documentation, and build
+  metadata to 3.0.0-rc.9.
+
 ## [3.0.0-rc.8] - 2026-07-31
 
 ### Changed

@@ -173,6 +173,20 @@
   margin-top: 6px;
 }
 
+.settings-font-control {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.settings-font-preview {
+  color: var(--ui-accent);
+  display: block;
+  font-family: var(--ui-scope-font);
+  font-size: .76rem;
+  letter-spacing: .035em;
+}
+
 .settings-utility-row {
   align-items: center;
   display: flex;

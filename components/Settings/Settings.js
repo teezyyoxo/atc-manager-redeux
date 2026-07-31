@@ -50,6 +50,19 @@ const colorSettings = [
   ['msaColor', 'MSA Color']
 ];
 
+const interfaceFonts = [
+  ['ibm-plex-mono', 'IBM Plex Mono'],
+  ['jetbrains-mono', 'JetBrains Mono'],
+  ['share-tech-mono', 'Share Tech Mono']
+];
+
+const colorPalettes = [
+  ['approach', 'Approach Mint'],
+  ['oceanic', 'Oceanic Blue'],
+  ['amber', 'Amber Scope'],
+  ['violet', 'Violet Dusk']
+];
+
 class Settings extends Component {
   constructor(props) {
     super(props);
@@ -84,6 +97,16 @@ class Settings extends Component {
   handleInterfaceScaleChange = event => {
     SettingsStore.interfaceScale =
       event.target.value === 'auto' ? 'auto' : +event.target.value;
+    SettingsStore.emit('change');
+  };
+
+  handleInterfaceFontChange = event => {
+    SettingsStore.interfaceFont = event.target.value;
+    SettingsStore.emit('change');
+  };
+
+  handleColorPaletteChange = event => {
+    SettingsStore.colorPalette = event.target.value;
     SettingsStore.emit('change');
   };
 
@@ -234,8 +257,35 @@ class Settings extends Component {
             this.state.appearanceExpanded ? '' : 'hidden'
           }`}
         >
-          <SettingRow label="Interface Theme" className="settings-row-theme">
+          <SettingRow label="Display Mode" className="settings-row-theme">
             <ThemeControl />
+          </SettingRow>
+          <SettingRow label="Color Theme" className="settings-row-select">
+            <select
+              aria-label="Color Theme"
+              value={SettingsStore.colorPalette}
+              onInput={this.handleColorPaletteChange}
+            >
+              {colorPalettes.map(([value, label]) => (
+                <option key={value} value={value}>{label}</option>
+              ))}
+            </select>
+          </SettingRow>
+          <SettingRow label="Interface Font" className="settings-row-select">
+            <div className="settings-font-control">
+              <select
+                aria-label="Interface Font"
+                value={SettingsStore.interfaceFont}
+                onInput={this.handleInterfaceFontChange}
+              >
+                {interfaceFonts.map(([value, label]) => (
+                  <option key={value} value={value}>{label}</option>
+                ))}
+              </select>
+              <small className="settings-font-preview">
+                EHAM APP · AAL1634 · 11000FT
+              </small>
+            </div>
           </SettingRow>
           {this.renderToggleRow('distanceCircles', 'Distance Circles')}
           {this.renderToggleRow('routeVisualization', 'Route Visualization')}

@@ -8,7 +8,7 @@ import, or share timelapse files.
 The production app is a static Preact build served by nginx. The same
 multi-stage `Dockerfile` is supported by Docker and Podman.
 
-Current release: **3.0.0-rc.8**
+Current release: **3.0.0-rc.9**
 
 ## Features
 
@@ -245,7 +245,7 @@ make ENGINE=podman run PORT=8081
 ```
 
 `VERSION`, `IMAGE`, `PORT`, `CONTAINER`, `BUILD_COMMIT`, and `BUILD_FLAGS` can
-all be overridden. The default image is `atc-manager:3.0.0-rc.8`.
+all be overridden. The default image is `atc-manager:3.0.0-rc.9`.
 
 ## Mobile and tablet browsers
 
@@ -265,15 +265,18 @@ under appearance settings.
 In Safari, use **Share → Add to Home Screen** for a standalone web-app
 experience. Interface scale defaults to the connected display and can be
 overridden under **Settings → Appearance → Interface scale**. That choice,
-radar font size, colors, and the other appearance settings remain local to the
-current browser profile, so one player's device does not change another's.
-System, Light, and Dark themes can be selected from the homepage or Appearance
-settings; System follows the current device preference. During an active
+radar font size, interface font, color theme, colors, and the other appearance
+settings remain local to the current browser profile, so one player's device
+does not change another's. The bundled IBM Plex Mono, JetBrains Mono, and Share
+Tech Mono fonts work without an external font service. System, Light, and Dark
+display modes can be selected from the homepage or Appearance settings; System
+follows the current device preference. Each selectable color theme includes
+coordinated dark and light palettes. During an active
 session, backgrounding the page, changing tabs, or putting the device to sleep
 pauses the simulation. Return to the glowing pause dialog and choose
 **Resume session** when ready.
 The About panel shows the release and source revision as
-`3.0.0-rc.8+<commit>`, which identifies the exact release-candidate build in
+`3.0.0-rc.9+<commit>`, which identifies the exact release-candidate build in
 use.
 
 ## New Features announcements
@@ -382,9 +385,9 @@ Podman did not find the requested image locally and tried to pull it. Build it
 first, use the same tag for `build` and `run`, and keep `--pull=never`:
 
 ```bash
-podman build --format docker --build-arg APP_VERSION=3.0.0-rc.8 \
-  -t localhost/atc-manager:3.0.0-rc.8 .
-podman run --pull=never --rm -p 8080:80 localhost/atc-manager:3.0.0-rc.8
+podman build --format docker --build-arg APP_VERSION=3.0.0-rc.9 \
+  -t localhost/atc-manager:3.0.0-rc.9 .
+podman run --pull=never --rm -p 8080:80 localhost/atc-manager:3.0.0-rc.9
 ```
 
 ### Port 8080 is already in use
@@ -392,8 +395,8 @@ podman run --pull=never --rm -p 8080:80 localhost/atc-manager:3.0.0-rc.8
 Publish another host port:
 
 ```bash
-docker run --rm -p 8081:80 atc-manager:3.0.0-rc.8
-podman run --rm -p 8081:80 localhost/atc-manager:3.0.0-rc.8
+docker run --rm -p 8081:80 atc-manager:3.0.0-rc.9
+podman run --rm -p 8081:80 localhost/atc-manager:3.0.0-rc.9
 ```
 
 ### Container build dependency errors
@@ -417,6 +420,7 @@ safer.
 - `components/`, `containers/` — Preact UI and routed views
 - `stores/`, `lib/`, `schema/` — simulation state, parsers, persistence, and data
 - `assets/maps/` — bundled airport maps
+- `assets/fonts/` — licenses and attribution for bundled interface fonts
 - `sw.js` — offline and push-notification worker source
 - `Dockerfile`, `nginx.conf`, `docker-compose.yml` — production container stack
 
