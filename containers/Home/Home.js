@@ -22,7 +22,7 @@ import AtomFeed from '../../components/AtomFeed/AtomFeed';
 import PushNotifications from '../../components/PushNotifications/PushNotifications';
 import SettingsStore from '../../stores/SettingsStore';
 import ThemeControl from '../../components/ThemeControl/ThemeControl';
-import { getBuildInfo } from '../../lib/build-info';
+import { getBuildInfo, getReleaseNotes } from '../../lib/build-info';
 
 const ToolCard = ({ href, icon, title, description }) => (
   <Link className="home-tool-card" href={href}>
@@ -98,6 +98,13 @@ class Home extends Component {
   render() {
     const selectedMap = maps[SettingsStore.selectedMapId] || maps.default;
     const build = getBuildInfo();
+    const latestRelease = getReleaseNotes();
+    const latestItems = latestRelease
+      ? latestRelease.sections.reduce(
+        (items, section) => items.concat(section.items),
+        []
+      ).slice(0, 3)
+      : [];
     return (
       <div className="home">
         <header className="home-header">
@@ -119,6 +126,7 @@ class Home extends Component {
               </button>
             ) : null}
             <Link href="/tutorials">Tutorials</Link>
+            <Link href="/whats-new">What’s new</Link>
             <button
               type="button"
               className="home-nav-link"
@@ -310,6 +318,28 @@ class Home extends Component {
               </button>
             </div>
           </section>
+
+          {latestRelease ? (
+            <section className="home-card home-whats-new">
+              <div className="home-whats-new-heading">
+                <div>
+                  <span className="home-kicker">Latest release</span>
+                  <h2>What’s new in {latestRelease.version}</h2>
+                </div>
+                <Link
+                  href="/whats-new"
+                  className="home-button home-button-secondary"
+                >
+                  Full changelog
+                </Link>
+              </div>
+              <ul>
+                {latestItems.map((item, index) => (
+                  <li key={index}>{item}</li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
 
           <section className="home-updates">
             <div className="home-card home-notification-card">

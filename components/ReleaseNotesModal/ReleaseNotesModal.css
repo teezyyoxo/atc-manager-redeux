@@ -43,6 +43,7 @@
   position: relative;
   touch-action: pan-y;
   width: min(100%, 760px);
+  border-radius: 20px;
 }
 
 .release-notes-modal::before,
@@ -114,6 +115,7 @@
   margin: 0 0 0 20px;
   padding: 0 0 3px;
   text-transform: none;
+  border-radius: 50%;
 }
 
 .release-notes-close-icon:hover,
@@ -215,6 +217,7 @@
   padding: 0 24px;
   text-transform: none;
   width: 100%;
+  border-radius: 0;
 }
 
 .release-notes-close-bar:hover,

@@ -506,6 +506,7 @@ small, p, span {
   display: inline-flex;
   gap: 2px;
   padding: 3px;
+  border-radius: 999px;
 }
 
 .theme-control .theme-option {
@@ -519,6 +520,7 @@ small, p, span {
   margin: 0;
   padding: 0 10px;
   text-transform: none;
+  border-radius: 999px;
 }
 
 .theme-control .theme-option:hover,

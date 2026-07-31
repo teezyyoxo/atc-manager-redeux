@@ -9,6 +9,7 @@ import TimelapseContainer from '../TimelapseContainer/TimelapseContainer';
 import TimelapseOverview from '../TimelapseOverview/TimelapseOverview';
 import GameStore from '../../stores/GameStore';
 import { route } from 'preact-router';
+import WorkspaceShell from '../../components/WorkspaceShell/WorkspaceShell';
 
 export const rethrow = msg => {
   return err => {
@@ -123,23 +124,34 @@ class TimelapseRoot extends Component {
   render() {
     const showOverview = this.state.timelapseroute === 'overview';
     return (
-      <div className={`TimelapseRoot ${this.state.loading ? 'loading' : ''}`}>
-        {!this.state.loading ? (
-          <div className="content">
-            {showOverview ? (
-              <TimelapseOverview />
-            ) : (
+      <WorkspaceShell
+        className="timelapse-workspace"
+        kicker="Session playback"
+        title={showOverview ? 'Timelapses' : this.state.name || 'Timelapse'}
+        description={
+          showOverview
+            ? 'Import, review, replay, and export recordings stored in this browser.'
+            : 'Review traffic, inspect session events, or resume control from any point.'
+        }
+      >
+        <div className={`TimelapseRoot ${this.state.loading ? 'loading' : ''}`}>
+          {!this.state.loading ? (
+            <div className="content">
+              {showOverview ? (
+                <TimelapseOverview />
+              ) : (
                 <TimelapseContainer
                   timelapseroute={this.state.timelapseroute}
                   url={this.state.url}
                   name={this.state.name}
                 />
               )}
-          </div>
-        ) : (
+            </div>
+          ) : (
             <div class="loader mid" />
           )}
-      </div>
+        </div>
+      </WorkspaceShell>
     );
   }
 }

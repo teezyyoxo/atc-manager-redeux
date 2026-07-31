@@ -1,6 +1,5 @@
 import { Component } from 'preact';
 import './TimelapseOverview.css';
-import { route } from 'preact-router';
 import SavedTimelapseOpen from '../../components/SavedTimelapseOpen/SavedTimelapseOpen';
 import { loadState, saveState } from '../../lib/persistance';
 import { parseTimelapse } from '../../lib/timelapse-file';
@@ -13,10 +12,6 @@ class TimelapseOverview extends Component {
   constructor(props) {
     super();
     this.state = { revision: 0 };
-  }
-
-  handleHomeCLick() {
-    route('/');
   }
 
   handleImport = e => {
@@ -52,13 +47,9 @@ class TimelapseOverview extends Component {
   render() {
     return (
       <div className="TimelapseOverview">
-        <div className="abs-container">
-          <button onClick={this.handleHomeCLick}>Home</button>
-        </div>
-        <div class="panel">
-          <h3 className="text-center">Timelapse overview</h3>
-        </div>
         <div className="panel">
+          <span className="workspace-kicker">Recording library</span>
+          <h3>Saved timelapses</h3>
           <input
             id="timelapse-import"
             className="inputfile"
@@ -66,7 +57,7 @@ class TimelapseOverview extends Component {
             accept=".json,.atc-timelapse.json"
             onChange={this.handleImport}
           />
-          <label for="timelapse-import">Import Timelapse</label>
+          <label for="timelapse-import">Import timelapse</label>
           <SavedTimelapseOpen key={this.state.revision} />
         </div>
       </div>

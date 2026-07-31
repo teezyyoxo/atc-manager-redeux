@@ -95,7 +95,7 @@ class TimelapseContainer extends Component {
   render() {
     return (
       <div className="TimelapseContainer">
-        <div className="abs-container">
+        <div className="timelapse-back">
           <button onClick={this.handleOverviewClick}>Overview</button>
         </div>
         <div className="panel timelapse-header">

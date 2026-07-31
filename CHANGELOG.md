@@ -1,6 +1,31 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [3.0.0-rc.4] - 2026-07-30
+
+### Added
+
+- Added a What’s new navigation link, a responsive homepage release summary,
+  and a consistently styled page containing the complete changelog.
+- Added a shared, theme-aware workspace shell for save, aircraft, and operator
+  editors, timelapse tools, and individual training modules.
+- Added Resume, Save & exit, and Exit without saving actions to the paused
+  session dialog.
+
+### Changed
+
+- Rounded homepage actions, navigation controls, cards, saved-session rows, and
+  the System, Light, and Dark theme selector.
+- Renamed the in-game Pause action to Pause / exit and shared the same save
+  operation between the utility control and the exit workflow.
+- Updated application, package, Compose, Make, image, documentation, and build
+  metadata to 3.0.0-rc.4.
+
+### Fixed
+
+- Locked the active game route to the visual viewport so homepage and What’s
+  new content cannot be reached by vertical scrolling on mobile or desktop.
+
 ## [3.0.0-rc.3] - 2026-07-29
 
 ### Added

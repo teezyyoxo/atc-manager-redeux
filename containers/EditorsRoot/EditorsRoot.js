@@ -6,6 +6,7 @@ import SavesEditor from '../../containers/SavesEditor/SavesEditor';
 import OperatorEditor from '../../containers/OperatorEditor/OperatorEditor';
 import AirplaneSubmissionSuccess from '../../containers/AirplaneSubmissionSuccess/AirplaneSubmissionSuccess';
 import OperatorSubmissionSuccess from '../../containers/OperatorSubmissionSuccess/OperatorSubmissionSuccess';
+import WorkspaceShell from '../../components/WorkspaceShell/WorkspaceShell';
 
 const getEditorRoute = editorroute =>
   ({
@@ -16,6 +17,29 @@ const getEditorRoute = editorroute =>
     'operator-submission-success': <OperatorSubmissionSuccess />
   }[editorroute] || <NotFound />);
 
+const editorDetails = {
+  'save-editor': {
+    title: 'Save editor',
+    description: 'Inspect, repair, import, and export sessions stored in this browser.'
+  },
+  'airplane-editor': {
+    title: 'Aircraft editor',
+    description: 'Create and tune aircraft performance profiles for your local fleet.'
+  },
+  'operator-editor': {
+    title: 'Operator editor',
+    description: 'Manage airline identities, callsigns, colors, and fleet assignments.'
+  },
+  'airplane-submission-success': {
+    title: 'Aircraft submitted',
+    description: 'Your aircraft profile was sent for review.'
+  },
+  'operator-submission-success': {
+    title: 'Operator submitted',
+    description: 'Your operator profile was sent for review.'
+  }
+};
+
 class EditorsRoot extends Component {
   constructor(props) {
     super();
@@ -23,10 +47,21 @@ class EditorsRoot extends Component {
   }
 
   render() {
+    const details = editorDetails[this.props.editorroute] || {
+      title: 'Tool unavailable',
+      description: 'The requested editor could not be found.'
+    };
     return (
-      <div className="EditorsRoot">
-        {getEditorRoute(this.props.editorroute)}
-      </div>
+      <WorkspaceShell
+        className="editor-workspace"
+        kicker="Local tools"
+        title={details.title}
+        description={details.description}
+      >
+        <div className="EditorsRoot">
+          {getEditorRoute(this.props.editorroute)}
+        </div>
+      </WorkspaceShell>
     );
   }
 }

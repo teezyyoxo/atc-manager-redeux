@@ -3,6 +3,7 @@ import './TutorialsIntro.css';
 import { route } from 'preact-router';
 import { history } from '../../index';
 import { loadState, saveState } from '../../lib/persistance';
+import WorkspaceShell from '../../components/WorkspaceShell/WorkspaceShell';
 
 class TutorialsIntro extends Component {
   constructor(props) {
@@ -20,14 +21,14 @@ class TutorialsIntro extends Component {
 
   render() {
     return (
-      <div className="TutorialsIntro tutorial">
-        <div className="abs-container">
-          <button onClick={this.handleTutorialClick}>All Tutorials</button>
-        </div>
-        <div className="panel">
-          <h3 className="text-center">Intro Tutorial</h3>
-        </div>
-        <div className="panel">
+      <WorkspaceShell
+        className="training-workspace"
+        kicker="Training library"
+        title="Introduction"
+        description="Learn the radar, flight strips, command controls, and landing workflow."
+      >
+        <div className="TutorialsIntro tutorial">
+          <div className="panel">
           <section id="tut-intro-index">
             <h4>Index</h4>
             <ul>
@@ -238,8 +239,9 @@ class TutorialsIntro extends Component {
           <button className="button" onClick={() => history.goBack()}>
             Done
           </button>
+          </div>
         </div>
-      </div>
+      </WorkspaceShell>
     );
   }
 }

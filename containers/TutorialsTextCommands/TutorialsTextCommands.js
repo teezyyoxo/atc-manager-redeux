@@ -2,6 +2,7 @@ import { Component } from 'preact';
 import './TutorialsTextCommands.css';
 import { route } from 'preact-router';
 import { history } from '../../index';
+import WorkspaceShell from '../../components/WorkspaceShell/WorkspaceShell';
 
 class TutorialsTextCommands extends Component {
   constructor(props) {
@@ -15,14 +16,14 @@ class TutorialsTextCommands extends Component {
 
   render() {
     return (
-      <div className="TutorialsTextCommands tutorial">
-        <div className="abs-container">
-          <button onClick={this.handleTutorialClick}>All Tutorials</button>
-        </div>
-        <div className="panel">
-          <h3 className="text-center">Text Comands Tutorial</h3>
-        </div>
-        <div className="panel">
+      <WorkspaceShell
+        className="training-workspace"
+        kicker="Training library"
+        title="Text commands"
+        description="Learn compact keyboard instructions for faster traffic control."
+      >
+        <div className="TutorialsTextCommands tutorial">
+          <div className="panel">
           <section>
             <h4>Enable text commands</h4>
             <p>
@@ -119,8 +120,9 @@ class TutorialsTextCommands extends Component {
           <button className="button" onClick={() => history.goBack()}>
             Done
           </button>
+          </div>
         </div>
-      </div>
+      </WorkspaceShell>
     );
   }
 }

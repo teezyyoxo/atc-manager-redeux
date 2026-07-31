@@ -1,4 +1,10 @@
 
+.game-session-open {
+  height: 100%;
+  overflow: hidden !important;
+  overscroll-behavior: none;
+}
+
 .Game {
   width: 100vw;
   height: 100vh;
@@ -42,6 +48,7 @@
   position: relative;
   text-align: center;
   width: 100%;
+  border-radius: 20px;
 }
 
 .game-pause-modal::before,
@@ -95,6 +102,11 @@
   max-width: 320px;
 }
 
+.game-pause-actions {
+  display: grid;
+  gap: 10px;
+}
+
 .game-pause-modal button {
   background: #6bf0b7;
   color: #062218;
@@ -105,11 +117,38 @@
   margin: 0;
   min-width: 190px;
   text-transform: none;
+  border: 1px solid rgba(107, 240, 183, .3);
+  border-radius: 999px;
+  width: 100%;
 }
 
 .game-pause-modal button:hover,
 .game-pause-modal button:focus {
-  background: #8af7c9;
+  background: rgba(107, 240, 183, .14);
   box-shadow: 0 0 26px rgba(107, 240, 183, .3);
+  color: #effaf7;
+}
+
+.game-pause-modal .game-pause-primary {
+  background: #6bf0b7;
+  border-color: #6bf0b7;
   color: #062218;
+}
+
+.game-pause-modal .game-pause-primary:hover,
+.game-pause-modal .game-pause-primary:focus {
+  background: #8af7c9;
+  color: #062218;
+}
+
+.game-pause-modal .game-pause-danger {
+  border-color: rgba(255, 138, 128, .38);
+  color: #ffb1a9;
+}
+
+.game-pause-modal .game-pause-danger:hover,
+.game-pause-modal .game-pause-danger:focus {
+  background: rgba(255, 101, 88, .12);
+  border-color: #ff8a80;
+  color: #ffd1cd;
 }

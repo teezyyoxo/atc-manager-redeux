@@ -16,6 +16,7 @@ import TimelapseRoot from 'async!./containers/TimelapseRoot/TimelapseRoot';
 import TutorialsRoot from './containers/TutorialsRoot/TutorialsRoot';
 import TutorialsIntro from './containers/TutorialsIntro/TutorialsIntro';
 import TutorialsTextCommands from './containers/TutorialsTextCommands/TutorialsTextCommands';
+import WhatsNew from 'async!./containers/WhatsNew/WhatsNew';
 import { loadCSS, loadJS } from './lib/lazy-load';
 
 if (typeof window !== 'undefined') {
@@ -42,6 +43,7 @@ export default class App extends Component {
           <TutorialsRoot path="tutorials" />
           <TutorialsIntro path="tutorials/intro" />
           <TutorialsTextCommands path="tutorials/text-commands" />
+          <WhatsNew path="/whats-new" />
           <NotFound default />
         </Router>
         <GameMessages />

@@ -1,0 +1,336 @@
+.workspace-page {
+  background:
+    radial-gradient(circle at 78% 4%, var(--ui-glow), transparent 30rem),
+    radial-gradient(circle at 6% 30%, rgba(126, 145, 255, .1), transparent 28rem),
+    var(--ui-bg);
+  color: var(--ui-text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.workspace-header {
+  align-items: center;
+  border-bottom: 1px solid var(--ui-line);
+  display: flex;
+  gap: 24px;
+  justify-content: space-between;
+  margin: 0 auto;
+  max-width: 1180px;
+  padding: 20px clamp(18px, 4vw, 44px);
+}
+
+.workspace-brand {
+  align-items: center;
+  color: var(--ui-text);
+  display: inline-flex;
+  gap: 11px;
+  min-width: max-content;
+}
+
+.workspace-brand:hover,
+.workspace-brand:focus {
+  color: var(--ui-text);
+}
+
+.workspace-brand-mark {
+  align-items: center;
+  background: var(--ui-accent);
+  border-radius: 12px;
+  color: var(--ui-accent-ink);
+  display: inline-flex;
+  font-family: "Roboto Mono", monospace;
+  font-size: .8rem;
+  font-weight: 800;
+  height: 38px;
+  justify-content: center;
+  letter-spacing: -.05em;
+  width: 38px;
+}
+
+.workspace-brand > span:last-child {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.workspace-brand strong {
+  font-size: .92rem;
+}
+
+.workspace-brand small {
+  color: var(--ui-muted);
+  font-family: "Roboto Mono", monospace;
+  font-size: .64rem;
+  margin-top: 4px;
+}
+
+.workspace-nav {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+}
+
+.workspace-nav > a {
+  border-radius: 999px;
+  color: var(--ui-muted);
+  font-size: .78rem;
+  font-weight: 680;
+  padding: 8px 11px;
+}
+
+.workspace-nav > a:hover,
+.workspace-nav > a:focus {
+  background: var(--ui-surface);
+  color: var(--ui-text);
+}
+
+.workspace-main {
+  margin: 0 auto;
+  max-width: 1180px;
+  padding: clamp(56px, 8vw, 96px) clamp(18px, 4vw, 44px) 100px;
+}
+
+.workspace-intro {
+  margin-bottom: clamp(30px, 5vw, 52px);
+}
+
+.workspace-kicker {
+  color: var(--ui-accent);
+  font-family: "Roboto Mono", monospace;
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+.workspace-intro h1 {
+  color: var(--ui-text);
+  font-family: inherit;
+  font-size: clamp(2.7rem, 7vw, 5.6rem);
+  font-weight: 720;
+  letter-spacing: -.065em;
+  line-height: .96;
+  margin: 16px 0 20px;
+  text-align: left;
+}
+
+.workspace-intro p {
+  color: var(--ui-muted);
+  font-size: clamp(.98rem, 1.8vw, 1.18rem);
+  line-height: 1.55;
+  margin: 0;
+  max-width: 700px;
+}
+
+.workspace-content .EditorsRoot,
+.workspace-content .SavesEditor,
+.workspace-content .AirplaneEditor,
+.workspace-content .OperatorEditor,
+.workspace-content .TimelapseRoot,
+.workspace-content .TimelapseOverview,
+.workspace-content .TimelapseContainer,
+.workspace-content .tutorial {
+  background: transparent;
+  min-height: 0;
+  overflow: visible;
+  padding: 0;
+}
+
+.workspace-content .content {
+  padding: 0;
+}
+
+.workspace-content .panel {
+  background: var(--ui-surface);
+  border: 1px solid var(--ui-line);
+  border-radius: 18px;
+  box-shadow: 0 20px 60px var(--ui-shadow);
+  color: var(--ui-text);
+  margin: 0 0 20px;
+  max-width: none;
+  padding: clamp(20px, 4vw, 34px);
+  width: 100%;
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+}
+
+.workspace-content .panel > h1:first-child,
+.workspace-content .tutorial > .panel:first-of-type {
+  display: none;
+}
+
+.workspace-content h3,
+.workspace-content h4,
+.workspace-content h5,
+.workspace-content label,
+.workspace-content legend {
+  color: var(--ui-text);
+  font-family: inherit;
+}
+
+.workspace-content p,
+.workspace-content small {
+  color: var(--ui-muted);
+}
+
+.workspace-content input:not([type='checkbox']):not([type='color']),
+.workspace-content select,
+.workspace-content textarea {
+  background: var(--ui-surface-solid);
+  border: 1px solid var(--ui-line);
+  border-radius: 10px;
+  color: var(--ui-text);
+  font-family: "Roboto Mono", monospace;
+  max-width: 100%;
+  padding: 9px 11px;
+}
+
+.workspace-content select option {
+  background: var(--ui-surface-solid);
+  color: var(--ui-text);
+}
+
+.workspace-content button,
+.workspace-content .button,
+.workspace-content .inputfile + label {
+  background: var(--ui-surface-raised);
+  border: 1px solid var(--ui-line);
+  border-radius: 999px;
+  color: var(--ui-text);
+  display: inline-flex;
+  font-family: inherit;
+  font-size: .78rem;
+  font-weight: 700;
+  height: 40px;
+  justify-content: center;
+  letter-spacing: 0;
+  margin: 4px;
+  padding: 0 16px;
+  text-transform: none;
+}
+
+.workspace-content button:hover,
+.workspace-content button:focus,
+.workspace-content .button:hover,
+.workspace-content .button:focus,
+.workspace-content .inputfile + label:hover {
+  background: var(--ui-accent);
+  border-color: var(--ui-accent);
+  color: var(--ui-accent-ink);
+}
+
+.workspace-content form.edit-save-box {
+  background: var(--ui-surface-solid);
+  border-color: var(--ui-line);
+  border-radius: 14px;
+  height: min(600px, 68dvh) !important;
+  padding: 16px;
+}
+
+.workspace-content textarea.edit-save-box {
+  background: var(--ui-surface-solid);
+  border-color: var(--ui-line);
+  height: min(600px, 68dvh) !important;
+}
+
+.workspace-content .TimelapseContainer .panel {
+  margin-bottom: 20px;
+}
+
+.workspace-content .timelapse-back {
+  margin-bottom: 14px;
+}
+
+.workspace-content .timelapse-back button {
+  margin-left: 0;
+}
+
+.workspace-content .TimelapseContainer .video-wrapper {
+  border: 1px solid var(--ui-line);
+  border-radius: 18px;
+  height: min(70dvh, 760px);
+  margin-bottom: 20px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.workspace-content .timelapse-footer-options {
+  display: grid;
+  font-size: .9rem;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+}
+
+.workspace-content .timelapse-footer-options .option {
+  align-items: center;
+  background: var(--ui-surface-raised);
+  border: 1px solid var(--ui-line);
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  gap: 12px;
+  margin: 0;
+  padding: 14px;
+}
+
+.workspace-content .timelapse-footer-options .option:hover {
+  border-color: var(--ui-accent);
+}
+
+.workspace-content .timelapse-footer-options svg {
+  color: var(--ui-accent);
+  font-size: 1.4rem;
+}
+
+.workspace-content .tutorial section + section {
+  border-top: 1px solid var(--ui-line);
+  margin-top: 34px;
+  padding-top: 30px;
+}
+
+@media (max-width: 720px) {
+  .workspace-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .workspace-nav {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .workspace-nav > a {
+    border: 1px solid var(--ui-line);
+    text-align: center;
+  }
+
+  .workspace-nav .theme-control {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .workspace-nav .theme-option {
+    flex: 1 1 0;
+  }
+
+  .workspace-main {
+    padding-top: 50px;
+  }
+}
+
+@media (max-width: 440px) {
+  .workspace-content .panel {
+    border-radius: 14px;
+    padding: 18px 14px;
+  }
+
+  .workspace-content button,
+  .workspace-content .button,
+  .workspace-content .inputfile + label {
+    margin: 4px 2px;
+    max-width: 100%;
+    white-space: normal;
+  }
+}

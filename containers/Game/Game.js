@@ -4,6 +4,8 @@ import AtcView from '../AtcView/AtcView';
 import GameStore from '../../stores/GameStore';
 import SettingsStore from '../../stores/SettingsStore';
 import { maps } from '../../lib/map';
+import { route } from 'preact-router';
+import { saveCurrentGame } from '../../lib/game-save';
 
 class Game extends Component {
   constructor(props) {
@@ -19,6 +21,9 @@ class Game extends Component {
   }
 
   componentDidMount() {
+    document.documentElement.classList.add('game-session-open');
+    document.body.classList.add('game-session-open');
+    window.scrollTo(0, 0);
     GameStore.on('change', this.handleGameStoreChange);
     if (typeof document !== 'undefined') {
       document.addEventListener(
@@ -37,6 +42,8 @@ class Game extends Component {
   }
 
   componentWillUnmount() {
+    document.documentElement.classList.remove('game-session-open');
+    document.body.classList.remove('game-session-open');
     GameStore.removeListener('change', this.handleGameStoreChange);
     if (typeof document !== 'undefined') {
       document.removeEventListener(
@@ -88,7 +95,26 @@ class Game extends Component {
   handleResume = () => {
     this.pauseReason = null;
     GameStore.resume();
-  }
+  };
+
+  exitSession = () => {
+    GameStore.stop();
+    route('/');
+  };
+
+  handleSaveAndExit = () => {
+    if (saveCurrentGame()) this.exitSession();
+  };
+
+  handleExitWithoutSaving = () => {
+    if (
+      confirm(
+        'Exit this session without saving? Any progress since your last save will be lost.'
+      )
+    ) {
+      this.exitSession();
+    }
+  };
 
   render() {
     if (!this.state.ready) return <div className="loader mid" />;
@@ -111,9 +137,26 @@ class Game extends Component {
                 {this.pauseReason ||
                   'Traffic and simulation time are safely stopped.'}
               </p>
-              <button type="button" onClick={this.handleResume} autoFocus>
-                Resume session
-              </button>
+              <div className="game-pause-actions">
+                <button
+                  className="game-pause-primary"
+                  type="button"
+                  onClick={this.handleResume}
+                  autoFocus
+                >
+                  Resume session
+                </button>
+                <button type="button" onClick={this.handleSaveAndExit}>
+                  Save &amp; exit
+                </button>
+                <button
+                  className="game-pause-danger"
+                  type="button"
+                  onClick={this.handleExitWithoutSaving}
+                >
+                  Exit without saving
+                </button>
+              </div>
             </div>
           </div>
         ) : null}

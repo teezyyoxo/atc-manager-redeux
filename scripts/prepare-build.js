@@ -26,20 +26,7 @@ const getCommit = () => {
   }
 };
 
-const getLatestReleaseNotes = () => {
-  const changelog = fs.readFileSync(changelogPath, 'utf8');
-  const release = /^## \[([^\]]+)\](?: - ([^\n]+))?$/m.exec(
-    changelog
-  );
-  if (!release) throw new Error('Unable to find the latest changelog release.');
-  const releaseBodyStart = release.index + release[0].length;
-  const remainingChangelog = changelog.slice(releaseBodyStart);
-  const nextReleaseIndex = remainingChangelog.search(/^## \[/m);
-  const releaseBody =
-    nextReleaseIndex === -1
-      ? remainingChangelog
-      : remainingChangelog.slice(0, nextReleaseIndex);
-
+const parseSections = releaseBody => {
   const sections = [];
   let section = null;
   releaseBody.split(/\r?\n/).forEach(line => {
@@ -61,22 +48,40 @@ const getLatestReleaseNotes = () => {
       section.items[lastIndex] += ` ${line.trim()}`;
     }
   });
-
-  return {
-    version: release[1],
-    date: release[2] || null,
-    sections: sections.filter(item => item.items.length > 0)
-  };
+  return sections.filter(item => item.items.length > 0);
 };
 
-const releaseNotes = getLatestReleaseNotes();
+const getChangelog = () => {
+  const changelog = fs.readFileSync(changelogPath, 'utf8');
+  const releasePattern = /^## \[([^\]]+)\](?: - ([^\n]+))?$/gm;
+  const matches = Array.from(changelog.matchAll(releasePattern));
+  if (matches.length === 0) {
+    throw new Error('Unable to find changelog releases.');
+  }
+  return matches.map((release, index) => {
+    const releaseBodyStart = release.index + release[0].length;
+    const releaseBodyEnd =
+      index + 1 < matches.length ? matches[index + 1].index : changelog.length;
+    return {
+      version: release[1],
+      date: release[2] || null,
+      sections: parseSections(
+        changelog.slice(releaseBodyStart, releaseBodyEnd)
+      )
+    };
+  });
+};
+
+const changelog = getChangelog();
+const releaseNotes = changelog[0];
 const template = fs
   .readFileSync(sourceTemplatePath, 'utf8')
   .replace('__BUILD_COMMIT__', getCommit())
   .replace(
     '__RELEASE_NOTES__',
     encodeURIComponent(JSON.stringify(releaseNotes))
-  );
+  )
+  .replace('__CHANGELOG__', encodeURIComponent(JSON.stringify(changelog)));
 
 const templateVersion = template.match(
   /<meta name="application-version" content="([^"]+)"/
