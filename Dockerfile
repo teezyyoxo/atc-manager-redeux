@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1.7
+
 FROM node:22-alpine AS build
 ARG BUILD_COMMIT=unknown
 WORKDIR /app
@@ -8,10 +10,13 @@ ENV NODE_OPTIONS=--openssl-legacy-provider
 ENV BUILD_COMMIT=${BUILD_COMMIT}
 
 COPY package.json package-lock.json ./
-RUN npm ci --no-audit --no-fund
+RUN --mount=type=cache,id=atc-manager-npm-cache,target=/root/.npm,sharing=locked \
+    --mount=type=cache,id=atc-manager-node-modules,target=/app/node_modules,sharing=locked \
+    npm ci --no-audit --no-fund
 
 COPY . .
-RUN npm run check
+RUN --mount=type=cache,id=atc-manager-node-modules,target=/app/node_modules,sharing=locked \
+    npm run check
 
 FROM nginx:1.28-alpine
 ARG APP_VERSION=3.0.0-rc.7

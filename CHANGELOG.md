@@ -18,6 +18,8 @@ All notable changes to this project will be documented in this file.
   higher-contrast range-slider handles.
 - Distributed the former advanced options into the main settings block and
   moved speech synthesis into its own collapsible section.
+- Moved npm downloads and build-only dependencies into reusable container
+  cache mounts so release-version changes do not retain a new dependency layer.
 - Updated application, package, Compose, Make, image, documentation, and build
   metadata to 3.0.0-rc.7.
 
