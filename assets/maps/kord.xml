@@ -1,0 +1,6 @@
+<g fill="none" stroke="#194850" stroke-width="2">
+  <path d="M1020 0 C950 145 985 270 935 390 C890 500 920 610 875 720" />
+  <path d="M0 555 C175 500 340 505 505 555 C680 610 790 580 900 500" />
+  <path d="M835 0 L800 720 M900 0 L850 720" stroke-dasharray="10 12" opacity=".62" />
+  <circle cx="640" cy="360" r="245" stroke-dasharray="14 14" opacity=".45" />
+</g>

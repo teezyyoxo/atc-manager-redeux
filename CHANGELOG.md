@@ -1,6 +1,28 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [3.0.0-rc.12] - 2026-07-31
+
+### Added
+
+- Added KFLL, KMIA, KBDL, KMEM, KHOU, KLAS, KBNA, KORD, KEWR, and KHVN
+  with airport-specific runway layouts and usage, regional weather profiles,
+  airline and aircraft pools, GA availability, scope geography, SIDs, STARs,
+  and minimum-sector altitudes.
+- Added KMMK, KOXC, and KGON as GA-only facilities with appropriately limited
+  aircraft classes, local weather, runway configurations, VFR arrival,
+  departure, and pattern traffic, and dedicated scope geography.
+- Added airport-level airline filtering to keep generated commercial aircraft
+  aligned with each facility's configured operator pool.
+
+### Changed
+
+- Widened the desktop gameplay sidebar while preserving compact and mobile
+  breakpoints, giving Pause / Exit and Save / Save As enough room to remain
+  legible without clipping.
+- Updated application, package, Compose, Make, image, documentation, and build
+  metadata to 3.0.0-rc.12.
+
 ## [3.0.0-rc.11] - 2026-07-31
 
 ### Added
