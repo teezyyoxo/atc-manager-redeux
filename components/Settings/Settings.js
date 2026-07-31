@@ -55,8 +55,7 @@ class Settings extends Component {
     super(props);
     this.state = {
       difficulty: 'normal',
-      appearanceExpanded: false,
-      speechExpanded: false
+      appearanceExpanded: false
     };
   }
 
@@ -132,10 +131,6 @@ class Settings extends Component {
 
   handleAppearanceExpanded = () => {
     this.setState({ appearanceExpanded: !this.state.appearanceExpanded });
-  };
-
-  handleSpeechExpanded = () => {
-    this.setState({ speechExpanded: !this.state.speechExpanded });
   };
 
   handleChange = name => event => {
@@ -298,26 +293,12 @@ class Settings extends Component {
           <small>Does not affect saved sessions.</small>
         </div>
 
-        <button
-          type="button"
-          className="settings-section-toggle"
-          aria-expanded={this.state.speechExpanded}
-          aria-controls="speech-settings"
-          onClick={this.handleSpeechExpanded}
-        >
-          <span>
-            {this.state.speechExpanded ? <FaCompress /> : <FaExpand />}
-            Speech Synthesis
-          </span>
-          <span aria-hidden="true">{this.state.speechExpanded ? '−' : '+'}</span>
-        </button>
         <div
           id="speech-settings"
-          className={`settings-group settings-collapsible ${
-            this.state.speechExpanded ? '' : 'hidden'
-          }`}
+          className="settings-group settings-speech-group"
+          aria-label="Speech synthesis settings"
         >
-          {this.renderToggleRow('speechsynthesis', 'Enable Speech Synthesis')}
+          {this.renderToggleRow('speechsynthesis', 'Speech Synthesis')}
           {SettingsStore.speechsynthesis ? (
             <div>
               <SettingRow label="Voice" className="settings-row-select">

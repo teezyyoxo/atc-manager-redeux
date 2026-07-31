@@ -29,7 +29,7 @@
 
 .settings-label {
   color: var(--ui-text);
-  font-family: "Roboto Mono", monospace;
+  font-family: var(--ui-scope-font);
   font-size: .88rem;
   font-weight: 600;
   line-height: 1.35;
@@ -141,7 +141,7 @@
   border-radius: 12px;
   color: var(--ui-text);
   display: flex;
-  font-family: "Roboto Mono", monospace;
+  font-family: var(--ui-scope-font);
   font-size: .86rem;
   font-weight: 700;
   height: 46px;
@@ -186,7 +186,7 @@
   border: 1px solid var(--ui-line);
   border-radius: 999px;
   color: var(--ui-muted);
-  font-family: "Roboto Mono", monospace;
+  font-family: var(--ui-scope-font);
   font-size: .76rem;
   height: 38px;
   letter-spacing: 0;

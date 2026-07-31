@@ -1,6 +1,20 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [3.0.0-rc.8] - 2026-07-31
+
+### Changed
+
+- Replaced the unbundled Roboto Mono declaration with an offline native
+  UI-monospace stack and added a restrained dark-mode edge to light text for
+  improved legibility over radar surfaces.
+- Simplified speech synthesis to a single enable toggle that reveals Voice,
+  Pitch, and Rate only while speech output is enabled.
+- Increased desktop homepage navigation, hero, workspace, radar, and footer
+  sizing slightly while retaining the single-viewport layout.
+- Updated application, package, Compose, Make, image, documentation, and build
+  metadata to 3.0.0-rc.8.
+
 ## [3.0.0-rc.7] - 2026-07-31
 
 ### Added

@@ -35,7 +35,7 @@
     0 0 54px var(--ui-glow),
     0 30px 90px var(--ui-shadow);
   color: var(--ui-text);
-  font-family: "Roboto Mono", monospace;
+  font-family: var(--ui-scope-font);
   display: flex;
   flex-direction: column;
   max-height: min(720px, calc(100dvh - 36px));
@@ -83,7 +83,7 @@
 .release-notes-kicker {
   color: var(--ui-accent);
   display: block;
-  font-family: "Roboto Mono", monospace;
+  font-family: var(--ui-scope-font);
   font-size: .72rem;
   font-weight: 750;
   letter-spacing: .16em;
@@ -92,7 +92,7 @@
 }
 
 .release-notes-header h1 {
-  font-family: "Roboto Mono", monospace;
+  font-family: var(--ui-scope-font);
   font-size: clamp(1.9rem, 4vw, 2.7rem);
   font-weight: 700;
   letter-spacing: .01em;
@@ -107,7 +107,7 @@
   color: var(--ui-muted);
   display: flex;
   flex: 0 0 44px;
-  font-family: "Roboto Mono", monospace;
+  font-family: var(--ui-scope-font);
   font-size: 1.8rem;
   font-weight: 300;
   height: 44px;
@@ -135,7 +135,7 @@
   color: var(--ui-muted);
   display: flex;
   flex: 0 0 auto;
-  font-family: "Roboto Mono", monospace;
+  font-family: var(--ui-scope-font);
   font-size: .78rem;
   gap: 12px;
   justify-content: space-between;
@@ -144,7 +144,7 @@
 
 .release-notes-version code {
   color: var(--ui-accent);
-  font-family: 'Roboto Mono', monospace;
+  font-family: var(--ui-scope-font);
   font-size: .72rem;
   overflow-wrap: anywhere;
 }
@@ -166,7 +166,7 @@
 
 .release-notes-section h2 {
   color: var(--ui-accent);
-  font-family: "Roboto Mono", monospace;
+  font-family: var(--ui-scope-font);
   font-size: .75rem;
   font-weight: 760;
   letter-spacing: .14em;
@@ -182,7 +182,7 @@
 
 .release-notes-section li {
   color: var(--ui-text);
-  font-family: "Roboto Mono", monospace;
+  font-family: var(--ui-scope-font);
   font-size: clamp(.86rem, 1.6vw, .96rem);
   line-height: 1.55;
   margin: 0;
@@ -211,7 +211,7 @@
   border: 1px solid var(--ui-line);
   color: var(--ui-accent);
   display: inline-flex;
-  font-family: "Roboto Mono", monospace;
+  font-family: var(--ui-scope-font);
   font-size: .78rem;
   font-weight: 700;
   gap: 8px;
@@ -234,7 +234,7 @@
   border-top: 1px solid var(--ui-accent);
   color: var(--ui-accent-ink);
   flex: 0 0 54px;
-  font-family: "Roboto Mono", monospace;
+  font-family: var(--ui-scope-font);
   font-size: .9rem;
   height: 54px;
   letter-spacing: .02em;

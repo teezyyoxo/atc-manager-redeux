@@ -57,7 +57,7 @@
   background: var(--ui-accent);
   color: var(--ui-accent-ink);
   display: inline-flex;
-  font-family: "Roboto Mono", monospace;
+  font-family: var(--ui-scope-font);
   font-size: .84rem;
   font-weight: 800;
   height: 40px;
@@ -80,7 +80,7 @@
 
 .home-brand small {
   color: var(--ui-muted);
-  font-family: "Roboto Mono", monospace;
+  font-family: var(--ui-scope-font);
   font-size: .66rem;
   margin-top: 3px;
 }
@@ -96,7 +96,7 @@
 .home-nav-session {
   background: transparent;
   color: var(--ui-muted);
-  font-family: "Roboto Mono", monospace;
+  font-family: var(--ui-scope-font);
   font-size: .82rem;
   font-weight: 650;
   height: auto;
@@ -141,7 +141,7 @@
 .home-kicker {
   color: var(--ui-accent);
   display: inline-block;
-  font-family: "Roboto Mono", monospace;
+  font-family: var(--ui-scope-font);
   font-size: .7rem;
   font-weight: 700;
   letter-spacing: .14em;
@@ -180,7 +180,7 @@
   align-items: center;
   border: 1px solid transparent;
   display: inline-flex;
-  font-family: "Roboto Mono", monospace;
+  font-family: var(--ui-scope-font);
   font-size: .86rem;
   font-weight: 700;
   gap: 9px;
@@ -223,7 +223,7 @@
   color: var(--ui-muted);
   display: flex;
   flex-wrap: wrap;
-  font-family: "Roboto Mono", monospace;
+  font-family: var(--ui-scope-font);
   font-size: .66rem;
   gap: 20px;
   margin-top: 34px;
@@ -332,7 +332,7 @@
   color: var(--ui-secondary);
   display: flex;
   flex-direction: column;
-  font-family: "Roboto Mono", monospace;
+  font-family: var(--ui-scope-font);
   font-size: clamp(.52rem, 1.15vw, .72rem);
   line-height: 1.2;
   position: absolute;
@@ -398,7 +398,7 @@
   color: var(--ui-accent);
   display: flex;
   flex-direction: column;
-  font-family: "Roboto Mono", monospace;
+  font-family: var(--ui-scope-font);
   left: 50%;
   line-height: 1.15;
   position: absolute;
@@ -469,7 +469,7 @@
 .home-section-heading h2,
 .home-card h2 {
   color: var(--ui-text);
-  font-family: "Roboto Mono", monospace;
+  font-family: var(--ui-scope-font);
   font-size: clamp(1.55rem, 2.6vw, 2.2rem);
   font-weight: 690;
   letter-spacing: -.045em;
@@ -489,7 +489,7 @@
   align-items: center;
   color: var(--ui-muted);
   display: inline-flex;
-  font-family: "Roboto Mono", monospace;
+  font-family: var(--ui-scope-font);
   font-size: .68rem;
   gap: 8px;
   text-transform: uppercase;
@@ -504,7 +504,7 @@
 
 .home-field-label {
   color: var(--ui-muted);
-  font-family: "Roboto Mono", monospace;
+  font-family: var(--ui-scope-font);
   font-size: .8rem;
   font-weight: 700;
   letter-spacing: .1em;
@@ -629,7 +629,7 @@
   border: 1px solid var(--ui-line);
   color: var(--ui-text);
   display: grid;
-  font-family: "Roboto Mono", monospace;
+  font-family: var(--ui-scope-font);
   gap: 14px;
   grid-template-columns: 44px minmax(0, 1fr) auto;
   height: auto;
@@ -724,7 +724,7 @@
 
 .home-footer .home-footer-brand {
   border-color: transparent;
-  font-family: "Roboto Mono", monospace;
+  font-family: var(--ui-scope-font);
   font-weight: 700;
   padding-left: 0;
 }
@@ -818,7 +818,7 @@
   color: var(--ui-text);
   display: flex;
   flex-direction: column;
-  font-family: "Roboto Mono", monospace;
+  font-family: var(--ui-scope-font);
   max-height: min(880px, calc(100dvh - 40px));
   overflow: hidden;
   width: min(840px, 100%);
@@ -834,7 +834,7 @@
 }
 
 .home-session-modal-header h2 {
-  font-family: "Roboto Mono", monospace;
+  font-family: var(--ui-scope-font);
   font-size: clamp(1.8rem, 4vw, 2.3rem);
   letter-spacing: -.045em;
   line-height: 1.05;
@@ -849,7 +849,7 @@
   color: var(--ui-muted);
   display: flex;
   flex: 0 0 42px;
-  font-family: "Roboto Mono", monospace;
+  font-family: var(--ui-scope-font);
   font-size: 1.6rem;
   font-weight: 400;
   height: 42px;
@@ -919,6 +919,20 @@
     width: 100%;
   }
 
+  .home-brand strong {
+    font-size: 1.03rem;
+  }
+
+  .home-brand small {
+    font-size: .69rem;
+  }
+
+  .home-nav > a,
+  .home-nav-link,
+  .home-nav-session {
+    font-size: .86rem;
+  }
+
   .home-main {
     display: grid;
     gap: 12px 20px;
@@ -939,29 +953,30 @@
   }
 
   .home-hero h1 {
-    font-size: clamp(3.9rem, 6.4vw, 6.35rem);
+    font-size: clamp(4rem, 6.5vw, 6.5rem);
     margin: 12px 0 16px;
   }
 
   .home-hero-copy > p {
-    font-size: clamp(1rem, 1.3vw, 1.16rem);
+    font-size: clamp(1.03rem, 1.32vw, 1.19rem);
     line-height: 1.42;
     margin-bottom: 18px;
   }
 
   .home .home-button {
-    height: 42px;
+    font-size: .89rem;
+    height: 44px;
   }
 
   .home-hero-meta {
-    font-size: .72rem;
+    font-size: .74rem;
     margin-top: 16px;
   }
 
   .home-radar-preview {
     justify-self: end;
-    max-width: 520px;
-    width: min(100%, 44dvh);
+    max-width: 530px;
+    width: min(100%, 45dvh);
   }
 
   .home-continue-section {
@@ -979,7 +994,7 @@
   }
 
   .home-continue-section .home-section-heading > p {
-    font-size: .82rem;
+    font-size: .85rem;
     line-height: 1.4;
     text-align: left;
   }
@@ -1003,46 +1018,47 @@
   }
 
   .home-tools-section > .home-section-heading > p {
-    font-size: .82rem;
+    font-size: .85rem;
     line-height: 1.4;
   }
 
   .home-section-heading h2,
   .home-card h2 {
-    font-size: clamp(1.35rem, 1.8vw, 1.75rem);
+    font-size: clamp(1.4rem, 1.85vw, 1.82rem);
   }
 
   .home-tools-grid {
     flex: 1 1 auto;
     gap: 6px;
-    grid-auto-rows: minmax(86px, 1fr);
+    grid-auto-rows: minmax(90px, 1fr);
   }
 
   .home .home-tool-card {
     gap: 12px;
-    grid-template-columns: 40px minmax(0, 1fr) auto;
-    min-height: 86px;
-    padding: 13px 15px;
+    grid-template-columns: 42px minmax(0, 1fr) auto;
+    min-height: 90px;
+    padding: 14px 16px;
   }
 
   .home-tool-icon {
     border-radius: 9px;
-    font-size: 1.08rem;
-    height: 40px;
-    width: 40px;
+    font-size: 1.12rem;
+    height: 42px;
+    width: 42px;
   }
 
   .home-tool-copy strong {
-    font-size: .92rem;
+    font-size: .96rem;
   }
 
   .home-tool-copy small {
-    font-size: .77rem;
+    font-size: .8rem;
     line-height: 1.35;
     margin-top: 3px;
   }
 
   .home-footer {
+    font-size: .79rem;
     padding-bottom: 10px;
     padding-top: 10px;
     width: 100%;

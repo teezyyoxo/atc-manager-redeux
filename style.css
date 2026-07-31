@@ -17,6 +17,9 @@
   --ui-secondary: #9aaeff;
   --ui-shadow: rgba(0, 0, 0, .32);
   --ui-glow: rgba(74, 232, 173, .2);
+  --ui-scope-font: ui-monospace, "SFMono-Regular", "Cascadia Mono",
+    "Segoe UI Mono", Consolas, "Liberation Mono", monospace;
+  --ui-text-outline: rgba(0, 0, 0, .82);
 }
 
 :root[data-theme='dark'] {
@@ -38,6 +41,7 @@
   --ui-secondary: #536cdf;
   --ui-shadow: rgba(24, 55, 47, .14);
   --ui-glow: rgba(16, 160, 111, .13);
+  --ui-text-outline: transparent;
 }
 
 @media (prefers-color-scheme: light) {
@@ -56,6 +60,7 @@
     --ui-secondary: #536cdf;
     --ui-shadow: rgba(24, 55, 47, .14);
     --ui-glow: rgba(16, 160, 111, .13);
+    --ui-text-outline: transparent;
   }
 }
 
@@ -64,7 +69,7 @@ html {
 }
 
 html, body {
-  font-family: 'Roboto Mono', monospace;
+  font-family: var(--ui-scope-font);
   font-weight: 400;
   letter-spacing: .01em;
   line-height: 1.6;
@@ -77,6 +82,8 @@ body {
   font-size: 1rem;
   min-height: 100vh;
   min-height: 100dvh;
+  -webkit-text-stroke: .16px var(--ui-text-outline);
+  text-shadow: 0 0 .7px var(--ui-text-outline);
 }
 
 *,
@@ -123,7 +130,7 @@ blockquote *:last-child {
    padding: 0 1rem;
    margin: 0 2px;
     background-color: #19242e;
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--ui-scope-font);
  }
  
  .button:focus, .button:hover,
@@ -264,7 +271,7 @@ blockquote *:last-child {
     height: 2.2rem;
     color: #efefef;
     padding: 0 1.0rem;
-    font-family: 'Roboto Mono', monospace;
+    font-family: var(--ui-scope-font);
  }
  
  input[type='email']:focus,
@@ -757,7 +764,7 @@ fieldset, input, select, textarea {
 }
 
 select {
-  font-family: 'Roboto Mono', monospace;
+  font-family: var(--ui-scope-font);
 }
 
 select option {
@@ -882,7 +889,7 @@ input:checked + .slider:before {
   text-decoration: none;
   text-transform: uppercase;
   white-space: nowrap;
-  font-family: 'Roboto Mono', monospace;
+  font-family: var(--ui-scope-font);
   line-height: 1.5rem;
   height: 1.8rem;
   padding: 0.13rem 1rem;

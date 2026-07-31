@@ -57,7 +57,7 @@
   line-height: 1.5rem;
   margin: 2px 2px 0 0;
   background-color: #19242e;
-  font-family: 'Roboto Mono', monospace;
+  font-family: var(--ui-scope-font);
 }
 
 .sharing-panel textarea {
@@ -98,4 +98,3 @@
   -webkit-animation: spin 2s linear infinite; /* Safari */
   animation: spin 2s linear infinite;
 }
-

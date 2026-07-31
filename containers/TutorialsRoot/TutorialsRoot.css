@@ -40,7 +40,7 @@
 
 .tutorial-hub-kicker {
   color: var(--ui-accent);
-  font-family: "Roboto Mono", monospace;
+  font-family: var(--ui-scope-font);
   font-size: .7rem;
   font-weight: 700;
   letter-spacing: .14em;
@@ -123,7 +123,7 @@
 
 .tutorial-card-arrow {
   color: var(--ui-accent);
-  font-family: "Roboto Mono", monospace;
+  font-family: var(--ui-scope-font);
   font-size: .75rem;
 }
 
