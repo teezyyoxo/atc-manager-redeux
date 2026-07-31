@@ -1,6 +1,18 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [3.0.0-rc.13] - 2026-07-31
+
+### Changed
+
+- Replaced the new-session pause actions with a single Start Session action;
+  resume and exit controls now appear only after an active session is paused.
+- Corrected runway headings, dimensions, widths, and relative layouts for the
+  airports added in rc.12, and removed nonexistent runways from KBDL, KHOU,
+  and KHVN.
+- Updated application, package, Compose, Make, image, documentation, and build
+  metadata to 3.0.0-rc.13.
+
 ## [3.0.0-rc.12] - 2026-07-31
 
 ### Added

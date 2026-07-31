@@ -204,10 +204,12 @@ class Game extends Component {
               <span className="game-pause-kicker">
                 {initialPause ? 'Ready Check' : 'Simulation Hold'}
               </span>
-              <h1 id="game-pause-title">Session Paused</h1>
+              <h1 id="game-pause-title">
+                {initialPause ? 'Ready to Start' : 'Session Paused'}
+              </h1>
               <p>
                 {initialPause
-                  ? 'New sessions begin paused. Review the traffic picture, then resume when you are ready to start the clock.'
+                  ? 'Review the traffic picture, then start the session when you are ready.'
                   : this.pauseReason ||
                   'Traffic and simulation time are safely stopped.'}
               </p>
@@ -218,18 +220,22 @@ class Game extends Component {
                   onClick={this.handleResume}
                   autoFocus
                 >
-                  Resume Session
+                  {initialPause ? 'Start Session' : 'Resume Session'}
                 </button>
-                <button type="button" onClick={this.handleSaveAndExit}>
-                  Save &amp; Exit
-                </button>
-                <button
-                  className="game-pause-danger"
-                  type="button"
-                  onClick={this.handleExitWithoutSaving}
-                >
-                  Exit Without Saving
-                </button>
+                {!initialPause ? (
+                  <button type="button" onClick={this.handleSaveAndExit}>
+                    Save &amp; Exit
+                  </button>
+                ) : null}
+                {!initialPause ? (
+                  <button
+                    className="game-pause-danger"
+                    type="button"
+                    onClick={this.handleExitWithoutSaving}
+                  >
+                    Exit Without Saving
+                  </button>
+                ) : null}
               </div>
             </div>
           </div>
