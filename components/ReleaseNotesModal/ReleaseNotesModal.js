@@ -1,6 +1,5 @@
 import { Component } from 'preact';
 import { getBuildInfo, getReleaseNotes } from '../../lib/build-info';
-import './ReleaseNotesModal.css';
 
 const openEvent = 'atc-manager:open-release-notes';
 
@@ -120,13 +119,13 @@ class ReleaseNotesModal extends Component {
         >
           <header className="release-notes-header">
             <div>
-              <span className="release-notes-kicker">New in this build</span>
-              <h1 id="release-notes-title">What’s new</h1>
+              <span className="release-notes-kicker">New in This Build</span>
+              <h1 id="release-notes-title">What’s New</h1>
             </div>
             <button
               className="release-notes-close-icon"
               type="button"
-              aria-label="Close new features"
+              aria-label="Close What’s New"
               onClick={this.handleClose}
               ref={element => {
                 this.closeIcon = element;

@@ -22,7 +22,7 @@ class TutorialsIntro extends Component {
     return (
       <WorkspaceShell
         className="training-workspace"
-        kicker="Training library"
+        kicker="Training Library"
         title="Introduction"
         description="Learn the radar, flight strips, command controls, and landing workflow."
       >
@@ -32,7 +32,7 @@ class TutorialsIntro extends Component {
             <h4>Index</h4>
             <ul>
               <li>Starting</li>
-              <li>Giving commands</li>
+              <li>Giving Commands</li>
               <li>Landing</li>
             </ul>
           </section>
@@ -142,7 +142,7 @@ class TutorialsIntro extends Component {
             </p>
           </section>
           <section id="tut-intro-commands">
-            <h4>Giving commands</h4>
+            <h4>Giving Commands</h4>
             <p>
               Let's start by changing the airplane's direction. As a reference
               let's look at this compass:

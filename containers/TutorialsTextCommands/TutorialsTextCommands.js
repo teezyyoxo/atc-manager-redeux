@@ -17,14 +17,14 @@ class TutorialsTextCommands extends Component {
     return (
       <WorkspaceShell
         className="training-workspace"
-        kicker="Training library"
-        title="Text commands"
+        kicker="Training Library"
+        title="Text Commands"
         description="Learn compact keyboard instructions for faster traffic control."
       >
         <div className="TutorialsTextCommands tutorial">
           <div className="panel">
           <section>
-            <h4>Enable text commands</h4>
+            <h4>Enable Text Commands</h4>
             <p>
               To enable text commands you have to go into advanced settings.
             </p>
@@ -42,10 +42,10 @@ class TutorialsTextCommands extends Component {
           </section>
 
           <section>
-            <h4>Command formats</h4>
+            <h4>Command Formats</h4>
             <p>Commands are case insensitive</p>
 
-            <h5>Changing heading</h5>
+            <h5>Changing Heading</h5>
             <div>&lt;airplane callsign&gt; HDG &lt;heading in degrees&gt;</div>
             <div>&lt;airplane callsign&gt; turn &lt;heading in degrees&gt;</div>
             <div>
@@ -55,7 +55,7 @@ class TutorialsTextCommands extends Component {
             <br />
             <p>e.g DLH213 turn left heading 200</p>
 
-            <h5>Changing altitude</h5>
+            <h5>Changing Altitude</h5>
             <div>
               &lt;airplane callsign&gt; alt &lt;flightlevel or altitude in
               feet&gt;
@@ -67,7 +67,7 @@ class TutorialsTextCommands extends Component {
             <br />
             <p>DLH213 alt fl230</p>
 
-            <h5>Changing "Direct to"</h5>
+            <h5>Changing "Direct To"</h5>
             <div>
               &lt;airplane callsign&gt; dct &lt;waypoint/runway callsign&gt;
             </div>
@@ -81,7 +81,7 @@ class TutorialsTextCommands extends Component {
             <br />
             <p>e.g DLH213 dct EH11</p>
 
-            <h5>Changing speed</h5>
+            <h5>Changing Speed</h5>
             <div>&lt;airplane callsign&gt; spd &lt;speed in knots&gt;</div>
             <div>
               &lt;airplane callsign&gt; increase speed &lt;speed in knots&gt;

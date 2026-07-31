@@ -43,7 +43,7 @@ class LogsPanel extends Component {
           text={logs.join('\r\n')}
           onCopy={this.handleLogsCopied}
         >
-          <button>Copy logs</button>
+          <button>Copy Logs</button>
         </CopyToClipboard>
         <button onClick={this.handleOnlySelfButton}>
           {this.state.logsOnlySelf ? 'Show all' : 'Only me'}

@@ -427,7 +427,7 @@
 .home-section-heading h2,
 .home-card h2 {
   color: var(--ui-text);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: "Roboto Mono", monospace;
   font-size: clamp(1.55rem, 2.6vw, 2.2rem);
   font-weight: 690;
   letter-spacing: -.045em;
@@ -625,7 +625,7 @@
   border: 1px solid var(--ui-line);
   color: var(--ui-text);
   display: grid;
-  font-family: inherit;
+  font-family: "Roboto Mono", monospace;
   gap: 14px;
   grid-template-columns: 44px minmax(0, 1fr) auto;
   height: auto;
@@ -704,13 +704,30 @@
 
 .home-footer a {
   align-items: center;
+  border: 1px solid var(--ui-line);
+  border-radius: 999px;
   display: inline-flex;
   gap: 6px;
+  padding: 6px 10px;
 }
 
 .home-footer a:hover,
 .home-footer a:focus {
+  background: var(--ui-surface-raised);
+  border-color: var(--ui-accent);
   color: var(--ui-text);
+}
+
+.home-footer .home-footer-brand {
+  border-color: transparent;
+  font-family: "Roboto Mono", monospace;
+  font-weight: 700;
+  padding-left: 0;
+}
+
+.home-footer a svg:last-child:not(:first-child) {
+  font-size: .62rem;
+  opacity: .7;
 }
 
 .home .sharing-panel {
@@ -797,6 +814,7 @@
   color: var(--ui-text);
   display: flex;
   flex-direction: column;
+  font-family: "Roboto Mono", monospace;
   max-height: min(820px, calc(100dvh - 40px));
   overflow: hidden;
   width: min(720px, 100%);
@@ -870,6 +888,153 @@
 @keyframes home-modal-in {
   from { opacity: 0; transform: translateY(12px) scale(.985); }
   to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (min-width: 901px) {
+  .home-header {
+    padding-bottom: 14px;
+    padding-top: 14px;
+    width: 100%;
+  }
+
+  .home-main {
+    display: grid;
+    gap: 14px 18px;
+    grid-template-areas:
+      "hero hero"
+      "continue tools";
+    grid-template-columns: minmax(260px, .65fr) minmax(0, 2fr);
+    padding-bottom: 14px;
+    width: 100%;
+  }
+
+  .home-hero {
+    gap: clamp(32px, 5vw, 64px);
+    grid-area: hero;
+    grid-template-columns: minmax(0, 1.15fr) minmax(300px, .7fr);
+    min-height: 0;
+    padding: 16px 0 20px;
+  }
+
+  .home-hero h1 {
+    font-size: clamp(3.7rem, 6.3vw, 6.2rem);
+    margin: 12px 0 16px;
+  }
+
+  .home-hero-copy > p {
+    font-size: clamp(.96rem, 1.25vw, 1.12rem);
+    line-height: 1.42;
+    margin-bottom: 18px;
+  }
+
+  .home .home-button {
+    height: 42px;
+  }
+
+  .home-hero-meta {
+    margin-top: 16px;
+  }
+
+  .home-radar-preview {
+    justify-self: end;
+    max-width: 440px;
+    width: min(100%, 39dvh);
+  }
+
+  .home-continue-section {
+    grid-area: continue;
+    margin: 0;
+    min-height: 0;
+    padding: 17px;
+  }
+
+  .home-continue-section .home-section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 11px;
+  }
+
+  .home-continue-section .home-section-heading > p {
+    font-size: .72rem;
+    text-align: left;
+  }
+
+  .home-continue-section .savedgamesopen-list {
+    max-height: 116px;
+    overflow-y: auto;
+  }
+
+  .home-tools-section {
+    grid-area: tools;
+    min-width: 0;
+    padding: 0;
+  }
+
+  .home-tools-section > .home-section-heading {
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .home-section-heading h2,
+  .home-card h2 {
+    font-size: clamp(1.35rem, 1.8vw, 1.75rem);
+  }
+
+  .home-tools-grid {
+    gap: 6px;
+  }
+
+  .home .home-tool-card {
+    gap: 10px;
+    grid-template-columns: 36px minmax(0, 1fr) auto;
+    min-height: 72px;
+    padding: 10px 12px;
+  }
+
+  .home-tool-icon {
+    border-radius: 9px;
+    font-size: 1rem;
+    height: 36px;
+    width: 36px;
+  }
+
+  .home-tool-copy strong {
+    font-size: .82rem;
+  }
+
+  .home-tool-copy small {
+    font-size: .66rem;
+    line-height: 1.28;
+    margin-top: 2px;
+  }
+
+  .home-footer {
+    padding-bottom: 10px;
+    padding-top: 10px;
+    width: 100%;
+  }
+}
+
+@media (min-width: 901px) and (min-height: 700px) {
+  .home {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .home-main {
+    flex: 1 1 auto;
+    grid-template-rows: minmax(0, 1fr) auto;
+    min-height: 0;
+  }
+
+  .home-header,
+  .home-footer {
+    flex: 0 0 auto;
+  }
 }
 
 @media (max-width: 900px) {
@@ -1046,6 +1211,6 @@
 @media (min-width: 601px) and (max-height: 620px) {
   .home-hero {
     min-height: 0;
-    padding: 50px 0 80px;
+    padding: 18px 0 24px;
   }
 }

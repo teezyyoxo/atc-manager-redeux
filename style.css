@@ -1,4 +1,6 @@
 
+@import './components/ReleaseNotesModal/ReleaseNotesModal.css';
+
  :root {
   color-scheme: dark;
   --ui-bg: #071416;

@@ -21,13 +21,13 @@ class WorkspaceShell extends Component {
             <span className="workspace-brand-mark">AM</span>
             <span>
               <strong>ATC Manager</strong>
-              <small>Control center</small>
+              <small>Control Center</small>
             </span>
           </Link>
           <nav className="workspace-nav" aria-label="Workspace navigation">
             <Link href="/">Home</Link>
             <Link href="/tutorials">Training</Link>
-            <button type="button" onClick={openReleaseNotes}>What’s new</button>
+            <button type="button" onClick={openReleaseNotes}>What’s New</button>
             <ThemeControl />
           </nav>
         </header>

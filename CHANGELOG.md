@@ -1,6 +1,23 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [3.0.0-rc.6] - 2026-07-31
+
+### Changed
+
+- Standardized navigation, action, section, tool, editor, training, session,
+  and settings labels with consistent title capitalization.
+- Reflowed the desktop homepage into a single-viewport control surface with a
+  compact hero, saved sessions, tools, and visibly interactive footer links.
+- Updated application, package, Compose, Make, image, documentation, and build
+  metadata to 3.0.0-rc.6.
+
+### Fixed
+
+- Moved the release-dialog stylesheet into the always-loaded application CSS
+  bundle so What’s New remains a centered, blurred, independently scrollable
+  modal instead of falling into document flow below the footer.
+
 ## [3.0.0-rc.5] - 2026-07-31
 
 ### Added
@@ -14,7 +31,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
-- Consolidated What’s new into an explicitly invoked navigation modal, removed
+- Consolidated What’s New into an explicitly invoked navigation modal, removed
   its homepage and standalone-page variants, and restyled its type with the
   radar-scope-inspired monospace interface font.
 - Tightened the homepage into a shorter hero, saved-session continuation area,

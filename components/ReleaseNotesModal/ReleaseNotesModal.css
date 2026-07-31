@@ -19,6 +19,7 @@
     max(18px, env(safe-area-inset-bottom))
     max(18px, env(safe-area-inset-left));
   position: fixed;
+  isolation: isolate;
   touch-action: auto;
   z-index: 10000;
   -webkit-backdrop-filter: blur(18px) saturate(.72);
@@ -37,13 +38,13 @@
   font-family: "Roboto Mono", monospace;
   display: flex;
   flex-direction: column;
-  max-height: min(760px, calc(100dvh - 36px));
-  max-width: 760px;
+  max-height: min(720px, calc(100dvh - 36px));
+  max-width: 720px;
   min-height: 360px;
   overflow: hidden;
   position: relative;
   touch-action: pan-y;
-  width: min(100%, 760px);
+  width: min(100%, 720px);
   border-radius: 20px;
 }
 
@@ -92,10 +93,10 @@
 
 .release-notes-header h1 {
   font-family: "Roboto Mono", monospace;
-  font-size: clamp(2.1rem, 6vw, 3.6rem);
+  font-size: clamp(1.9rem, 4vw, 2.7rem);
   font-weight: 700;
-  letter-spacing: -.055em;
-  line-height: .95;
+  letter-spacing: .01em;
+  line-height: 1;
   margin: 0;
 }
 
@@ -182,7 +183,7 @@
 .release-notes-section li {
   color: var(--ui-text);
   font-family: "Roboto Mono", monospace;
-  font-size: clamp(.9rem, 1.8vw, 1rem);
+  font-size: clamp(.86rem, 1.6vw, .96rem);
   line-height: 1.55;
   margin: 0;
   padding: 0 0 12px 20px;

@@ -143,7 +143,7 @@ class Settings extends Component {
           <span class="range-slider__value">{SettingsStore.speed}x</span>
         </div>
         <div className="mb">
-          <span>Difficulty:</span>
+          <span>Difficulty</span>
           <select
             value={this.state.difficulty}
             onInput={this.handleDifficultyChange}
@@ -179,11 +179,11 @@ class Settings extends Component {
         <button onClick={this.handleAppearanceExpanded}>
           {this.state.appearanceExpanded ? (
             <span>
-              <FaCompress /> Hide appearance settings
+              <FaCompress /> Hide Appearance Settings
             </span>
           ) : (
               <span>
-                <FaExpand /> Show appearance settings{' '}
+                <FaExpand /> Show Appearance Settings{' '}
               </span>
             )}
         </button>
@@ -193,11 +193,11 @@ class Settings extends Component {
           }`}
         >
           <div className="mb ThemeInput">
-            <span>Interface theme:</span>
+            <span>Interface Theme</span>
             <ThemeControl />
           </div>
           <div className="mb SwitchInput">
-            <span>Distance circle</span>
+            <span>Distance Circles</span>
             <label class="switch">
               <input
                 type="checkbox"
@@ -208,7 +208,7 @@ class Settings extends Component {
             </label>
           </div>
           <div className="takeoff-in-order mb SwitchInput">
-            <span>Route visualization</span>
+            <span>Route Visualization</span>
             <label class="switch">
               <input
                 type="checkbox"
@@ -218,7 +218,7 @@ class Settings extends Component {
               <span class="slider" />
             </label>
           </div>
-          <span>Radar font size:</span>
+          <span>Radar Font Size</span>
           <div className="fontsize-setting range-slider mb">
             <input
               className="range-slider__range"
@@ -234,12 +234,12 @@ class Settings extends Component {
             </span>
           </div>
           <div className="mb">
-            <span>Interface scale:</span>
+            <span>Interface Scale</span>
             <select
               value={SettingsStore.interfaceScale}
               onInput={this.handleInterfaceScaleChange}
             >
-              <option value="auto">Automatic for this display</option>
+              <option value="auto">Automatic for This Display</option>
               <option value="0.75">75%</option>
               <option value="0.9">90%</option>
               <option value="1">100%</option>
@@ -252,7 +252,7 @@ class Settings extends Component {
             </small>
           </div>
           <div className="mb ColorInput">
-            <span>Touch control display color:</span>
+            <span>Touch Control Display Color</span>
             <input
               type="color"
               value={SettingsStore.touchControlColor}
@@ -260,7 +260,7 @@ class Settings extends Component {
             />
           </div>
           <div className="mb ColorInput">
-            <span>ILS indicator color:</span>
+            <span>ILS Indicator Color</span>
             <input
               type="color"
               value={SettingsStore.ilsPathColor}
@@ -268,7 +268,7 @@ class Settings extends Component {
             />
           </div>
           <div className="mb ColorInput">
-            <span>Danger color:</span>
+            <span>Danger Color</span>
             <input
               type="color"
               value={SettingsStore.dangerColor}
@@ -276,7 +276,7 @@ class Settings extends Component {
             />
           </div>
           <div className="mb ColorInput">
-            <span>Background color:</span>
+            <span>Background Color</span>
             <input
               type="color"
               value={SettingsStore.backgroundColor}
@@ -284,7 +284,7 @@ class Settings extends Component {
             />
           </div>
           <div className="mb ColorInput">
-            <span>Foreground color:</span>
+            <span>Foreground Color</span>
             <input
               type="color"
               value={SettingsStore.foregroundColor}
@@ -292,7 +292,7 @@ class Settings extends Component {
             />
           </div>
           <div className="mb ColorInput">
-            <span>Radar color:</span>
+            <span>Radar Color</span>
             <input
               type="color"
               value={SettingsStore.radarColor}
@@ -300,7 +300,7 @@ class Settings extends Component {
             />
           </div>
           <div className="mb ColorInput">
-            <span>Sid color:</span>
+            <span>SID Color</span>
             <input
               type="color"
               value={SettingsStore.sidColor}
@@ -308,7 +308,7 @@ class Settings extends Component {
             />
           </div>
           <div className="mb ColorInput">
-            <span>Star color:</span>
+            <span>STAR Color</span>
             <input
               type="color"
               value={SettingsStore.starColor}
@@ -316,7 +316,7 @@ class Settings extends Component {
             />
           </div>
           <div className="mb ColorInput">
-            <span>Inbound traffic color:</span>
+            <span>Inbound Traffic Color</span>
             <input
               type="color"
               value={SettingsStore.inboundTrafficColor}
@@ -324,7 +324,7 @@ class Settings extends Component {
             />
           </div>
           <div className="mb ColorInput">
-            <span>Enroute traffic color:</span>
+            <span>Enroute Traffic Color</span>
             <input
               type="color"
               value={SettingsStore.enrouteTrafficColor}
@@ -332,7 +332,7 @@ class Settings extends Component {
             />
           </div>
           <div className="mb ColorInput">
-            <span>Outbound traffic color:</span>
+            <span>Outbound Traffic Color</span>
             <input
               type="color"
               value={SettingsStore.outboundTrafficColor}
@@ -340,7 +340,7 @@ class Settings extends Component {
             />
           </div>
           <div className="mb ColorInput">
-            <span>VFR traffic color:</span>
+            <span>VFR Traffic Color</span>
             <input
               type="color"
               value={SettingsStore.vfrTrafficColor}
@@ -348,7 +348,7 @@ class Settings extends Component {
             />
           </div>
           <div className="mb ColorInput">
-            <span>Path color:</span>
+            <span>Path Color</span>
             <input
               type="color"
               value={SettingsStore.pathVisualizerColor}
@@ -356,7 +356,7 @@ class Settings extends Component {
             />
           </div>
           <div className="mb ColorInput">
-            <span>Climb color:</span>
+            <span>Climb Color</span>
             <input
               type="color"
               value={SettingsStore.climbColor}
@@ -364,7 +364,7 @@ class Settings extends Component {
             />
           </div>
           <div className="mb ColorInput">
-            <span>Descend color:</span>
+            <span>Descent Color</span>
             <input
               type="color"
               value={SettingsStore.descendColor}
@@ -372,7 +372,7 @@ class Settings extends Component {
             />
           </div>
           <div className="mb ColorInput">
-            <span>MSA color:</span>
+            <span>MSA Color</span>
             <input
               type="color"
               value={SettingsStore.msaColor}
@@ -384,11 +384,11 @@ class Settings extends Component {
         <button onClick={this.handleToggleExpandClick}>
           {this.state.expanded ? (
             <span>
-              <FaCompress /> Hide advanced settings
+              <FaCompress /> Hide Advanced Settings
             </span>
           ) : (
               <span>
-                <FaExpand /> Show advanced settings{' '}
+                <FaExpand /> Show Advanced Settings{' '}
               </span>
             )}
         </button>
@@ -397,7 +397,7 @@ class Settings extends Component {
           className={this.state.expanded ? null : 'hidden'}
         >
           <div className="speechsynthesis-setting mb SwitchInput">
-            <span>Speech synthesis</span>
+            <span>Speech Synthesis</span>
             <label class="switch">
               <input
                 type="checkbox"
@@ -408,7 +408,7 @@ class Settings extends Component {
           </div>
           <div className={['speechsynthesis-voices-setting', 'mb',
             SettingsStore.speechsynthesis ? 'show' : 'hidden'].join(' ')}>
-            <span>Speech synthesis voices</span>
+            <span>Speech Synthesis Voices</span>
             <select onInput={this.handleSpeechVoiceChange} value={atcVoiceName}>
               {SettingsStore.voices.map((voice, i) => {
                 return (
@@ -419,7 +419,7 @@ class Settings extends Component {
               })}
             </select>
           </div>
-          <span>Pitch:</span>
+          <span>Pitch</span>
           <div className="speechsynthesis-pitch-setting range-slider mb">
             <input
               className="range-slider__range"
@@ -432,7 +432,7 @@ class Settings extends Component {
             />
             <span class="range-slider__value">{SettingsStore.pitch}x</span>
           </div>
-          <span>Rate:</span>
+          <span>Rate</span>
           <div className="speechsynthesis-rate-setting range-slider mb">
             <input
               className="range-slider__range"
@@ -454,7 +454,7 @@ class Settings extends Component {
         </div> */}
           {SettingsStore.stopSpawn ? null : (
             <div>
-              <span>Spawn plane interval:</span>
+              <span>Aircraft Spawn Interval</span>
               <div className="range-slider mb">
                 <input
                   className="range-slider__range"
@@ -473,7 +473,7 @@ class Settings extends Component {
           )}
           <div>
             <div className="mb SwitchInput">
-              <span>Stop planes spawning</span>
+              <span>Stop Aircraft Spawning</span>
               <label class="switch">
                 <input
                   type="checkbox"
@@ -484,7 +484,7 @@ class Settings extends Component {
               </label>
             </div>
             <div className="mb SwitchInput">
-              <span>Go-arounds</span>
+              <span>Go-Arounds</span>
               <label class="switch">
                 <input
                   type="checkbox"
@@ -495,7 +495,7 @@ class Settings extends Component {
               </label>
             </div>
             <div className="takeoff-in-order mb SwitchInput">
-              <span>Takeoff in order</span>
+              <span>Takeoff in Order</span>
               <label class="switch">
                 <input
                   type="checkbox"
@@ -520,7 +520,7 @@ class Settings extends Component {
               </label>
             </div>
             <div className="mb SwitchInput">
-              <span>Sids/Stars</span>
+              <span>SIDs/STARs</span>
               <label class="switch">
                 <input
                   type="checkbox"
@@ -531,7 +531,7 @@ class Settings extends Component {
               </label>
             </div>
             <div className="mb SwitchInput">
-              <span>Text commands</span>
+              <span>Text Commands</span>
               <label class="switch">
                 <input
                   type="checkbox"

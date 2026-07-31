@@ -3,6 +3,7 @@ import './Home.css';
 import {
   FaBuilding,
   FaClock,
+  FaExternalLinkAlt,
   FaGithub,
   FaInfo,
   FaPlane,
@@ -173,7 +174,7 @@ class Home extends Component {
                 className="home-nav-session"
                 onClick={this.handleReturnToGame}
               >
-                Return to session
+                Return to Session
               </button>
             ) : null}
             <Link href="/tutorials">Tutorials</Link>
@@ -182,7 +183,7 @@ class Home extends Component {
               className="home-nav-link"
               onClick={openReleaseNotes}
             >
-              What’s new
+              What’s New
             </button>
             <button
               type="button"
@@ -198,7 +199,7 @@ class Home extends Component {
         <div className="home-main">
           <section className="home-hero">
             <div className="home-hero-copy">
-              <span className="home-eyebrow">Browser-native ATC simulation</span>
+              <span className="home-eyebrow">Browser-Native ATC Simulation</span>
               <h1>Own the airspace.</h1>
               <p>
                 Direct arrivals, sequence departures, and keep the picture
@@ -210,14 +211,14 @@ class Home extends Component {
                   className="home-button home-button-primary"
                   onClick={this.openSession}
                 >
-                  Configure session
+                  Configure Session
                 </button>
                 <button
                   type="button"
                   className="home-button home-button-secondary"
                   onClick={this.handleTutorialClick}
                 >
-                  View tutorial
+                  View Tutorial
                 </button>
               </div>
               <div className="home-hero-meta" aria-label="Game capabilities">
@@ -259,7 +260,7 @@ class Home extends Component {
             <div className="home-section-heading">
               <div>
                 <span className="home-kicker">Continue</span>
-                <h2>Saved sessions</h2>
+                <h2>Saved Sessions</h2>
               </div>
               <p>Resume a locally saved shift from this browser.</p>
             </div>
@@ -270,7 +271,7 @@ class Home extends Component {
             <div className="home-section-heading">
               <div>
                 <span className="home-kicker">Workspace</span>
-                <h2>Tools and training</h2>
+                <h2>Tools and Training</h2>
               </div>
               <p>Everything stays local to this browser unless you export it.</p>
             </div>
@@ -278,19 +279,19 @@ class Home extends Component {
               <ToolCard
                 href="/editor/save-editor"
                 icon={<FaSave />}
-                title="Save editor"
+                title="Save Editor"
                 description="Inspect and manage local sessions."
               />
               <ToolCard
                 href="/editor/airplane-editor"
                 icon={<FaPlane />}
-                title="Aircraft editor"
+                title="Aircraft Editor"
                 description="Create and tune aircraft profiles."
               />
               <ToolCard
                 href="/editor/operator-editor"
                 icon={<FaBuilding />}
-                title="Operator editor"
+                title="Operator Editor"
                 description="Manage fleets, colors, and callsigns."
               />
               <ToolCard
@@ -323,28 +324,30 @@ class Home extends Component {
         </div>
 
         <footer className="home-footer">
-          <span>ATC Manager Redeux · Built for focused sessions.</span>
+          <Link href="/" className="home-footer-brand">
+            ATC Manager Redeux
+          </Link>
           <div>
             <a
               href="https://github.com/teezyyoxo/atc-manager-redeux"
               target="_blank"
               rel="noopener noreferrer"
             >
-              <FaGithub /> GitHub
+              <FaGithub /> GitHub <FaExternalLinkAlt />
             </a>
             <a
               href="https://www.reddit.com/r/ATCManager2"
               target="_blank"
               rel="noopener noreferrer"
             >
-              Community
+              Reddit Community <FaExternalLinkAlt />
             </a>
             <a
               href="https://esstudio.site/contact"
               target="_blank"
               rel="noopener noreferrer"
             >
-              Contact
+              Contact Studio <FaExternalLinkAlt />
             </a>
           </div>
         </footer>
@@ -377,7 +380,7 @@ class Home extends Component {
               <header className="home-session-modal-header">
                 <div>
                   <span className="home-kicker">New shift</span>
-                  <h2 id="home-session-title">Configure session</h2>
+                  <h2 id="home-session-title">Configure Session</h2>
                 </div>
                 <button
                   type="button"
@@ -421,7 +424,7 @@ class Home extends Component {
                     className="home-button home-button-primary home-start-button"
                     onClick={this.handleStartClick}
                   >
-                    <FaPlay /> Start session
+                    <FaPlay /> Start Session
                   </button>
                   <button
                     type="button"

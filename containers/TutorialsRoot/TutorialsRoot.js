@@ -40,7 +40,7 @@ class TutorialsRoot extends Component {
           <ThemeControl />
         </header>
         <div className="tutorial-hub-main">
-          <span className="tutorial-hub-kicker">Training library</span>
+          <span className="tutorial-hub-kicker">Training Library</span>
           <h1>Learn the scope.</h1>
           <p>
             Start with the essentials, then move into faster command workflows
@@ -54,16 +54,16 @@ class TutorialsRoot extends Component {
             />
             <TutorialCard
               href="/tutorials/text-commands"
-              title="Text commands"
+              title="Text Commands"
               description="Build and issue compact keyboard instructions."
             />
             <TutorialCard
-              title="General aviation"
+              title="General Aviation"
               description="Patterns, VFR routing, and mixed traffic."
               disabled
             />
             <TutorialCard
-              title="Advanced control"
+              title="Advanced Control"
               description="Sequencing, separation, and complex sessions."
               disabled
             />

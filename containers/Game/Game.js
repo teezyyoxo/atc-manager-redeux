@@ -131,8 +131,8 @@ class Game extends Component {
               aria-modal="true"
               aria-labelledby="game-pause-title"
             >
-              <span className="game-pause-kicker">Simulation hold</span>
-              <h1 id="game-pause-title">Session paused</h1>
+              <span className="game-pause-kicker">Simulation Hold</span>
+              <h1 id="game-pause-title">Session Paused</h1>
               <p>
                 {this.pauseReason ||
                   'Traffic and simulation time are safely stopped.'}
@@ -144,17 +144,17 @@ class Game extends Component {
                   onClick={this.handleResume}
                   autoFocus
                 >
-                  Resume session
+                  Resume Session
                 </button>
                 <button type="button" onClick={this.handleSaveAndExit}>
-                  Save &amp; exit
+                  Save &amp; Exit
                 </button>
                 <button
                   className="game-pause-danger"
                   type="button"
                   onClick={this.handleExitWithoutSaving}
                 >
-                  Exit without saving
+                  Exit Without Saving
                 </button>
               </div>
             </div>

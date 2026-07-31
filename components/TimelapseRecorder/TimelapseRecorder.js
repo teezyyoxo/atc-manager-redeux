@@ -139,7 +139,7 @@ class TimelapseRecorder extends Component {
     return (
       <div className="TimelapseRecorder">
         <div className={`timelapse ${this.state.reset ? 'reset' : ''}`}>
-          <h5>Timelapse recorder</h5>
+          <h5>Timelapse Recorder</h5>
           <button
             disabled={state !== 'ready'}
             className="timelapse-start"

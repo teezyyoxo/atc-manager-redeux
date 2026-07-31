@@ -48,8 +48,8 @@ class TimelapseOverview extends Component {
     return (
       <div className="TimelapseOverview">
         <div className="panel">
-          <span className="workspace-kicker">Recording library</span>
-          <h3>Saved timelapses</h3>
+          <span className="workspace-kicker">Recording Library</span>
+          <h3>Saved Timelapses</h3>
           <input
             id="timelapse-import"
             className="inputfile"
@@ -57,7 +57,7 @@ class TimelapseOverview extends Component {
             accept=".json,.atc-timelapse.json"
             onChange={this.handleImport}
           />
-          <label for="timelapse-import">Import timelapse</label>
+          <label for="timelapse-import">Import Timelapse</label>
           <SavedTimelapseOpen key={this.state.revision} />
         </div>
       </div>

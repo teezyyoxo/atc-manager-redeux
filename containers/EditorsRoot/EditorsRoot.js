@@ -19,23 +19,23 @@ const getEditorRoute = editorroute =>
 
 const editorDetails = {
   'save-editor': {
-    title: 'Save editor',
+    title: 'Save Editor',
     description: 'Inspect, repair, import, and export sessions stored in this browser.'
   },
   'airplane-editor': {
-    title: 'Aircraft editor',
+    title: 'Aircraft Editor',
     description: 'Create and tune aircraft performance profiles for your local fleet.'
   },
   'operator-editor': {
-    title: 'Operator editor',
+    title: 'Operator Editor',
     description: 'Manage airline identities, callsigns, colors, and fleet assignments.'
   },
   'airplane-submission-success': {
-    title: 'Aircraft submitted',
+    title: 'Aircraft Submitted',
     description: 'Your aircraft profile was sent for review.'
   },
   'operator-submission-success': {
-    title: 'Operator submitted',
+    title: 'Operator Submitted',
     description: 'Your operator profile was sent for review.'
   }
 };
@@ -48,13 +48,13 @@ class EditorsRoot extends Component {
 
   render() {
     const details = editorDetails[this.props.editorroute] || {
-      title: 'Tool unavailable',
+      title: 'Tool Unavailable',
       description: 'The requested editor could not be found.'
     };
     return (
       <WorkspaceShell
         className="editor-workspace"
-        kicker="Local tools"
+        kicker="Local Tools"
         title={details.title}
         description={details.description}
       >

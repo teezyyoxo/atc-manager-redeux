@@ -84,7 +84,7 @@ class SavedGamesOpen extends Component {
       <div className="savedgamesopen">
         Saves:
         <div className="savedgamesopen-list">
-          {list.length > 0 ? list : <small>Nothing...</small>}
+          {list.length > 0 ? list : <small>No Saved Sessions</small>}
         </div>
       </div>
     );

@@ -126,7 +126,7 @@ class TimelapseRoot extends Component {
     return (
       <WorkspaceShell
         className="timelapse-workspace"
-        kicker="Session playback"
+        kicker="Session Playback"
         title={showOverview ? 'Timelapses' : this.state.name || 'Timelapse'}
         description={
           showOverview
