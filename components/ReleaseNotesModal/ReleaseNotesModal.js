@@ -154,6 +154,14 @@ class ReleaseNotesModal extends Component {
                 </ul>
               </section>
             ))}
+            <a
+              className="release-notes-changelog-link"
+              href="https://github.com/teezyyoxo/atc-manager-redeux/blob/master/CHANGELOG.md"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Full Changelog <span aria-hidden="true">↗</span>
+            </a>
           </div>
 
           <button
