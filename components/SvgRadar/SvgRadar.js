@@ -63,6 +63,7 @@ class SvgRadar extends Component {
         height="100%"
         onClick={this.props.onClick}
         viewBox="0 0 1280 720"
+        preserveAspectRatio="xMidYMid meet"
         style={`background: ${
           SettingsStore.radarColor
         }; overflow: visible; font-size: ${fontSize}px;`}

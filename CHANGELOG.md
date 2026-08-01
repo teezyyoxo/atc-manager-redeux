@@ -1,6 +1,19 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [3.0.0-rc.16] - 2026-08-01
+
+### Changed
+
+- Updated the ready-check, pause, Options, About, and Save As dialogs to use
+  the active color theme instead of fixed Approach Mint colors.
+- Recentered the mobile radar below the safe-area navigation bar without
+  changing the radar-to-controls viewport split.
+- Removed the empty gap above mobile flight strips and moved command controls
+  to the bottom of the remaining session pane.
+- Updated application, package, Compose, Make, image, documentation, and build
+  metadata to 3.0.0-rc.16.
+
 ## [3.0.0-rc.15] - 2026-08-01
 
 ### Added

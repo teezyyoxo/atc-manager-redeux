@@ -1,6 +1,7 @@
 
 
 .atc-view {
+  --mobile-game-nav-height: 0px;
   --sidebar-width: var(--interface-sidebar-width, 280px);
   display: flex;
   position: relative;
@@ -94,8 +95,9 @@ input.direct-to-input.invalid::placeholder {
   transform: translate(-50%, -50%);
   width: 600px;
   max-width: 100%;
-  background: rgb(25, 72, 80);
-  border: 5px solid #1e606b;
+  background: var(--ui-surface-solid);
+  border: 5px solid color-mix(in srgb, var(--ui-accent) 45%, transparent);
+  color: var(--ui-text);
   padding: 10px;
   max-height: 95vh;
   overflow-y: auto;
@@ -117,8 +119,9 @@ input.direct-to-input.invalid::placeholder {
   left: 20px;
   width: 600px;
   max-width: 100%;
-  background: rgb(25, 72, 80);
-  border: 5px solid #1e606b;
+  background: var(--ui-surface-solid);
+  border: 5px solid color-mix(in srgb, var(--ui-accent) 45%, transparent);
+  color: var(--ui-text);
   padding: 10px;
   max-height: 90vh;
   overflow-y: auto;
@@ -131,8 +134,9 @@ input.direct-to-input.invalid::placeholder {
   left: 20px;
   width: 700px;
   max-width: 80%;
-  background: rgb(25, 72, 80);
-  border: 5px solid #1e606b;
+  background: var(--ui-surface-solid);
+  border: 5px solid color-mix(in srgb, var(--ui-accent) 45%, transparent);
+  color: var(--ui-text);
   padding: 10px;
   max-height: 90vh;
   overflow-y: auto;
@@ -153,15 +157,15 @@ input.direct-to-input.invalid::placeholder {
 }
 
 .atc-view .build-version {
-  background: #101c25;
-  border-left: 3px solid #62ff8d;
+  background: var(--ui-surface-raised);
+  border-left: 3px solid var(--ui-accent);
   margin-bottom: 10px;
   padding: 6px 8px;
 }
 
 .atc-view .logs-container {
   height: 300px;
-  border: 2px solid #1e606b;
+  border: 2px solid var(--ui-line);
   overflow: hidden;
   position: relative;
 }
@@ -247,8 +251,9 @@ input.direct-to-input.invalid::placeholder {
   left: 20px;
   width: 600px;
   max-width: 80%;
-  background: rgb(25, 72, 80);
-  border: 5px solid #1e606b;
+  background: var(--ui-surface-solid);
+  border: 5px solid color-mix(in srgb, var(--ui-accent) 45%, transparent);
+  color: var(--ui-text);
   padding: 10px;
   max-height: 90vh;
   overflow-y: auto;
@@ -275,13 +280,14 @@ input.direct-to-input.invalid::placeholder {
     flex-direction: column;
   }
 
-  .atc-view-svg {
-    flex: 0 0 44vh;
-    flex-basis: 44dvh;
+  .atc-view .atc-view-svg {
+    flex: 0 0 calc(44vh - var(--mobile-game-nav-height));
+    flex-basis: calc(44dvh - var(--mobile-game-nav-height));
     width: 100%;
-    height: 44vh;
-    height: 44dvh;
-    padding: calc(50px + env(safe-area-inset-top)) 6px 6px;
+    height: calc(44vh - var(--mobile-game-nav-height));
+    height: calc(44dvh - var(--mobile-game-nav-height));
+    margin-top: var(--mobile-game-nav-height);
+    padding: 6px;
   }
 
   .atc-view .traffic-stack-shell {
@@ -327,6 +333,10 @@ input.direct-to-input.invalid::placeholder {
 }
 
 @media (any-pointer: coarse) {
+  .atc-view {
+    --mobile-game-nav-height: calc(44px + env(safe-area-inset-top));
+  }
+
   .atc-view-svg {
     padding-top: calc(50px + env(safe-area-inset-top));
   }
@@ -352,7 +362,7 @@ input.direct-to-input.invalid::placeholder {
   .traffic-control {
     display: flex;
     flex-direction: column;
-    flex: 0 1 auto;
+    flex: 1 1 auto;
     min-height: 0;
     max-height: none;
     overflow-y: auto;
@@ -362,6 +372,7 @@ input.direct-to-input.invalid::placeholder {
   }
 
   .traffic-control > * {
+    margin-top: auto;
     width: 100%;
   }
 
@@ -913,7 +924,6 @@ input.direct-to-input.invalid::placeholder {
 
   .traffic-stack {
     flex: 0 0 clamp(112px, 15dvh, 180px);
-    margin-top: auto;
     min-height: 112px;
   }
 }
@@ -927,6 +937,18 @@ input.direct-to-input.invalid::placeholder {
   .traffic-stack {
     flex-basis: clamp(84px, 22dvh, 150px);
     min-height: 84px;
+  }
+
+  .atc-view .atc-view-svg {
+    align-self: flex-start;
+    height: calc(100vh - var(--mobile-game-nav-height));
+    height: calc(100dvh - var(--mobile-game-nav-height));
+    margin-top: var(--mobile-game-nav-height);
+    padding: 6px;
+  }
+
+  .traffic-stack-wrapper {
+    padding-top: var(--mobile-game-nav-height);
   }
 }
 

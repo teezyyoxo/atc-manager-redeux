@@ -1,7 +1,7 @@
 -include .env
 
 ENGINE ?= docker
-APP_VERSION := 3.0.0-rc.15
+APP_VERSION := 3.0.0-rc.16
 VERSION ?= $(APP_VERSION)
 BUILD_COMMIT ?= $(shell git rev-parse --short HEAD 2>/dev/null || echo unknown)
 PREACT_APP_MOBILE_TRAFFIC_FACTOR ?= 0.5

@@ -1,13 +1,13 @@
 
 .game-about-modal .build-version {
-  background: rgba(3, 16, 19, .58);
-  border-left: 3px solid #62ff8d;
+  background: color-mix(in srgb, var(--ui-bg) 62%, transparent);
+  border-left: 3px solid var(--ui-accent);
   margin-bottom: 14px;
   padding: 9px 11px;
 }
 
 .game-about-modal a {
-  color: #79f3c0;
+  color: var(--ui-accent);
 }
 
 .game-about-modal li {
@@ -15,7 +15,7 @@
 }
 
 .game-about-modal h5 {
-  color: #effaf7;
+  color: var(--ui-text);
   font-size: 1.05rem;
   margin: 22px 0 8px;
 }
