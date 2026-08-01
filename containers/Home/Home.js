@@ -243,7 +243,7 @@ class Home extends Component {
     document.addEventListener('keydown', this.handleSessionKeyDown);
     this.setState({ sessionOpen: true, settingsOpen: false, toolsOpen: false }, () => {
       this.lockModalBackground();
-      if (this.sessionSelect) this.sessionSelect.focus();
+      if (this.sessionClose) this.sessionClose.focus();
     });
   };
 
@@ -627,6 +627,9 @@ class Home extends Component {
                   className="home-session-close"
                   aria-label="Close session configuration"
                   onClick={this.closeSession}
+                  ref={element => {
+                    this.sessionClose = element;
+                  }}
                 >
                   ×
                 </button>
@@ -646,7 +649,7 @@ class Home extends Component {
                   >
                     {mapsArr.map(map => (
                       <option key={map.id} value={map.id}>
-                        {map.name}
+                        {map.name} [{map.airport.callsign.toUpperCase()}]
                       </option>
                     ))}
                   </select>

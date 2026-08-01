@@ -35,6 +35,39 @@ import { parseRoute, mostSuitableLeg } from '../lib/sidstar';
 import { TakeoffRunwayAssignment } from '../lib/maps/runway-assignment';
 import { minimumSeperationDistance } from './gamestore-helpers/seperation';
 import { groundVelocity, runwayWindComponents } from '../lib/weather';
+import { isMobileSession } from '../lib/mobile';
+
+const scaleTrafficCounts = (counts, factor = 1) => {
+  const normalized = counts.map(count => Math.max(0, Math.floor(count || 0)));
+  const total = normalized.reduce((sum, count) => sum + count, 0);
+  if (total === 0 || factor >= 1) return normalized;
+
+  const target = Math.max(1, Math.round(total * factor));
+  const scaled = normalized.map(count => count * factor);
+  const result = scaled.map(count => Math.floor(count));
+  const remainderOrder = scaled
+    .map((count, index) => ({
+      fraction: count - result[index],
+      index,
+      original: normalized[index]
+    }))
+    .filter(item => item.original > 0)
+    .sort((left, right) =>
+      right.fraction - left.fraction ||
+      right.original - left.original ||
+      left.index - right.index
+    );
+
+  let remaining = target - result.reduce((sum, count) => sum + count, 0);
+  for (let index = 0; remaining > 0 && remainderOrder.length > 0; index++) {
+    const item = remainderOrder[index % remainderOrder.length];
+    if (result[item.index] < item.original) {
+      result[item.index]++;
+      remaining--;
+    }
+  }
+  return result;
+};
 
 class GameStore extends EventEmitter {
   constructor() {
@@ -109,6 +142,8 @@ class GameStore extends EventEmitter {
       : Math.random() * 360;
     const windVariation = Number(weather.windDirectionVariation) || 180;
     this.saveName = null;
+    this.mobileMode = isMobileSession();
+    this.trafficFactor = this.mobileMode ? config.mobileTrafficFactor : 1;
     this.id = mapName;
     this.winddir = wrapHeadig(
       windCenter + (Math.random() - .5) * windVariation * 2
@@ -131,30 +166,34 @@ class GameStore extends EventEmitter {
     const isAptCommercial =
       this.map.commercial > 0 &&
       (!SettingsStore.ga || this.map.commercial >= this.map.ga);
-    // create planes (if airport isvfr(map.ga > map.commercial) 
-    // then { spawn all vfr and one ifr } else { spawn all ifr and one vfr }
-    for (let i = 0; i < SettingsStore.startingInboundPlanes; i++) {
+    const hasMixedTraffic = SettingsStore.ga &&
+      this.map.ga > 0 &&
+      this.map.commercial > 0;
+    const initialCounts = scaleTrafficCounts([
+      SettingsStore.startingInboundPlanes,
+      SettingsStore.startingOutboundPlanes,
+      SettingsStore.enroute ? SettingsStore.startingEnroutePlanes : 0,
+      hasMixedTraffic ? 1 : 0
+    ], this.trafficFactor);
+
+    // If an airport mainly serves GA, use VFR aircraft for the configured
+    // slots and retain one opposite-category aircraft at mixed facilities.
+    for (let i = 0; i < initialCounts[0]; i++) {
       isAptCommercial
         ? this.newPlaneInbound()
         : this.newPlaneVFRInbound(Math.random() > 0.5);
     }
-    for (let i = 0; i < SettingsStore.startingOutboundPlanes; i++) {
+    for (let i = 0; i < initialCounts[1]; i++) {
       isAptCommercial
         ? this.newPlaneOutbound()
         : this.newPlaneVFROutbound(Math.random() > 0.5);
     }
-    if (SettingsStore.enroute) {
-      for (let i = 0; i < SettingsStore.startingEnroutePlanes; i++) {
-        isAptCommercial
-          ? this.newPlaneEnroute()
-          : this.newPlaneVFREnroute(Math.random() > 0.5);
-      }
+    for (let i = 0; i < initialCounts[2]; i++) {
+      isAptCommercial
+        ? this.newPlaneEnroute()
+        : this.newPlaneVFREnroute(Math.random() > 0.5);
     }
-    if (
-      SettingsStore.ga &&
-      this.map.ga > 0 &&
-      this.map.commercial > 0
-    ) {
+    for (let i = 0; i < initialCounts[3]; i++) {
       isAptCommercial ? this.newPlaneVFROutbound() : this.newPlaneOutbound();
     }
   }
@@ -171,6 +210,8 @@ class GameStore extends EventEmitter {
       throw new Error('Invalid saved game data.');
     }
     const map = loadMap(game.id);
+    this.mobileMode = isMobileSession();
+    this.trafficFactor = this.mobileMode ? config.mobileTrafficFactor : 1;
     this.loadJson(game);
     this.map = map;
     this.setup(map);
@@ -700,7 +741,10 @@ class GameStore extends EventEmitter {
 
   trySpawn() {
     this._spawnPlaneCounter += config.updateInterval * SettingsStore.speed;
-    const intervalMs = Math.max(1000, SettingsStore.newPlaneInterval * 1000);
+    const intervalMs = Math.max(
+      1000,
+      SettingsStore.newPlaneInterval * 1000 / (this.trafficFactor || 1)
+    );
     if (this._spawnPlaneCounter >= intervalMs) {
       this._spawnPlaneCounter %= intervalMs;
       this.newPlane();

@@ -8,7 +8,7 @@ import, or share timelapse files.
 The production app is a static Preact build served by nginx. The same
 multi-stage `Dockerfile` is supported by Docker and Podman.
 
-Current release: **3.0.0-rc.14**
+Current release: **3.0.0-rc.15**
 
 ## Features
 
@@ -244,8 +244,9 @@ make ENGINE=podman build
 make ENGINE=podman run PORT=8081
 ```
 
-`VERSION`, `IMAGE`, `PORT`, `CONTAINER`, `BUILD_COMMIT`, and `BUILD_FLAGS` can
-all be overridden. The default image is `atc-manager:3.0.0-rc.14`.
+`VERSION`, `IMAGE`, `PORT`, `CONTAINER`, `BUILD_COMMIT`,
+`PREACT_APP_MOBILE_TRAFFIC_FACTOR`, and `BUILD_FLAGS` can all be overridden.
+The default image is `atc-manager:3.0.0-rc.15`.
 
 ## Mobile and tablet browsers
 
@@ -262,6 +263,20 @@ tap-to-select list beside a large send-command control. Desktop browsers retain
 the existing keyboard-oriented fields. The touch readout color is configurable
 under appearance settings.
 
+Mobile and tablet sessions automatically start with the first flight selected,
+so command controls are visible immediately. They also default to `0.5x`
+traffic: the initial aircraft count is proportionally reduced and later
+aircraft spawn half as often. Desktop traffic generation remains unchanged.
+To tune the mobile multiplier, set a value greater than `0` and no greater than
+`1` in `.env` before a local build or Compose/Make build:
+
+```dotenv
+PREACT_APP_MOBILE_TRAFFIC_FACTOR=0.5
+```
+
+The value is compiled into the browser bundle. Restart the development server
+or rebuild the production image after changing it.
+
 In Safari, use **Share → Add to Home Screen** for a standalone web-app
 experience. Interface scale defaults to the connected display and can be
 overridden under **Settings → Appearance → Interface scale**. That choice,
@@ -277,7 +292,7 @@ session, backgrounding the page, changing tabs, or putting the device to sleep
 pauses the simulation. Return to the glowing pause dialog and choose
 **Resume session** when ready.
 The About panel shows the release and source revision as
-`3.0.0-rc.14+<commit>`, which identifies the exact release-candidate build in
+`3.0.0-rc.15+<commit>`, which identifies the exact release-candidate build in
 use.
 
 ## New Features announcements
@@ -386,9 +401,9 @@ Podman did not find the requested image locally and tried to pull it. Build it
 first, use the same tag for `build` and `run`, and keep `--pull=never`:
 
 ```bash
-podman build --format docker --build-arg APP_VERSION=3.0.0-rc.14 \
-  -t localhost/atc-manager:3.0.0-rc.14 .
-podman run --pull=never --rm -p 8080:80 localhost/atc-manager:3.0.0-rc.14
+podman build --format docker --build-arg APP_VERSION=3.0.0-rc.15 \
+  -t localhost/atc-manager:3.0.0-rc.15 .
+podman run --pull=never --rm -p 8080:80 localhost/atc-manager:3.0.0-rc.15
 ```
 
 ### Port 8080 is already in use
@@ -396,8 +411,8 @@ podman run --pull=never --rm -p 8080:80 localhost/atc-manager:3.0.0-rc.14
 Publish another host port:
 
 ```bash
-docker run --rm -p 8081:80 atc-manager:3.0.0-rc.14
-podman run --rm -p 8081:80 localhost/atc-manager:3.0.0-rc.14
+docker run --rm -p 8081:80 atc-manager:3.0.0-rc.15
+podman run --rm -p 8081:80 localhost/atc-manager:3.0.0-rc.15
 ```
 
 ### Container build dependency errors

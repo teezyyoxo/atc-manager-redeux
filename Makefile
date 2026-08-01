@@ -1,15 +1,16 @@
 -include .env
 
 ENGINE ?= docker
-APP_VERSION := 3.0.0-rc.14
+APP_VERSION := 3.0.0-rc.15
 VERSION ?= $(APP_VERSION)
 BUILD_COMMIT ?= $(shell git rev-parse --short HEAD 2>/dev/null || echo unknown)
-BUILD_FLAGS ?= --build-arg APP_VERSION=$(VERSION) --build-arg BUILD_COMMIT=$(BUILD_COMMIT)
+PREACT_APP_MOBILE_TRAFFIC_FACTOR ?= 0.5
+BUILD_FLAGS ?= --build-arg APP_VERSION=$(VERSION) --build-arg BUILD_COMMIT=$(BUILD_COMMIT) --build-arg PREACT_APP_MOBILE_TRAFFIC_FACTOR=$(PREACT_APP_MOBILE_TRAFFIC_FACTOR)
 IMAGE ?= atc-manager:$(VERSION)
 PORT ?= 8080
 CONTAINER ?= atc-manager
 
-export APP_VERSION BUILD_COMMIT PORT
+export APP_VERSION BUILD_COMMIT PORT PREACT_APP_MOBILE_TRAFFIC_FACTOR
 
 .PHONY: build run run-detached stop rm logs ps compose-up compose-down
 

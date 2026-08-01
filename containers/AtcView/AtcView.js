@@ -12,6 +12,7 @@ import communications from '../../lib/communications';
 import { EventEmitter } from 'events';
 import Airplane from '../../lib/airplane';
 import { rwyHeading } from '../../lib/map';
+import { isMobileSession } from '../../lib/mobile';
 
 class AtcView extends Component {
   constructor(props) {
@@ -40,6 +41,9 @@ class AtcView extends Component {
     if (typeof window !== 'undefined') {
       document.addEventListener('click', this.handleDocumentClick);
       window.addEventListener('beforeunload', this.handleBeforeUnload);
+    }
+    if (isMobileSession() && GameStore.traffic.length > 0) {
+      this.handleAirplaneClick(0);
     }
   }
 

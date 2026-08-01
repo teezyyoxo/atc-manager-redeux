@@ -1,6 +1,27 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [3.0.0-rc.15] - 2026-08-01
+
+### Added
+
+- Added an automatically detected mobile/tablet traffic mode that defaults to
+  half the desktop traffic volume and can be tuned at build time with
+  `PREACT_APP_MOBILE_TRAFFIC_FACTOR`.
+
+### Changed
+
+- Kept the mobile Configure Session and View Tutorial actions in title case,
+  and moved initial modal focus away from the native airport selector.
+- Sorted session airports alphabetically by name and added each airport's ICAO
+  code to its option label.
+- Selected the first flight automatically on mobile session start so touch
+  controls are visible immediately.
+- Anchored mobile command controls to the bottom of the available pane and
+  added proportional phone/tablet portrait and landscape sizing.
+- Updated application, package, Compose, Make, image, documentation, and build
+  metadata to 3.0.0-rc.15.
+
 ## [3.0.0-rc.14] - 2026-07-31
 
 ### Changed
