@@ -8,7 +8,7 @@ import, or share timelapse files.
 The production app is a static Preact build served by nginx. The same
 multi-stage `Dockerfile` is supported by Docker and Podman.
 
-Current release: **3.0.0-rc.16**
+Current release: **3.0.0-rc.17**
 
 ## Features
 
@@ -246,7 +246,7 @@ make ENGINE=podman run PORT=8081
 
 `VERSION`, `IMAGE`, `PORT`, `CONTAINER`, `BUILD_COMMIT`,
 `PREACT_APP_MOBILE_TRAFFIC_FACTOR`, and `BUILD_FLAGS` can all be overridden.
-The default image is `atc-manager:3.0.0-rc.16`.
+The default image is `atc-manager:3.0.0-rc.17`.
 
 ## Mobile and tablet browsers
 
@@ -292,7 +292,7 @@ session, backgrounding the page, changing tabs, or putting the device to sleep
 pauses the simulation. Return to the glowing pause dialog and choose
 **Resume session** when ready.
 The About panel shows the release and source revision as
-`3.0.0-rc.16+<commit>`, which identifies the exact release-candidate build in
+`3.0.0-rc.17+<commit>`, which identifies the exact release-candidate build in
 use.
 
 ## New Features announcements
@@ -401,9 +401,9 @@ Podman did not find the requested image locally and tried to pull it. Build it
 first, use the same tag for `build` and `run`, and keep `--pull=never`:
 
 ```bash
-podman build --format docker --build-arg APP_VERSION=3.0.0-rc.16 \
-  -t localhost/atc-manager:3.0.0-rc.16 .
-podman run --pull=never --rm -p 8080:80 localhost/atc-manager:3.0.0-rc.16
+podman build --format docker --build-arg APP_VERSION=3.0.0-rc.17 \
+  -t localhost/atc-manager:3.0.0-rc.17 .
+podman run --pull=never --rm -p 8080:80 localhost/atc-manager:3.0.0-rc.17
 ```
 
 ### Port 8080 is already in use
@@ -411,8 +411,8 @@ podman run --pull=never --rm -p 8080:80 localhost/atc-manager:3.0.0-rc.16
 Publish another host port:
 
 ```bash
-docker run --rm -p 8081:80 atc-manager:3.0.0-rc.16
-podman run --rm -p 8081:80 localhost/atc-manager:3.0.0-rc.16
+docker run --rm -p 8081:80 atc-manager:3.0.0-rc.17
+podman run --rm -p 8081:80 localhost/atc-manager:3.0.0-rc.17
 ```
 
 ### Container build dependency errors

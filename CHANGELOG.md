@@ -1,6 +1,20 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [3.0.0-rc.17] - 2026-08-01
+
+### Added
+
+- Added mobile and tablet pull-to-refresh with pull, release, and refreshing
+  feedback across browser and installed web-app sessions.
+
+### Changed
+
+- Protected interactive controls, dialogs, and scrolled content from
+  accidental pull-to-refresh gestures.
+- Updated application, package, Compose, Make, image, documentation, and build
+  metadata to 3.0.0-rc.17.
+
 ## [3.0.0-rc.16] - 2026-08-01
 
 ### Changed

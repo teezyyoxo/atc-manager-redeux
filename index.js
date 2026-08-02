@@ -16,6 +16,7 @@ import TutorialsRoot from './containers/TutorialsRoot/TutorialsRoot';
 import TutorialsIntro from './containers/TutorialsIntro/TutorialsIntro';
 import TutorialsTextCommands from './containers/TutorialsTextCommands/TutorialsTextCommands';
 import { loadJS } from './lib/lazy-load';
+import PullToRefresh from './components/PullToRefresh/PullToRefresh';
 
 if (typeof window !== 'undefined') {
   loadJS('https://buttons.github.io/buttons.js');
@@ -26,6 +27,7 @@ export default class App extends Component {
   render() {
     return (
       <main>
+        <PullToRefresh />
         <Router onChange={event => router.emit('change', event)}>
           <Home path="/" />
           <Game path="/game" />
