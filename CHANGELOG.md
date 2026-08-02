@@ -1,6 +1,20 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [3.0.0-rc.19] - 2026-08-01
+
+### Fixed
+
+- Fixed mobile layout regressions by removing the app-level pull-to-refresh
+  view, restoring command controls closer to the bottom edge, and presenting
+  the session menu and its dialogs as accessible floating layers above a
+  blurred game view while the simulation is paused.
+
+### Changed
+
+- Updated application, package, Compose, Make, image, documentation, and build
+  metadata to 3.0.0-rc.19.
+
 ## [3.0.0-rc.18] - 2026-08-01
 
 ### Fixed

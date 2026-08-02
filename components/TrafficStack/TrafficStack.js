@@ -1,4 +1,5 @@
 import { Component } from 'preact';
+import { createPortal } from 'preact/compat';
 import {
   FaInfo,
   FaCommentDots,
@@ -33,6 +34,7 @@ import communications from '../../lib/communications';
 import { route } from 'preact-router';
 import TouchDial from '../TouchDial/TouchDial';
 import { lpad } from '../../lib/util';
+import { isMobileSession } from '../../lib/mobile';
 
 class TrafficStack extends Component {
   constructor(props) {
@@ -70,9 +72,19 @@ class TrafficStack extends Component {
     SettingsStore.removeListener('change', this.handleSettingsStoreChange);
     if (typeof window !== 'undefined')
       window.removeEventListener('keydown', this.handleKeyPress);
+    this.unlockMobileMenuBackground();
   }
 
   handleKeyPress = e => {
+    if (this.state.mobileMenuExpanded) {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        this.closeMobileMenu();
+      } else if (e.key === 'Tab') {
+        this.trapMobileMenuFocus(e);
+      }
+      return;
+    }
     if (GameStore.paused) return;
     if (e.key === 'Enter' && this.state.cmd.tgt) {
       if (SettingsStore.useTextCmd) this.onCmdTextParse();
@@ -101,12 +113,22 @@ class TrafficStack extends Component {
   handleExpandSettingsButtonClick = () => {
     const opening = !this.state.settingsExpanded;
     if (opening) {
-      this.optionsResumeOnClose = !GameStore.paused;
-      if (this.optionsResumeOnClose) GameStore.pause(true);
+      this.optionsResumeOnClose = this.claimMobileMenuPause();
+      if (!this.state.mobileMenuExpanded) {
+        this.optionsResumeOnClose = !GameStore.paused;
+        if (this.optionsResumeOnClose) GameStore.pause(true);
+      }
     }
-    this.setState({ settingsExpanded: opening, aboutExpanded: false }, () => {
-      if (!opening && this.optionsResumeOnClose) GameStore.resume();
-      this.optionsResumeOnClose = false;
+    this.setState({
+      settingsExpanded: opening,
+      aboutExpanded: false,
+      mobileMenuExpanded: false
+    }, () => {
+      if (!opening) {
+        if (this.optionsResumeOnClose) GameStore.resume();
+        this.optionsResumeOnClose = false;
+        this.restoreMobileMenuToggleFocus();
+      }
       this.props.onChange(this.state.cmd);
     });
   };
@@ -114,17 +136,45 @@ class TrafficStack extends Component {
   handleAboutExpanded = () => {
     const opening = !this.state.aboutExpanded;
     if (opening) {
-      this.aboutResumeOnClose = !GameStore.paused;
-      if (this.aboutResumeOnClose) GameStore.pause(true);
+      this.aboutResumeOnClose = this.claimMobileMenuPause();
+      if (!this.state.mobileMenuExpanded) {
+        this.aboutResumeOnClose = !GameStore.paused;
+        if (this.aboutResumeOnClose) GameStore.pause(true);
+      }
     }
-    this.setState({ aboutExpanded: opening, settingsExpanded: false }, () => {
-      if (!opening && this.aboutResumeOnClose) GameStore.resume();
-      this.aboutResumeOnClose = false;
+    this.setState({
+      aboutExpanded: opening,
+      settingsExpanded: false,
+      mobileMenuExpanded: false
+    }, () => {
+      if (!opening) {
+        if (this.aboutResumeOnClose) GameStore.resume();
+        this.aboutResumeOnClose = false;
+        this.restoreMobileMenuToggleFocus();
+      }
     });
   };
 
   handleLogsExpanded = () => {
-    this.setState({ copied: false, logsExpanded: !this.state.logsExpanded });
+    const opening = !this.state.logsExpanded;
+    if (opening) {
+      this.logsResumeOnClose = this.claimMobileMenuPause();
+      if (!this.state.mobileMenuExpanded) {
+        this.logsResumeOnClose = !GameStore.paused;
+        if (this.logsResumeOnClose) GameStore.pause(true);
+      }
+    }
+    this.setState({
+      copied: false,
+      logsExpanded: opening,
+      mobileMenuExpanded: false
+    }, () => {
+      if (!opening && this.logsResumeOnClose) GameStore.resume();
+      if (!opening) {
+        this.logsResumeOnClose = false;
+        this.restoreMobileMenuToggleFocus();
+      }
+    });
   };
 
   handleLogsCopied = () => {
@@ -159,19 +209,126 @@ class TrafficStack extends Component {
   };
 
   handleInfoExpanded = e => {
-    this.setState({ infoExpanded: !this.state.infoExpanded });
+    const opening = !this.state.infoExpanded;
+    if (opening) {
+      this.infoResumeOnClose = this.claimMobileMenuPause();
+      if (!this.state.mobileMenuExpanded) {
+        this.infoResumeOnClose = !GameStore.paused;
+        if (this.infoResumeOnClose) GameStore.pause(true);
+      }
+    }
+    this.setState({
+      infoExpanded: opening,
+      mobileMenuExpanded: false
+    }, () => {
+      if (!opening && this.infoResumeOnClose) GameStore.resume();
+      if (!opening) {
+        this.infoResumeOnClose = false;
+        this.restoreMobileMenuToggleFocus();
+      }
+    });
   };
 
   handleMobileMenuToggle = () => {
-    this.setState(prevstate => ({
-      mobileMenuExpanded: !prevstate.mobileMenuExpanded
-    }));
+    if (this.state.mobileMenuExpanded) {
+      this.closeMobileMenu();
+      return;
+    }
+
+    this.mobileMenuResumeOnClose = !GameStore.paused;
+    if (this.mobileMenuResumeOnClose) GameStore.pause(true);
+    this.previousMobileMenuFocus = document.activeElement;
+    this.lockMobileMenuBackground();
+    this.setState({ mobileMenuExpanded: true }, () => {
+      const firstControl = this.mobileMenuDialog &&
+        this.mobileMenuDialog.querySelector('button:not([disabled])');
+      if (firstControl) firstControl.focus();
+    });
   };
 
-  handleMobileMenuAction = () => {
-    if (this.state.mobileMenuExpanded) {
-      this.setState({ mobileMenuExpanded: false });
+  closeMobileMenu = (resumeSession = true, restoreFocus = true) => {
+    const shouldResume = resumeSession && this.mobileMenuResumeOnClose;
+    this.mobileMenuResumeOnClose = false;
+    this.unlockMobileMenuBackground();
+    this.setState({ mobileMenuExpanded: false }, () => {
+      if (shouldResume) GameStore.resume();
+      if (
+        restoreFocus &&
+        this.previousMobileMenuFocus &&
+        this.previousMobileMenuFocus.focus
+      ) {
+        this.previousMobileMenuFocus.focus();
+      }
+      this.previousMobileMenuFocus = null;
+    });
+  };
+
+  claimMobileMenuPause = () => {
+    if (!this.state.mobileMenuExpanded) return false;
+    const resumeOnClose = this.mobileMenuResumeOnClose;
+    this.mobileMenuResumeOnClose = false;
+    this.restoreMobileFocusAfterTool = true;
+    this.unlockMobileMenuBackground();
+    this.previousMobileMenuFocus = null;
+    return resumeOnClose;
+  };
+
+  restoreMobileMenuToggleFocus = () => {
+    if (!this.restoreMobileFocusAfterTool) return;
+    this.restoreMobileFocusAfterTool = false;
+    if (this.mobileMenuToggle) this.mobileMenuToggle.focus();
+  };
+
+  lockMobileMenuBackground = () => {
+    this.mobileMenuBackground = document.getElementById('atc-game');
+    this.addedMobileMenuInert = !!this.mobileMenuBackground &&
+      !this.mobileMenuBackground.hasAttribute('inert');
+    if (this.addedMobileMenuInert) {
+      this.mobileMenuBackground.setAttribute('inert', '');
     }
+    document.documentElement.classList.add('mobile-game-menu-open');
+  };
+
+  unlockMobileMenuBackground = () => {
+    if (this.addedMobileMenuInert && this.mobileMenuBackground) {
+      this.mobileMenuBackground.removeAttribute('inert');
+    }
+    this.mobileMenuBackground = null;
+    this.addedMobileMenuInert = false;
+    if (typeof document !== 'undefined') {
+      document.documentElement.classList.remove('mobile-game-menu-open');
+    }
+  };
+
+  trapMobileMenuFocus = event => {
+    if (!this.mobileMenuDialog) return;
+    const controls = this.mobileMenuDialog.querySelectorAll(
+      'button:not([disabled]), [href], input:not([disabled]), ' +
+      'select:not([disabled]), textarea:not([disabled]), ' +
+      '[tabindex]:not([tabindex="-1"])'
+    );
+    if (!controls.length) {
+      event.preventDefault();
+      return;
+    }
+    const first = controls[0];
+    const last = controls[controls.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  };
+
+  handleMobileMenuBackdrop = event => {
+    if (event.target === event.currentTarget) this.closeMobileMenu();
+  };
+
+  handleMobilePauseExit = () => {
+    this.closeMobileMenu(false, false);
+    GameStore.pause();
   };
 
   handleHeadingTgtChange = e => {
@@ -644,10 +801,67 @@ class TrafficStack extends Component {
     );
   };
 
+  renderUtilityMenu = mobile => (
+    <div
+      id={mobile ? 'mobile-utility-menu' : null}
+      className={mobile ? 'mobile-utility-menu' : 'atc-view-buttons'}
+      role={mobile ? 'dialog' : null}
+      aria-modal={mobile ? 'true' : null}
+      aria-labelledby={mobile ? 'mobile-utility-menu-title' : null}
+      ref={element => {
+        if (mobile) this.mobileMenuDialog = element;
+      }}
+    >
+      {mobile ? (
+        <header className="mobile-utility-menu-header">
+          <div>
+            <span>Simulation Hold</span>
+            <h2 id="mobile-utility-menu-title">Session Menu</h2>
+          </div>
+          <button
+            type="button"
+            className="mobile-utility-menu-close"
+            aria-label="Close game menu"
+            onClick={() => this.closeMobileMenu()}
+          >
+            <FaTimes />
+          </button>
+        </header>
+      ) : null}
+      <button
+        className="w-100"
+        onClick={this.handleExpandSettingsButtonClick}
+      >
+        <FaCog />
+        &nbsp;
+        {this.state.settingsExpanded ? 'Close options' : 'Options'}
+      </button>
+      <button className="w-100" onClick={this.handleLogsExpanded}>
+        <FaCommentDots />
+        &nbsp;
+        {this.state.logsExpanded ? 'Close logs' : 'Logs'}
+      </button>
+      <button className="w-100" onClick={this.handleAboutExpanded}>
+        <FaQuestion />
+        &nbsp;
+        {this.state.aboutExpanded ? 'Close about' : 'About'}
+      </button>
+      <button className="w-100" onClick={this.handleInfoExpanded}>
+        <FaInfo />
+        &nbsp;
+        {this.state.infoExpanded ? 'Close airfield' : 'Airfield info'}
+      </button>
+      <GameMetaControls
+        onPauseResume={mobile ? this.handleMobilePauseExit : null}
+      />
+    </div>
+  );
+
   render() {
     const trafficStack = this.renderTrafficStack();
     const hours = Math.floor(GameStore.time / 3600);
     const minutes = Math.floor((GameStore.time % 3600) / 60);
+    const mobileSession = isMobileSession();
 
     const trafficControl = SettingsStore.useTextCmd
       ? this.renderTextCmdControl()
@@ -681,6 +895,7 @@ class TrafficStack extends Component {
                 ? 'Close game menu'
                 : 'Open game menu'
             }
+            ref={element => { this.mobileMenuToggle = element; }}
           >
             {this.state.mobileMenuExpanded ? <FaTimes /> : <FaBars />}
             <span>{this.state.mobileMenuExpanded ? 'Close' : 'Menu'}</span>
@@ -707,39 +922,20 @@ class TrafficStack extends Component {
           >
             {trafficControl}
           </div>
-          <div
-            id="mobile-utility-menu"
-            className={`atc-view-buttons ${
-              this.state.mobileMenuExpanded ? 'mobile-menu-open' : ''
-            }`}
-            onClick={this.handleMobileMenuAction}
-          >
-            <button
-              className="w-100"
-              onClick={this.handleExpandSettingsButtonClick}
-            >
-              <FaCog />
-              &nbsp;
-              {this.state.settingsExpanded ? 'Close options' : 'Options'}
-            </button>
-            <button className="w-100" onClick={this.handleLogsExpanded}>
-              <FaCommentDots />
-              &nbsp;
-              {this.state.logsExpanded ? 'Close logs' : 'Logs'}
-            </button>
-            <button className="w-100" onClick={this.handleAboutExpanded}>
-              <FaQuestion />
-              &nbsp;
-              {this.state.aboutExpanded ? 'Close about' : 'About'}
-            </button>
-            <button className="w-100" onClick={this.handleInfoExpanded}>
-              <FaInfo />
-              &nbsp;
-              {this.state.infoExpanded ? 'Close airfield' : 'Airfield info'}
-            </button>
-            <GameMetaControls />
-          </div>
+          {!mobileSession ? this.renderUtilityMenu(false) : null}
         </div>
+
+        {mobileSession && this.state.mobileMenuExpanded
+          ? createPortal(
+            <div
+              className="mobile-utility-menu-overlay"
+              onClick={this.handleMobileMenuBackdrop}
+            >
+              {this.renderUtilityMenu(true)}
+            </div>,
+            document.body
+          )
+          : null}
 
         {/* panels */}
         <SettingsPanel

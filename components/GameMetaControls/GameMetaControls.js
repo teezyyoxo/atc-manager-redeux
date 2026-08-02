@@ -56,6 +56,10 @@ class GameMetaControls extends Component {
   };
 
   handlePauseResumeButtonClick = () => {
+    if (this.props.onPauseResume) {
+      this.props.onPauseResume();
+      return;
+    }
     GameStore[GameStore.paused ? 'resume' : 'pause']();
   };
 

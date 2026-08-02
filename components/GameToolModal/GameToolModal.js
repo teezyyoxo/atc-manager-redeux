@@ -1,4 +1,5 @@
 import { Component } from 'preact';
+import { createPortal } from 'preact/compat';
 import './GameToolModal.css';
 
 class GameToolModal extends Component {
@@ -18,29 +19,30 @@ class GameToolModal extends Component {
   }
 
   lockBackground = () => {
-    this.inertElements = [];
-    let node = this.overlay;
-    while (node && node.id !== 'atc-game') {
-      const parent = node.parentElement;
-      if (!parent) break;
-      Array.from(parent.children).forEach(element => {
-        if (element !== node && !element.hasAttribute('inert')) {
-          element.setAttribute('inert', '');
-          this.inertElements.push(element);
-        }
-      });
-      node = parent;
+    this.gameBackground = document.getElementById('atc-game');
+    this.addedBackgroundInert = !!this.gameBackground &&
+      !this.gameBackground.hasAttribute('inert');
+    if (this.addedBackgroundInert) {
+      this.gameBackground.setAttribute('inert', '');
     }
     document.documentElement.classList.add('game-tool-modal-open');
   };
 
   unlockBackground = () => {
-    (this.inertElements || []).forEach(element => element.removeAttribute('inert'));
-    this.inertElements = [];
+    if (this.addedBackgroundInert && this.gameBackground) {
+      this.gameBackground.removeAttribute('inert');
+    }
+    this.gameBackground = null;
+    this.addedBackgroundInert = false;
     document.documentElement.classList.remove('game-tool-modal-open');
   };
 
   handleKeyDown = event => {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      this.props.onClose();
+      return;
+    }
     if (event.key !== 'Tab' || !this.dialog) return;
     const controls = this.dialog.querySelectorAll(
       'button:not([disabled]), [href], input:not([disabled]), ' +
@@ -63,7 +65,7 @@ class GameToolModal extends Component {
   };
 
   render() {
-    return (
+    const modal = (
       <div
         className="game-tool-modal-overlay"
         onClick={event => event.stopPropagation()}
@@ -98,6 +100,9 @@ class GameToolModal extends Component {
         </section>
       </div>
     );
+    return typeof document === 'undefined'
+      ? modal
+      : createPortal(modal, document.body);
   }
 }
 

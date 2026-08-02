@@ -1,4 +1,17 @@
 
-.InfoPanel {
-    
+.game-airfield-modal {
+  max-width: 720px;
+}
+
+.session-airfield-content .rwyusage {
+  margin-bottom: 5px;
+}
+
+.session-airfield-content select {
+  min-width: 150px;
+  width: auto;
+}
+
+.session-airfield-content > button {
+  margin: 4px 8px 4px 0;
 }

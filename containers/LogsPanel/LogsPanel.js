@@ -1,8 +1,8 @@
 import { Component } from 'preact';
 import './LogsPanel.css';
 import GameStore from '../../stores/GameStore';
-import { FaCompress } from 'react-icons/fa/index.esm';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import GameToolModal from '../../components/GameToolModal/GameToolModal';
 
 class LogsPanel extends Component {
   constructor(props) {
@@ -16,42 +16,50 @@ class LogsPanel extends Component {
     this.setState({ logsOnlySelf: !this.state.logsOnlySelf });
   };
 
+  handleLogsCopied = () => {
+    this.setState({ logsCopied: true });
+  };
+
   render() {
+    if (!this.props.expanded) return null;
     const logs = this.state.logsOnlySelf ? GameStore.selfLog : GameStore.log;
     return (
-      <div
-        className={[this.props.expanded ? null : 'hidden', 'logs-panel'].join(
-          ' '
-        )}
+      <GameToolModal
+        title="Session Logs"
+        titleId="game-logs-title"
+        kicker="Traffic History"
+        onClose={this.props.onToggle}
+        className="game-logs-modal"
       >
-        <div>Departures: {GameStore.departures}</div>
-        <div>Arrivals: {GameStore.arrivals}</div>
-        <div>Seperation violations: {GameStore.distanceVialations}</div>
-        <div>Unpermitted departures: {GameStore.unpermittedDepartures}</div>
+        <div className="session-log-content">
+          <div>Departures: {GameStore.departures}</div>
+          <div>Arrivals: {GameStore.arrivals}</div>
+          <div>Separation violations: {GameStore.distanceVialations}</div>
+          <div>Unpermitted departures: {GameStore.unpermittedDepartures}</div>
 
-        <div class="logs-container">
-          <div class="logs-inner">
-            {logs.slice(logs.length - 10, logs.length).map((x, i) => (
-              <div key={i}>{x}</div>
-            ))}
+          <div className="logs-container">
+            <div className="logs-inner">
+              {logs.slice(logs.length - 10, logs.length).map((x, i) => (
+                <div key={i}>{x}</div>
+              ))}
+            </div>
+          </div>
+          <div aria-live="polite">
+            {this.state.logsCopied ? 'Copied.' : '\u00a0'}
+          </div>
+          <div className="session-log-actions">
+            <CopyToClipboard
+              text={logs.join('\r\n')}
+              onCopy={this.handleLogsCopied}
+            >
+              <button>Copy Logs</button>
+            </CopyToClipboard>
+            <button onClick={this.handleOnlySelfButton}>
+              {this.state.logsOnlySelf ? 'Show all' : 'Only me'}
+            </button>
           </div>
         </div>
-        <div style={{ color: '#19242e' }}>
-          {this.state.logsCopied ? 'Copied.' : '\u00a0'}
-        </div>
-        <CopyToClipboard
-          text={logs.join('\r\n')}
-          onCopy={this.handleLogsCopied}
-        >
-          <button>Copy Logs</button>
-        </CopyToClipboard>
-        <button onClick={this.handleOnlySelfButton}>
-          {this.state.logsOnlySelf ? 'Show all' : 'Only me'}
-        </button>
-        <button onClick={this.props.onToggle}>
-          <FaCompress /> Hide Panel
-        </button>
-      </div>
+      </GameToolModal>
     );
   }
 }

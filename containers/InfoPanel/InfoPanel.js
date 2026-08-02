@@ -1,7 +1,6 @@
 import { Component } from 'preact';
 import GameStore from '../../stores/GameStore';
 import {
-  FaCompress,
   FaDesktop,
   FaImage
 } from 'react-icons/fa/index.esm';
@@ -11,6 +10,7 @@ import './InfoPanel.css';
 import { saveAs } from 'file-saver';
 import SettingsStore from '../../stores/SettingsStore';
 import TimelapseRecorder from '../../components/TimelapseRecorder/TimelapseRecorder';
+import GameToolModal from '../../components/GameToolModal/GameToolModal';
 
 const isFullscreen = () =>
   typeof document !== 'undefined' &&
@@ -62,6 +62,7 @@ class InfoPanel extends Component {
   };
 
   render() {
+    if (!this.props.expanded) return null;
     const altimeter = (
       <span>
         {SettingsStore.millibars ? 'QHN' : 'Altimeter'}:{' '}
@@ -105,45 +106,45 @@ class InfoPanel extends Component {
       ));
 
     return (
-      <div
-        className={[this.props.expanded ? null : 'hidden', 'about-panel'].join(
-          ' '
-        )}
+      <GameToolModal
+        title="Airfield Information"
+        titleId="game-airfield-title"
+        kicker="Session Reference"
+        onClose={this.props.onToggle}
+        className="game-airfield-modal"
       >
-        <div>
-          Airport: {GameStore.mapName} - {GameStore.airport.callsign}
+        <div className="session-airfield-content">
+          <div>
+            Airport: {GameStore.mapName} - {GameStore.airport.callsign}
+          </div>
+          <div>
+            <span>
+              Wind: {lpad('' + Math.round(GameStore.winddir), '0', 3)}° /{' '}
+              {Math.round(GameStore.windspd)} kts
+            </span>
+          </div>
+          <div>
+            <span>ATIS: {GameStore.getAtis()}</span>
+          </div>
+          <div>{altimeter}</div>
+          <div>
+            <span>Elevation: {GameStore.airport.elevation} FT</span>
+          </div>
+          <br />
+          <div>Runways: </div>
+          {GameStore.airport.runways &&
+            GameStore.airport.runways.map(rwy => runwayUsage(rwy))}
+          <br />
+          <button className="button" onClick={this.handleScreenShotButtonClick}>
+            <FaImage /> Save Radar as SVG
+          </button>
+          <button className="button" onClick={toggleFullScreen}>
+            <FaDesktop /> {isFullscreen() ? 'Exit fullscreen' : 'Open fullscreen'}
+          </button>
+          <div>&nbsp;</div>
+          <TimelapseRecorder />
         </div>
-        <div>
-          <span>
-            Wind: {lpad('' + Math.round(GameStore.winddir), '0', 3)}° /{' '}
-            {Math.round(GameStore.windspd)} kts
-          </span>
-        </div>
-        <div>
-          <span>ATIS: {GameStore.getAtis()}</span>
-        </div>
-        <div>{altimeter}</div>
-        <div>
-          <span>Elevation: {GameStore.airport.elevation} FT</span>
-        </div>
-        <br />
-        <div>Runways: </div>
-        {GameStore.airport.runways &&
-          GameStore.airport.runways.map(rwy => runwayUsage(rwy))}
-        <br />
-        <button className="button" onClick={this.handleScreenShotButtonClick}>
-          <FaImage /> Save Radar as SVG
-        </button>
-        <button className="button" onClick={toggleFullScreen}>
-          <FaDesktop /> {isFullscreen() ? 'Exit fullscreen' : 'Open fullscreen'}
-        </button>
-        <div>&nbsp;</div>
-        <TimelapseRecorder />
-        <div>&nbsp;</div>
-        <button onClick={this.props.onToggle}>
-          <FaCompress /> Hide Panel
-        </button>
-      </div>
+      </GameToolModal>
     );
   }
 }
