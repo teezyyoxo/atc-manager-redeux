@@ -1,6 +1,21 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [3.0.0-rc.20] - 2026-08-01
+
+### Changed
+
+- Refactored saved sessions into responsive homepage-native cards with
+  structured airspace, save date, simulation time, and traffic details plus
+  compact color-coded icon actions for resume, edit, and delete.
+- Updated application, package, Compose, Make, image, documentation, and build
+  metadata to 3.0.0-rc.20.
+
+### Fixed
+
+- Prevented long save names and action controls from overflowing or being cut
+  off in the homepage Saved Sessions panel.
+
 ## [3.0.0-rc.19] - 2026-08-01
 
 ### Fixed

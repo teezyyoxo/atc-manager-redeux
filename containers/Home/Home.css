@@ -649,10 +649,7 @@
 }
 
 .home .savedgamesopen .save {
-  background: var(--ui-surface-raised);
-  border: 1px solid var(--ui-line);
-  color: var(--ui-text);
-  border-radius: 12px;
+  box-shadow: 0 16px 38px var(--ui-shadow);
 }
 
 .home .PushNotifications {
@@ -998,8 +995,9 @@
   }
 
   .home-continue-section .savedgamesopen-list {
-    max-height: 150px;
+    max-height: min(38vh, 330px);
     overflow-y: auto;
+    padding-right: 3px;
   }
 
   .home-tools-section {
