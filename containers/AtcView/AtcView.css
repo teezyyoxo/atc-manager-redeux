@@ -366,8 +366,8 @@ input.direct-to-input.invalid::placeholder {
     min-height: 0;
     max-height: none;
     overflow-y: auto;
-    padding: 6px 6px calc(12px + env(safe-area-inset-bottom));
-    scroll-padding-bottom: calc(12px + env(safe-area-inset-bottom));
+    padding: 6px;
+    scroll-padding-bottom: 6px;
     -webkit-overflow-scrolling: touch;
   }
 
@@ -913,6 +913,7 @@ input.direct-to-input.invalid::placeholder {
     border-top: 3px solid #0f3339;
     border-left: 0;
     box-shadow: 0 -8px 18px rgba(0, 0, 0, .28);
+    padding-top: 3px;
   }
 }
 

@@ -1,6 +1,19 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [3.0.0-rc.18] - 2026-08-01
+
+### Fixed
+
+- Removed the duplicate mobile safe-area spacing below the radar and command
+  controls, bringing flight strips up to the scope and controls closer to the
+  bottom safe-area edge.
+
+### Changed
+
+- Updated application, package, Compose, Make, image, documentation, and build
+  metadata to 3.0.0-rc.18.
+
 ## [3.0.0-rc.17] - 2026-08-01
 
 ### Added
