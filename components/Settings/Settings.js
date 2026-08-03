@@ -173,6 +173,11 @@ class Settings extends Component {
     SettingsStore.emit('change');
   };
 
+  handleNumericChange = name => event => {
+    SettingsStore[name] = +event.target.value;
+    SettingsStore.emit('change');
+  };
+
   handleCheckboxChange = name => event => {
     SettingsStore[name] = event.target.checked;
     SettingsStore.emit('change');
@@ -326,6 +331,34 @@ class Settings extends Component {
               value={SettingsStore.radarFontsize}
               suffix=" px"
               onInput={this.handleRadarFontSizeChange}
+            />
+          </SettingRow>
+          <SettingRow
+            label="Logs Panel Opacity"
+            className="settings-row-range"
+          >
+            <RangeControl
+              label="Logs Panel Opacity"
+              min="35"
+              max="100"
+              step="5"
+              value={SettingsStore.logsPanelOpacity}
+              suffix="%"
+              onInput={this.handleNumericChange('logsPanelOpacity')}
+            />
+          </SettingRow>
+          <SettingRow
+            label="Logs Background Blur"
+            className="settings-row-range"
+          >
+            <RangeControl
+              label="Logs Background Blur"
+              min="0"
+              max="30"
+              step="1"
+              value={SettingsStore.logsPanelBlur}
+              suffix=" px"
+              onInput={this.handleNumericChange('logsPanelBlur')}
             />
           </SettingRow>
           <SettingRow label="Interface Scale" className="settings-row-select">

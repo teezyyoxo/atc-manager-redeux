@@ -1,6 +1,24 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [3.0.0-rc.23] - 2026-08-02
+
+### Added
+
+- Added Appearance Settings controls for the session logs panel's opacity and
+  background blur.
+
+### Fixed
+
+- Replaced the layout-breaking desktop logs section with a compact,
+  non-blocking bottom-left utility window that does not move or pause the game
+  viewport.
+- Centered session logs in a blurred modal on mobile and transferred the menu's
+  pause state until the log viewer closes, preventing traffic deviations while
+  logs are being reviewed.
+- Updated application, package, Compose, Make, image, documentation, and build
+  metadata to 3.0.0-rc.23.
+
 ## [3.0.0-rc.22] - 2026-08-02
 
 ### Changed

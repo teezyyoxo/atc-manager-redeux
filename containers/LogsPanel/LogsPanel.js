@@ -3,6 +3,7 @@ import './LogsPanel.css';
 import GameStore from '../../stores/GameStore';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import GameToolModal from '../../components/GameToolModal/GameToolModal';
+import { isMobileSession } from '../../lib/mobile';
 
 class LogsPanel extends Component {
   constructor(props) {
@@ -22,6 +23,7 @@ class LogsPanel extends Component {
 
   render() {
     if (!this.props.expanded) return null;
+    const mobileSession = isMobileSession();
     const logs = this.state.logsOnlySelf ? GameStore.selfLog : GameStore.log;
     return (
       <GameToolModal
@@ -30,6 +32,8 @@ class LogsPanel extends Component {
         kicker="Traffic History"
         onClose={this.props.onToggle}
         className="game-logs-modal"
+        overlayClassName="game-logs-modal-overlay"
+        modal={mobileSession}
       >
         <div className="session-log-content">
           <div>Departures: {GameStore.departures}</div>

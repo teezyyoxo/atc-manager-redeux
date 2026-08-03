@@ -233,7 +233,7 @@ class TrafficStack extends Component {
 
   handleLogsExpanded = () => {
     const opening = !this.state.logsExpanded;
-    if (opening) {
+    if (opening && isMobileSession()) {
       this.logsResumeOnClose = this.claimMobileMenuPause();
       if (!this.state.mobileMenuExpanded) {
         this.logsResumeOnClose = !GameStore.paused;

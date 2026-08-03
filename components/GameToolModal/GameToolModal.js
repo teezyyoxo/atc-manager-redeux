@@ -5,18 +5,30 @@ import './GameToolModal.css';
 class GameToolModal extends Component {
   componentDidMount() {
     this.previousFocus = document.activeElement;
-    this.lockBackground();
+    this.backgroundLocked = this.isModal();
+    if (this.backgroundLocked) this.lockBackground();
     document.addEventListener('keydown', this.handleKeyDown);
     if (this.closeButton) this.closeButton.focus();
   }
 
+  componentDidUpdate(prevProps) {
+    const wasModal = prevProps.modal !== false;
+    const isModal = this.isModal();
+    if (wasModal === isModal) return;
+    if (isModal) this.lockBackground();
+    else this.unlockBackground();
+    this.backgroundLocked = isModal;
+  }
+
   componentWillUnmount() {
     document.removeEventListener('keydown', this.handleKeyDown);
-    this.unlockBackground();
+    if (this.backgroundLocked) this.unlockBackground();
     if (this.previousFocus && this.previousFocus.focus) {
       this.previousFocus.focus();
     }
   }
+
+  isModal = () => this.props.modal !== false;
 
   lockBackground = () => {
     this.gameBackground = document.getElementById('atc-game');
@@ -43,7 +55,7 @@ class GameToolModal extends Component {
       this.props.onClose();
       return;
     }
-    if (event.key !== 'Tab' || !this.dialog) return;
+    if (event.key !== 'Tab' || !this.dialog || !this.isModal()) return;
     const controls = this.dialog.querySelectorAll(
       'button:not([disabled]), [href], input:not([disabled]), ' +
       'select:not([disabled]), textarea:not([disabled]), ' +
@@ -65,9 +77,12 @@ class GameToolModal extends Component {
   };
 
   render() {
+    const isModal = this.isModal();
     const modal = (
       <div
-        className="game-tool-modal-overlay"
+        className={`game-tool-modal-overlay ${
+          this.props.overlayClassName || ''
+        }`}
         onClick={event => event.stopPropagation()}
         onPointerDown={event => event.stopPropagation()}
         ref={element => { this.overlay = element; }}
@@ -75,7 +90,7 @@ class GameToolModal extends Component {
         <section
           className={`game-tool-modal ${this.props.className || ''}`}
           role="dialog"
-          aria-modal="true"
+          aria-modal={isModal ? 'true' : null}
           aria-labelledby={this.props.titleId}
           ref={element => { this.dialog = element; }}
         >

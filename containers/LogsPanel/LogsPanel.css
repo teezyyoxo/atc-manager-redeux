@@ -1,6 +1,25 @@
+.game-tool-modal-overlay.game-logs-modal-overlay {
+  align-items: flex-end;
+  background: transparent;
+  justify-content: flex-start;
+  pointer-events: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
 
-.game-logs-modal {
-  max-width: 680px;
+.game-tool-modal.game-logs-modal {
+  background: color-mix(
+    in srgb,
+    var(--ui-surface-solid) var(--logs-panel-opacity, 88%),
+    transparent
+  );
+  max-height: min(54vh, 540px);
+  max-width: 460px;
+  pointer-events: auto;
+  width: min(460px, calc(100vw - 32px));
+  -webkit-backdrop-filter:
+    blur(var(--logs-panel-blur, 14px)) saturate(1.08);
+  backdrop-filter: blur(var(--logs-panel-blur, 14px)) saturate(1.08);
 }
 
 .session-log-content {
@@ -12,7 +31,7 @@
   background: color-mix(in srgb, var(--ui-bg) 72%, transparent);
   border: 1px solid var(--ui-line);
   border-radius: 10px;
-  height: 300px;
+  height: clamp(150px, 24vh, 250px);
   overflow: hidden;
   position: relative;
 }
@@ -33,5 +52,30 @@
 }
 
 .session-log-actions button {
+  flex: 1 1 180px;
   margin: 0;
+}
+
+@media (max-width: 700px),
+  (any-pointer: coarse) and (max-width: 1366px) {
+  .game-tool-modal-overlay.game-logs-modal-overlay {
+    align-items: center;
+    background: color-mix(in srgb, var(--ui-bg) 62%, transparent);
+    justify-content: center;
+    pointer-events: auto;
+    -webkit-backdrop-filter:
+      blur(var(--logs-panel-blur, 14px)) saturate(.72);
+    backdrop-filter: blur(var(--logs-panel-blur, 14px)) saturate(.72);
+  }
+
+  .game-tool-modal-overlay .game-logs-modal {
+    max-height: min(82vh, 680px);
+    max-height: min(82dvh, 680px);
+    max-width: 680px;
+    width: min(100%, 680px);
+  }
+
+  .session-log-content .logs-container {
+    height: clamp(180px, 34dvh, 320px);
+  }
 }

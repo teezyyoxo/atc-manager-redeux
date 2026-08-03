@@ -71,6 +71,8 @@ class SettingsStore extends EventEmitter {
     this.colorPalette = 'approach';
     this.interfaceFont = 'ibm-plex-mono';
     this.touchControlColor = '#62ff8d';
+    this.logsPanelOpacity = 88;
+    this.logsPanelBlur = 14;
     this.ga = false;
     this.enroute = false;
     this.takeoffInOrder = false;
@@ -89,9 +91,11 @@ class SettingsStore extends EventEmitter {
     }
 
     this.applyInterfaceScale();
+    this.applyLogsPanelAppearance();
     this.applyTheme();
     this.on('change', this.persist);
     this.on('change', this.applyInterfaceScale);
+    this.on('change', this.applyLogsPanelAppearance);
     this.on('change', this.applyTheme);
 
     if (typeof window !== 'undefined') {
@@ -212,6 +216,18 @@ class SettingsStore extends EventEmitter {
     rootStyle.setProperty('--interface-compact-sidebar-width', `${220 * scale}px`);
   };
 
+  applyLogsPanelAppearance = () => {
+    if (typeof document === 'undefined') return;
+    const opacity = Math.min(
+      100,
+      Math.max(35, Number(this.logsPanelOpacity) || 88)
+    );
+    const blur = Math.min(30, Math.max(0, Number(this.logsPanelBlur) || 0));
+    const rootStyle = document.documentElement.style;
+    rootStyle.setProperty('--logs-panel-opacity', `${opacity}%`);
+    rootStyle.setProperty('--logs-panel-blur', `${blur}px`);
+  };
+
   applyTheme = () => {
     if (typeof document === 'undefined') return;
     const root = document.documentElement;
@@ -284,6 +300,8 @@ class SettingsStore extends EventEmitter {
         'colorPalette',
         'interfaceFont',
         'touchControlColor',
+        'logsPanelOpacity',
+        'logsPanelBlur',
         'distanceCircleColor',
         'ilsPathLength',
         'ilsPathColor',
