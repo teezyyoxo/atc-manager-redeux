@@ -25,9 +25,9 @@ class WorkspaceShell extends Component {
             </span>
           </Link>
           <nav className="workspace-nav" aria-label="Workspace navigation">
-            <Link href="/">Home</Link>
-            <Link href="/tutorials">Training</Link>
-            <button type="button" onClick={openReleaseNotes}>What’s New</button>
+            <Link href="/">HOME</Link>
+            <Link href="/tutorials">TRAINING</Link>
+            <button type="button" onClick={openReleaseNotes}>WHAT’S NEW</button>
             <ThemeControl />
           </nav>
         </header>

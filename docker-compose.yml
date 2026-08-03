@@ -1,10 +1,10 @@
 services:
   web:
-    image: "atc-manager:${APP_VERSION:-3.0.0-rc.21}"
+    image: "atc-manager:${APP_VERSION:-3.0.0-rc.22}"
     build:
       context: .
       args:
-        APP_VERSION: "${APP_VERSION:-3.0.0-rc.21}"
+        APP_VERSION: "${APP_VERSION:-3.0.0-rc.22}"
         BUILD_COMMIT: "${BUILD_COMMIT:-unknown}"
         PREACT_APP_MOBILE_TRAFFIC_FACTOR: "${PREACT_APP_MOBILE_TRAFFIC_FACTOR:-0.5}"
     ports:

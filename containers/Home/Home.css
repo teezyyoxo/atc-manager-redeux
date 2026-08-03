@@ -1190,7 +1190,7 @@
   }
 
   .home .home-button {
-    text-transform: capitalize;
+    text-transform: uppercase;
     width: 100%;
   }
 

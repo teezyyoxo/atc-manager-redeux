@@ -374,16 +374,16 @@ class Home extends Component {
                 className="home-nav-session"
                 onClick={this.handleReturnToGame}
               >
-                Return to Session
+                RETURN TO SESSION
               </button>
             ) : null}
-            <Link href="/tutorials">Tutorials</Link>
+            <Link href="/tutorials">TUTORIALS</Link>
             <button
               type="button"
               className="home-nav-link"
               onClick={openReleaseNotes}
             >
-              What’s New
+              WHAT’S NEW
             </button>
             <span className="home-nav-tools">
               <button
@@ -393,7 +393,7 @@ class Home extends Component {
                 aria-haspopup="menu"
                 onClick={this.toggleTools}
               >
-                <FaTools /> Tools
+                <FaTools /> TOOLS
               </button>
               {this.state.toolsOpen ? (
                 <span className="home-tools-menu" role="menu">
@@ -409,7 +409,7 @@ class Home extends Component {
               className="home-nav-link"
               onClick={this.openSettings}
             >
-              <FaCog /> Settings
+              <FaCog /> SETTINGS
             </button>
             <ThemeControl />
           </nav>
@@ -430,14 +430,14 @@ class Home extends Component {
                   className="home-button home-button-primary"
                   onClick={this.openSession}
                 >
-                  Configure Session
+                  CONFIGURE SESSION
                 </button>
                 <button
                   type="button"
                   className="home-button home-button-secondary"
                   onClick={this.handleTutorialClick}
                 >
-                  View Tutorial
+                  VIEW TUTORIAL
                 </button>
               </div>
               <div className="home-hero-meta" aria-label="Game capabilities">

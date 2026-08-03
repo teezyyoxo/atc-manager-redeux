@@ -1,6 +1,24 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [3.0.0-rc.22] - 2026-08-02
+
+### Changed
+
+- Replaced the ambiguous general-aviation `WIP` and `State` fields with
+  route-aware runway choices, plain-language traffic-pattern and departure
+  instructions, contextual guidance, and dedicated takeoff/send actions.
+- Moved flight strips into the lower control band on mobile at
+  commercial-dominant airports while retaining the GA-focused layout at local
+  airports.
+- Updated application, package, Compose, Make, image, documentation, and build
+  metadata to 3.0.0-rc.22.
+
+### Fixed
+
+- Removed the mobile-only capitalization override that reverted Configure
+  Session and View Tutorial buttons to title case.
+
 ## [3.0.0-rc.21] - 2026-08-02
 
 ### Changed

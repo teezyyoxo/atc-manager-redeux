@@ -36,6 +36,82 @@ import TouchDial from '../TouchDial/TouchDial';
 import { lpad } from '../../lib/util';
 import { isMobileSession } from '../../lib/mobile';
 
+const vfrInstructionContent = {
+  [VFRStates.RWY]: {
+    label: 'Runway / land',
+    description: 'Continue to the runway and complete the landing.'
+  },
+  [VFRStates.UPWIND]: {
+    label: 'Fly upwind',
+    description: 'Track runway heading and climb to pattern altitude.'
+  },
+  [VFRStates.CROSSWIND]: {
+    label: 'Turn crosswind',
+    description: 'Turn onto the crosswind leg.'
+  },
+  [VFRStates.DOWNWIND]: {
+    label: 'Join downwind',
+    description: 'Enter or continue on the downwind leg.'
+  },
+  [VFRStates.BASE]: {
+    label: 'Turn base',
+    description: 'Turn from downwind onto the base leg.'
+  },
+  [VFRStates.FINAL]: {
+    label: 'Turn final',
+    description: 'Line up with the selected runway.'
+  },
+  [VFRStates.STRAIGHT_OUT]: {
+    label: 'Straight out',
+    description: 'Depart on runway heading.'
+  },
+  [VFRStates.EXIT_45_DEG_OUT]: {
+    label: '45° departure',
+    description: 'Exit the pattern at a 45-degree angle.'
+  },
+  [VFRStates.OWN_DISCRETION]: {
+    label: 'Own discretion',
+    description: 'Resume navigation without a pattern restriction.'
+  },
+  [VFRStates.STRAIGHT_IN]: {
+    label: 'Straight-in',
+    description: 'Proceed directly to final for the selected runway.'
+  }
+};
+
+const vfrRouteContent = {
+  [routeTypes.VFR_CLOSED_PATTERN]: {
+    kicker: 'Local pattern · full stop',
+    title: 'Choose the next pattern leg',
+    hint: 'Move the aircraft around the traffic pattern toward landing.'
+  },
+  [routeTypes.VFR_CLOSED_PATTERN_TG]: {
+    kicker: 'Local pattern · touch and go',
+    title: 'Choose the next pattern leg',
+    hint: 'Sequence each leg, then return the aircraft to the runway.'
+  },
+  [routeTypes.VFR_OUTBOUND]: {
+    kicker: 'VFR departure',
+    title: 'Choose the departure path',
+    hint: 'Set how the aircraft leaves the airport after takeoff.'
+  },
+  [routeTypes.VFR_INBOUND]: {
+    kicker: 'VFR arrival · full stop',
+    title: 'Choose a runway and arrival leg',
+    hint: 'Assign the runway first, then guide the aircraft toward landing.'
+  },
+  [routeTypes.VFR_INBOUND_TG]: {
+    kicker: 'VFR arrival · touch and go',
+    title: 'Choose a runway and arrival leg',
+    hint: 'Assign the runway first, then sequence the aircraft into pattern.'
+  },
+  [routeTypes.VFR_ENROUTE]: {
+    kicker: 'VFR transit',
+    title: 'Release the aircraft to navigate',
+    hint: 'Transit traffic continues through the area at its own discretion.'
+  }
+};
+
 class TrafficStack extends Component {
   constructor(props) {
     super();
@@ -646,19 +722,10 @@ class TrafficStack extends Component {
     );
   };
 
-  getDctName = airplane => {
-    switch (airplane.routeType) {
-    case routeTypes.VFR_CLOSED_PATTERN:
-      return 'Runway';
-    default:
-      return 'WIP';
-    }
-  };
-
-  handleVFRTgtState = e => {
+  handleVFRTgtState = value => {
     this.setState(
       prevstate => {
-        prevstate.cmd.tgtVfrState = +e.target.value;
+        prevstate.cmd.tgtVfrState = value;
         return prevstate;
       },
       () => {
@@ -683,59 +750,117 @@ class TrafficStack extends Component {
 
   renderVFRTrafficControl() {
     const cmd = this.props.cmd;
-    const dctName = this.getDctName(cmd.tgt);
-
-    const directToValue = cmd.directionOld ? '' : cmd.direction;
-    const directToPlaceholder = cmd.directionOld ? cmd.direction : '';
-
-    const hideDirectionInput =
-      cmd.tgt.routeType === routeTypes.VFR_ENROUTE ||
-      cmd.tgt.routeType == routeTypes.VFR_OUTBOUND;
+    const routeType = cmd.tgt.routeType;
+    const routeContent = vfrRouteContent[routeType] || {
+      kicker: 'General aviation',
+      title: 'Choose an instruction',
+      hint: 'Select the instruction to issue to this aircraft.'
+    };
+    const instructions = allowedVFRStates(cmd.tgt) || [];
+    const currentInstruction =
+      vfrInstructionContent[this.state.cmd.tgtVfrState];
+    const runwayOptions = activeRwys(GameStore.airport, GameStore.winddir);
+    const requiresRunway =
+      routeType === routeTypes.VFR_INBOUND ||
+      routeType === routeTypes.VFR_INBOUND_TG;
+    const selectedRunway = runwayOptions.includes(cmd.direction)
+      ? cmd.direction
+      : runwayOptions.includes(cmd.tgt.tgtDirection)
+        ? cmd.tgt.tgtDirection
+        : '';
+    const assignedRunway = cmd.tgt.rwy || selectedRunway;
+    const commandDisabled = requiresRunway && !selectedRunway;
+    const primaryLabel = cmd.tgt.waiting
+      ? 'Clear for takeoff'
+      : commandDisabled
+        ? 'Choose a runway'
+        : 'Send instruction';
 
     return (
-      <div>
-        <div className={hideDirectionInput ? 'hidden' : ''}>
-          <span>{dctName} </span>
-          <input
-            className="direct-to-input"
-            type="text"
-            value={directToValue}
-            placeholder={directToPlaceholder}
-            list={this.dtcToDataListId}
-            onInput={this.handleDirectToTgtChange}
-          />
-          <datalist id={this.dtcToDataListId}>
-            {activeRwys(GameStore.airport, GameStore.winddir)}
-          </datalist>
+      <div className="vfr-command-controls">
+        <header className="vfr-command-header">
+          <span>{routeContent.kicker}</span>
+          <strong>{routeContent.title}</strong>
+          <small>{routeContent.hint}</small>
+        </header>
+
+        {requiresRunway ? (
+          <fieldset className="vfr-command-group vfr-runway-group">
+            <legend>1 · Select runway</legend>
+            <div className="vfr-runway-options">
+              {runwayOptions.map(runway => (
+                <button
+                  type="button"
+                  key={runway}
+                  className={selectedRunway === runway ? 'selected' : ''}
+                  aria-pressed={selectedRunway === runway}
+                  onClick={() => this.handleDirectToSelection(runway)}
+                >
+                  RWY {runway}
+                </button>
+              ))}
+            </div>
+          </fieldset>
+        ) : assignedRunway ? (
+          <div className="vfr-runway-assignment">
+            <span>Assigned runway</span>
+            <strong>RWY {assignedRunway}</strong>
+          </div>
+        ) : null}
+
+        <fieldset className="vfr-command-group">
+          <legend>{requiresRunway ? '2' : '1'} · Select instruction</legend>
+          <div className="vfr-instruction-options">
+            {instructions.map(state => {
+              const content = vfrInstructionContent[state] || {
+                label: VFRStates[state],
+                description: 'Issue this traffic instruction.'
+              };
+              const selected = this.state.cmd.tgtVfrState === state;
+              return (
+                <button
+                  type="button"
+                  key={state}
+                  className={selected ? 'selected' : ''}
+                  aria-pressed={selected}
+                  onClick={() => this.handleVFRTgtState(state)}
+                >
+                  <strong>{content.label}</strong>
+                  <small>{content.description}</small>
+                </button>
+              );
+            })}
+          </div>
+        </fieldset>
+
+        <div className="vfr-command-summary" aria-live="polite">
+          <span>Ready to issue</span>
+          <strong>
+            {currentInstruction
+              ? currentInstruction.label
+              : 'Select an instruction'}
+            {selectedRunway ? ` · RWY ${selectedRunway}` : ''}
+          </strong>
         </div>
-        <div>
-          <span>State </span>
-          <select
-            className="state-input"
-            onInput={this.handleVFRTgtState}
-            value={this.state.cmd.tgtVfrState}
-          >
-            {allowedVFRStates(this.state.cmd.tgt).map(x => (
-              <option key={x} value={x}>{VFRStates[x]}</option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <button onClick={this.props.onCmdExecution}>
-            <FaPaperPlane /> Give Command
-          </button>
-        </div>
-        <div>
+
+        <div className="vfr-command-actions">
           <button
-            onClick={this.handleTakeoffTrigger}
-            className={cmd.tgt.waiting ? '' : 'hidden'}
+            type="button"
+            className="vfr-command-primary"
+            disabled={commandDisabled}
+            onClick={cmd.tgt.waiting
+              ? this.handleTakeoffTrigger
+              : this.props.onCmdExecution}
           >
-            <FaPlane /> Takeoff
+            {cmd.tgt.waiting ? <FaPlane /> : <FaPaperPlane />}
+            {primaryLabel}
           </button>
-        </div>
-        <div>
           {cmd.tgt.landing === true && cmd.tgt.dirty === true ? (
-            <button onClick={this.handleGoAroundUpwindClick}>
+            <button
+              type="button"
+              className="vfr-command-secondary"
+              onClick={this.handleGoAroundUpwindClick}
+            >
               <FaPlane /> Go Around
             </button>
           ) : null}
@@ -862,6 +987,9 @@ class TrafficStack extends Component {
     const hours = Math.floor(GameStore.time / 3600);
     const minutes = Math.floor((GameStore.time % 3600) / 60);
     const mobileSession = isMobileSession();
+    const majorAirportLayout = GameStore.map &&
+      GameStore.map.commercial > 0 &&
+      (!SettingsStore.ga || GameStore.map.commercial >= GameStore.map.ga);
 
     const trafficControl = SettingsStore.useTextCmd
       ? this.renderTextCmdControl()
@@ -872,7 +1000,11 @@ class TrafficStack extends Component {
         : null;
 
     return (
-      <div className="traffic-stack-shell">
+      <div
+        className={`traffic-stack-shell ${
+          majorAirportLayout ? 'major-airport-layout' : 'ga-airport-layout'
+        }`}
+      >
         <div className="mobile-game-navbar">
           <div
             className="mobile-game-status"
