@@ -468,6 +468,107 @@ body {
   }
 }
 
+.pull-to-refresh {
+  align-items: center;
+  background: color-mix(in srgb, var(--ui-surface-solid) 96%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ui-accent) 38%, var(--ui-line));
+  border-radius: 999px;
+  box-shadow: 0 14px 38px var(--ui-shadow);
+  color: var(--ui-text);
+  display: none;
+  gap: 11px;
+  left: 50%;
+  max-width: calc(100vw - 32px);
+  min-height: 54px;
+  opacity: 0;
+  padding: 8px 19px 8px 9px;
+  pointer-events: none;
+  position: fixed;
+  top: max(76px, calc(env(safe-area-inset-top) + 54px));
+  transform: translate3d(-50%, -16px, 0) scale(.96);
+  transition: opacity 120ms ease, transform 120ms ease;
+  width: max-content;
+  z-index: 10000;
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+}
+
+.pull-to-refresh.is-visible {
+  opacity: 1;
+  transform:
+    translate3d(
+      -50%,
+      calc((var(--pull-progress) * 18px) - 9px),
+      0
+    )
+    scale(1);
+}
+
+.pull-to-refresh-icon {
+  align-items: center;
+  border: 1.5px solid var(--ui-accent);
+  border-radius: 50%;
+  color: var(--ui-accent);
+  display: inline-flex;
+  flex: 0 0 36px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 1.45rem;
+  font-weight: 400;
+  height: 36px;
+  justify-content: center;
+  line-height: 1;
+  width: 36px;
+}
+
+.pull-to-refresh-label {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: .94rem;
+  font-weight: 700;
+  letter-spacing: .01em;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pull-to-refresh.is-armed {
+  border-color: color-mix(in srgb, var(--ui-accent) 55%, var(--ui-line));
+}
+
+.pull-to-refresh.is-refreshing {
+  opacity: 1;
+  transform: translate3d(-50%, 0, 0) scale(1);
+}
+
+.pull-to-refresh.is-refreshing .pull-to-refresh-icon {
+  animation: pull-to-refresh-spin 700ms linear infinite;
+}
+
+@keyframes pull-to-refresh-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (pointer: coarse) and (hover: none) and (max-width: 1366px) {
+  .pull-to-refresh {
+    display: inline-flex;
+  }
+
+  html,
+  body {
+    overscroll-behavior-y: contain;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pull-to-refresh {
+    transition: none;
+  }
+
+  .pull-to-refresh.is-refreshing .pull-to-refresh-icon {
+    animation-duration: 1.4s;
+  }
+}
+
 *,
 *:after,
 *:before {

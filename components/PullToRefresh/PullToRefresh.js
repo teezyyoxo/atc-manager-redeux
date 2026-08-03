@@ -1,11 +1,11 @@
 import { Component } from 'preact';
-import { isMobileSession } from '../../lib/mobile';
-import './PullToRefresh.css';
 
 const PULL_THRESHOLD = 68;
 const MAX_PULL_DISTANCE = 112;
 const PULL_RESISTANCE = .58;
 const RELOAD_DELAY = 240;
+const PULL_TO_REFRESH_MEDIA_QUERY =
+  '(pointer: coarse) and (hover: none) and (max-width: 1366px)';
 const IGNORED_TARGETS = [
   'a',
   'button',
@@ -17,6 +17,14 @@ const IGNORED_TARGETS = [
   '[role="slider"]',
   '[data-pull-to-refresh-ignore]'
 ].join(',');
+
+const isPullToRefreshSession = () => {
+  if (typeof window === 'undefined') return false;
+  if (typeof window.matchMedia === 'function') {
+    return window.matchMedia(PULL_TO_REFRESH_MEDIA_QUERY).matches;
+  }
+  return false;
+};
 
 const isAtPageTop = target => {
   const scrollingElement = document.scrollingElement || document.documentElement;
@@ -57,6 +65,8 @@ class PullToRefresh extends Component {
   armed = false;
 
   componentDidMount() {
+    if (!isPullToRefreshSession()) return;
+
     window.addEventListener('touchstart', this.handleTouchStart, {
       passive: true
     });
@@ -83,7 +93,7 @@ class PullToRefresh extends Component {
     if (
       this.state.refreshing ||
       event.touches.length !== 1 ||
-      !isMobileSession() ||
+      !isPullToRefreshSession() ||
       !isEligibleTarget(event.target) ||
       !isAtPageTop(event.target)
     ) {
@@ -170,6 +180,8 @@ class PullToRefresh extends Component {
   };
 
   render() {
+    if (!isPullToRefreshSession()) return null;
+
     const { armed, distance, pulling, refreshing } = this.state;
     const visible = pulling || refreshing;
     const label = refreshing
@@ -189,9 +201,7 @@ class PullToRefresh extends Component {
         aria-live="polite"
       >
         <span className="pull-to-refresh-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" focusable="false">
-            <path d="M12 4v12m-5-5 5 5 5-5" />
-          </svg>
+          {refreshing ? '↻' : armed ? '↑' : '↓'}
         </span>
         <span className="pull-to-refresh-label">{label}</span>
       </div>

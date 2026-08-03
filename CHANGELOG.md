@@ -1,6 +1,23 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [3.0.0-rc.29] - 2026-08-03
+
+### Changed
+
+- Reworked mobile pull-to-refresh as a compact Promptly-style floating pill
+  with an outlined state icon, blurred surface, and no document displacement.
+- Limited pull-to-refresh to coarse, non-hovering primary pointers at mobile
+  and tablet dimensions so the affordance and gesture are unavailable on
+  desktop.
+- Updated application, package, Compose, Make, image, documentation, and build
+  metadata to 3.0.0-rc.29.
+
+### Fixed
+
+- Prevented the pull-to-refresh arrow from rendering as an oversized SVG when
+  component-level styles are unavailable.
+
 ## [3.0.0-rc.28] - 2026-08-02
 
 ### Added
