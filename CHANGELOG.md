@@ -1,6 +1,16 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [3.0.0-rc.26] - 2026-08-02
+
+### Changed
+
+- Removed all explanatory sublabels and header hints from live VFR command
+  controls on desktop, mobile, and tablet layouts, leaving compact action
+  labels that fit their controls without clipping.
+- Updated application, package, Compose, Make, image, documentation, and build
+  metadata to 3.0.0-rc.26.
+
 ## [3.0.0-rc.25] - 2026-08-02
 
 ### Changed
