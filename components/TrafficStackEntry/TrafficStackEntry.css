@@ -1,5 +1,32 @@
 
-.TrafficStackEntry {
-    
+.atc-view .traffic-role-marker {
+  align-items: center;
+  background: rgba(7, 20, 22, .72);
+  border: 1px solid rgba(255, 255, 255, .78);
+  border-radius: 999px;
+  display: inline-flex;
+  height: 25px;
+  justify-content: center;
+  margin-right: 3px;
+  text-shadow: none;
+  vertical-align: middle;
+  width: 25px;
 }
 
+.atc-view .traffic-role-marker svg {
+  color: #fff;
+  font-size: 12px;
+  margin: 0;
+}
+
+.atc-view .traffic-role-local svg {
+  font-size: 10px;
+}
+
+@media screen and (max-width: 700px),
+  screen and (any-pointer: coarse) and (max-width: 1366px) {
+  .atc-view .traffic-role-marker {
+    height: 22px;
+    width: 22px;
+  }
+}

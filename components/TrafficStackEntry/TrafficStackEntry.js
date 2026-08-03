@@ -5,6 +5,13 @@ import PlaneSpd from '../PlaneSpd/PlaneSpd';
 import PlaneAlt from '../PlaneAlt/PlaneAlt';
 import communications from '../../lib/communications';
 import SettingsStore from '../../stores/SettingsStore';
+import {
+  FaArrowRight,
+  FaPlane,
+  FaPlaneArrival,
+  FaPlaneDeparture,
+  FaSyncAlt
+} from 'react-icons/fa/index.esm';
 
 const getPlaneColor = airplane => {
   switch (airplane.routeType) {
@@ -16,6 +23,46 @@ const getPlaneColor = airplane => {
       return SettingsStore.inboundTrafficColor;
     default:
       return SettingsStore.vfrTrafficColor;
+  }
+};
+
+const getTrafficRole = routeType => {
+  switch (routeType) {
+    case routeTypes.INBOUND:
+    case routeTypes.VFR_INBOUND:
+    case routeTypes.VFR_INBOUND_TG:
+      return {
+        className: 'arrival',
+        icon: FaPlaneArrival,
+        label: 'Arrival'
+      };
+    case routeTypes.OUTBOUND:
+    case routeTypes.VFR_OUTBOUND:
+      return {
+        className: 'departure',
+        icon: FaPlaneDeparture,
+        label: 'Departure'
+      };
+    case routeTypes.ENROUTE:
+    case routeTypes.VFR_ENROUTE:
+      return {
+        className: 'enroute',
+        icon: FaArrowRight,
+        label: 'Enroute'
+      };
+    case routeTypes.VFR_CLOSED_PATTERN:
+    case routeTypes.VFR_CLOSED_PATTERN_TG:
+      return {
+        className: 'local',
+        icon: FaSyncAlt,
+        label: 'Local pattern'
+      };
+    default:
+      return {
+        className: 'traffic',
+        icon: FaPlane,
+        label: 'Traffic'
+      };
   }
 };
 
@@ -34,21 +81,32 @@ class TrafficStackEntry extends Component {
           : `000${Math.floor(airplane.tgtDirection)}`.substr(-3)) +
         '°';
     const model = airplanesById[airplane.typeId];
-
+    const routeName = routeTypes[airplane.routeType] || 'traffic';
+    const trafficRole = getTrafficRole(airplane.routeType);
+    const TrafficRoleIcon = trafficRole.icon;
     const color = getPlaneColor(airplane);
 
     return (
       <div style={`background-color: ${color};`}
-        className={`traffic-stack-entry ${routeTypes[
-          airplane.routeType
-        ].replace(/ /g, '-')} ${
+        className={`traffic-stack-entry ${routeName.replace(/ /g, '-')} ${
           this.props.cmd.tgt === airplane
             ? 'traffic-active'
             : 'traffic-not-active'
-          }`}
+        }`}
         data-index={this.props.index}
       >
-        {communications.getCallsign(airplane, true)} {model.shortName} {spd}{' '}
+        <span
+          className={`traffic-role-marker traffic-role-${
+            trafficRole.className
+          }`}
+          aria-label={`${trafficRole.label} traffic`}
+          title={`${trafficRole.label} traffic`}
+        >
+          <TrafficRoleIcon aria-hidden="true" focusable="false" />
+          <span className="visually-hidden">{trafficRole.label}</span>
+        </span>{' '}
+        {communications.getCallsign(airplane, true)}{' '}
+        {model && model.shortName ? model.shortName : 'A/C'} {spd}{' '}
         {alt} {heading}
         {direction}
         {airplane.outboundWaypoint ? ` ⇨${airplane.outboundWaypoint}` : null}

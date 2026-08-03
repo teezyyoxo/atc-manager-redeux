@@ -1,6 +1,24 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [3.0.0-rc.24] - 2026-08-02
+
+### Changed
+
+- Compact mobile GA controls now use a fixed three-column instruction grid,
+  shorter control heights, and no redundant helper sublabels or summary panel.
+- Added persistent arrival, departure, enroute, and local-pattern icons to
+  every flight strip so traffic roles no longer depend on color alone.
+- Updated application, package, Compose, Make, image, documentation, and build
+  metadata to 3.0.0-rc.24.
+
+### Fixed
+
+- Prevented the mobile GA controls panel from scrolling horizontally or
+  vertically during normal command entry.
+- Added safe route and aircraft-model fallbacks so incomplete traffic records
+  cannot surface an `undefined` label in a flight strip.
+
 ## [3.0.0-rc.23] - 2026-08-02
 
 ### Added
