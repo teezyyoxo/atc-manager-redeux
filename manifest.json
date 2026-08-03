@@ -1,6 +1,6 @@
 {
   "name": "Air Traffic Control Manager 3",
-  "version": "3.0.0-rc.34",
+  "version": "3.0.0-rc.35",
   "description": "A responsive browser-native air traffic control simulation for desktop, tablet, and mobile.",
   "short_name": "ATC Manager 3",
   "start_url": "./",

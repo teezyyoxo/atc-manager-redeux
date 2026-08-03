@@ -1,6 +1,24 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [3.0.0-rc.35] - 2026-08-03
+
+### Changed
+
+- Replaced the native map-view dropdown with an explicit Radar, Street,
+  Terrain, and Satellite appearance control that applies changes immediately.
+- Added a compact map-view switcher to the in-session mobile menu, with
+  touch-sized controls and a responsive two-column appearance layout.
+- Updated application, package, Compose, Make, image, documentation, and build
+  metadata to 3.0.0-rc.35.
+
+### Fixed
+
+- Restored the rc.33 map-view setting as a visible, accessible appearance
+  control on desktop and mobile.
+- Validated persisted map-view values and prevented geographic tiles from
+  intercepting radar touch gestures.
+
 ## [3.0.0-rc.34] - 2026-08-03
 
 ### Changed

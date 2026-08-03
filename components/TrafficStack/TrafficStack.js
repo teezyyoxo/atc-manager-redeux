@@ -35,6 +35,7 @@ import { route } from 'preact-router';
 import TouchDial from '../TouchDial/TouchDial';
 import { lpad } from '../../lib/util';
 import { isMobileSession } from '../../lib/mobile';
+import MapViewControl from '../MapViewControl/MapViewControl';
 
 const vfrInstructionContent = {
   [VFRStates.RWY]: {
@@ -932,6 +933,12 @@ class TrafficStack extends Component {
             <FaTimes />
           </button>
         </header>
+      ) : null}
+      {mobile ? (
+        <div className="mobile-map-view-picker">
+          <span>Map View</span>
+          <MapViewControl compact label="Quick map view" />
+        </div>
       ) : null}
       <button
         className="w-100"

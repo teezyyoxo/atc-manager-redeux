@@ -727,6 +727,32 @@ input.direct-to-input.invalid::placeholder {
     margin: 3px 0 0;
   }
 
+  .mobile-map-view-picker {
+    background: color-mix(in srgb, var(--ui-surface-solid) 68%, transparent);
+    border: 1px solid var(--ui-line);
+    border-radius: 12px;
+    display: grid;
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .mobile-map-view-picker > span {
+    color: var(--ui-muted);
+    font-family: var(--ui-scope-font);
+    font-size: .66rem;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+  }
+
+  .mobile-utility-menu .mobile-map-view-picker .map-view-option {
+    font-size: .72rem;
+    height: 46px;
+    justify-content: center;
+    min-height: 46px;
+    padding: 7px 10px;
+  }
+
   .mobile-utility-menu .gamemetacontrols {
     display: grid;
     gap: 8px;
@@ -1160,7 +1186,8 @@ input.direct-to-input.invalid::placeholder {
   }
 
   .mobile-utility-menu-header,
-  .mobile-utility-menu .gamemetacontrols {
+  .mobile-utility-menu .gamemetacontrols,
+  .mobile-map-view-picker {
     grid-column: 1 / -1;
   }
 }

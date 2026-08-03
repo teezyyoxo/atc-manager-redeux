@@ -3,6 +3,7 @@ import SettingsStore from '../../stores/SettingsStore';
 import { FaCompress, FaExpand } from 'react-icons/fa/index.esm';
 import { wipeServiceWorkerCache } from '../../lib/persistance';
 import ThemeControl from '../ThemeControl/ThemeControl';
+import MapViewControl from '../MapViewControl/MapViewControl';
 
 const SettingRow = ({ label, children, className = '' }) => (
   <div className={`settings-row ${className}`}>
@@ -68,13 +69,6 @@ const colorPalettes = [
   ['arctic', 'Arctic Ice'],
   ['graphite', 'Graphite'],
   ['sandstone', 'Desert Sand']
-];
-
-const mapViews = [
-  ['radar', 'Radar Scope'],
-  ['street', 'Street Map'],
-  ['terrain', 'Terrain Map'],
-  ['satellite', 'Satellite Imagery']
 ];
 
 class Settings extends Component {
@@ -313,17 +307,10 @@ class Settings extends Component {
           </SettingRow>
           <SettingRow label="Map View" className="settings-row-select">
             <div>
-              <select
-                aria-label="Map View"
-                value={SettingsStore.mapView}
-                onInput={this.handleChange('mapView')}
-              >
-                {mapViews.map(([value, label]) => (
-                  <option key={value} value={value}>{label}</option>
-                ))}
-              </select>
+              <MapViewControl label="Appearance map view" />
               <small className="settings-device-note">
-                Geographic views load live tiles; radar symbology stays on top.
+                Changes apply immediately. Geographic views load live tiles;
+                radar symbology stays on top.
               </small>
             </div>
           </SettingRow>

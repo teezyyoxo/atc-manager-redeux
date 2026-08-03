@@ -20,6 +20,7 @@ const interfaceFonts = [
   'jetbrains-mono',
   'share-tech-mono'
 ];
+export const mapViewModes = ['radar', 'street', 'terrain', 'satellite'];
 
 class SettingsStore extends EventEmitter {
   constructor() {
@@ -90,6 +91,7 @@ class SettingsStore extends EventEmitter {
           this[key] = persistedSettings[key];
       });
     }
+    if (!mapViewModes.includes(this.mapView)) this.mapView = 'radar';
 
     this.applyInterfaceScale();
     this.applyLogsPanelAppearance();
@@ -179,6 +181,13 @@ class SettingsStore extends EventEmitter {
 
   setSpeed = (speed) => {
     this.speed = speed;
+    this.emit('change');
+  }
+
+  setMapView = mapView => {
+    const nextMapView = mapViewModes.includes(mapView) ? mapView : 'radar';
+    if (nextMapView === this.mapView) return;
+    this.mapView = nextMapView;
     this.emit('change');
   }
 

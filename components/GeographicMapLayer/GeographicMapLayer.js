@@ -98,7 +98,11 @@ class GeographicMapLayer extends Component {
       `translate(-${config.width / 2} -${config.height / 2})`;
 
     return (
-      <g className={`geographic-map-layer geographic-map-${mode}`}>
+      <g
+        className={`geographic-map-layer geographic-map-${mode}`}
+        aria-hidden="true"
+        pointer-events="none"
+      >
         <g transform={transform}>{tiles}</g>
         <rect
           className="geographic-map-tint"
