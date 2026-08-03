@@ -14,9 +14,9 @@
     transparent
   );
   max-height: min(54vh, 540px);
-  max-width: 460px;
+  max-width: 440px;
   pointer-events: auto;
-  width: min(460px, calc(100vw - 32px));
+  width: min(440px, calc(100vw - 32px));
   -webkit-backdrop-filter:
     blur(var(--logs-panel-blur, 14px)) saturate(1.08);
   backdrop-filter: blur(var(--logs-panel-blur, 14px)) saturate(1.08);

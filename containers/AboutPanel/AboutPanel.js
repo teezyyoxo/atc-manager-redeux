@@ -3,6 +3,7 @@ import './AboutPanel.css';
 import GitHubButton from 'react-github-button';
 import { getBuildInfo } from '../../lib/build-info';
 import GameToolModal from '../../components/GameToolModal/GameToolModal';
+import { isMobileSession } from '../../lib/mobile';
 
 class AboutPanel extends Component {
   constructor(props) {
@@ -20,6 +21,7 @@ class AboutPanel extends Component {
         kicker="Project Information"
         onClose={this.props.onToggle}
         className="game-about-modal"
+        modal={isMobileSession()}
       >
         <GitHubButton
           type="stargazers"

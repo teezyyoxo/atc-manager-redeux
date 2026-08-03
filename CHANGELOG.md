@@ -1,6 +1,23 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [3.0.0-rc.25] - 2026-08-02
+
+### Changed
+
+- Standardized desktop dialogs opened from the session menu as compact,
+  bottom-left overlays above the radarscope.
+- Added a persistent Close Options action to the Settings dialog and kept its
+  session-menu toggle available while the dialog is open.
+- Updated application, package, Compose, Make, image, documentation, and build
+  metadata to 3.0.0-rc.25.
+
+### Fixed
+
+- Moved the shared game-dialog stylesheet into the always-loaded application
+  bundle so Settings, Logs, About, Airfield Information, and Save As can never
+  fall into normal page flow beneath the game viewport.
+
 ## [3.0.0-rc.24] - 2026-08-02
 
 ### Changed

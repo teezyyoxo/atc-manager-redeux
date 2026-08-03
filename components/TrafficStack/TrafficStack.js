@@ -38,77 +38,61 @@ import { isMobileSession } from '../../lib/mobile';
 
 const vfrInstructionContent = {
   [VFRStates.RWY]: {
-    label: 'Runway / land',
-    description: 'Continue to the runway and complete the landing.'
+    label: 'Runway / land'
   },
   [VFRStates.UPWIND]: {
-    label: 'Fly upwind',
-    description: 'Track runway heading and climb to pattern altitude.'
+    label: 'Fly upwind'
   },
   [VFRStates.CROSSWIND]: {
-    label: 'Turn crosswind',
-    description: 'Turn onto the crosswind leg.'
+    label: 'Turn crosswind'
   },
   [VFRStates.DOWNWIND]: {
-    label: 'Join downwind',
-    description: 'Enter or continue on the downwind leg.'
+    label: 'Join downwind'
   },
   [VFRStates.BASE]: {
-    label: 'Turn base',
-    description: 'Turn from downwind onto the base leg.'
+    label: 'Turn base'
   },
   [VFRStates.FINAL]: {
-    label: 'Turn final',
-    description: 'Line up with the selected runway.'
+    label: 'Turn final'
   },
   [VFRStates.STRAIGHT_OUT]: {
-    label: 'Straight out',
-    description: 'Depart on runway heading.'
+    label: 'Straight out'
   },
   [VFRStates.EXIT_45_DEG_OUT]: {
-    label: '45° departure',
-    description: 'Exit the pattern at a 45-degree angle.'
+    label: '45° departure'
   },
   [VFRStates.OWN_DISCRETION]: {
-    label: 'Own discretion',
-    description: 'Resume navigation without a pattern restriction.'
+    label: 'Own discretion'
   },
   [VFRStates.STRAIGHT_IN]: {
-    label: 'Straight-in',
-    description: 'Proceed directly to final for the selected runway.'
+    label: 'Straight-in'
   }
 };
 
 const vfrRouteContent = {
   [routeTypes.VFR_CLOSED_PATTERN]: {
     kicker: 'Local pattern · full stop',
-    title: 'Choose the next pattern leg',
-    hint: 'Move the aircraft around the traffic pattern toward landing.'
+    title: 'Choose the next pattern leg'
   },
   [routeTypes.VFR_CLOSED_PATTERN_TG]: {
     kicker: 'Local pattern · touch and go',
-    title: 'Choose the next pattern leg',
-    hint: 'Sequence each leg, then return the aircraft to the runway.'
+    title: 'Choose the next pattern leg'
   },
   [routeTypes.VFR_OUTBOUND]: {
     kicker: 'VFR departure',
-    title: 'Choose the departure path',
-    hint: 'Set how the aircraft leaves the airport after takeoff.'
+    title: 'Choose the departure path'
   },
   [routeTypes.VFR_INBOUND]: {
     kicker: 'VFR arrival · full stop',
-    title: 'Choose a runway and arrival leg',
-    hint: 'Assign the runway first, then guide the aircraft toward landing.'
+    title: 'Choose a runway and arrival leg'
   },
   [routeTypes.VFR_INBOUND_TG]: {
     kicker: 'VFR arrival · touch and go',
-    title: 'Choose a runway and arrival leg',
-    hint: 'Assign the runway first, then sequence the aircraft into pattern.'
+    title: 'Choose a runway and arrival leg'
   },
   [routeTypes.VFR_ENROUTE]: {
     kicker: 'VFR transit',
-    title: 'Release the aircraft to navigate',
-    hint: 'Transit traffic continues through the area at its own discretion.'
+    title: 'Release the aircraft to navigate'
   }
 };
 
@@ -753,8 +737,7 @@ class TrafficStack extends Component {
     const routeType = cmd.tgt.routeType;
     const routeContent = vfrRouteContent[routeType] || {
       kicker: 'General aviation',
-      title: 'Choose an instruction',
-      hint: 'Select the instruction to issue to this aircraft.'
+      title: 'Choose an instruction'
     };
     const instructions = allowedVFRStates(cmd.tgt) || [];
     const currentInstruction =
@@ -781,7 +764,6 @@ class TrafficStack extends Component {
         <header className="vfr-command-header">
           <span>{routeContent.kicker}</span>
           <strong>{routeContent.title}</strong>
-          <small>{routeContent.hint}</small>
         </header>
 
         {requiresRunway ? (
@@ -813,8 +795,7 @@ class TrafficStack extends Component {
           <div className="vfr-instruction-options">
             {instructions.map(state => {
               const content = vfrInstructionContent[state] || {
-                label: VFRStates[state],
-                description: 'Issue this traffic instruction.'
+                label: VFRStates[state]
               };
               const selected = this.state.cmd.tgtVfrState === state;
               return (
@@ -826,7 +807,6 @@ class TrafficStack extends Component {
                   onClick={() => this.handleVFRTgtState(state)}
                 >
                   <strong>{content.label}</strong>
-                  <small>{content.description}</small>
                 </button>
               );
             })}

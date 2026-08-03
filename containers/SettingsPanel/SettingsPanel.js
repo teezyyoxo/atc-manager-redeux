@@ -2,6 +2,7 @@ import { Component } from 'preact';
 import './SettingsPanel.css';
 import Settings from '../../components/Settings/Settings';
 import GameToolModal from '../../components/GameToolModal/GameToolModal';
+import { isMobileSession } from '../../lib/mobile';
 
 class SettingsPanel extends Component {
   constructor(props) {
@@ -18,6 +19,12 @@ class SettingsPanel extends Component {
         kicker="Session Controls"
         onClose={this.props.onToggle}
         className="game-options-modal"
+        modal={isMobileSession()}
+        footer={(
+          <button type="button" onClick={this.props.onToggle}>
+            Close Options
+          </button>
+        )}
       >
         <Settings appearanceInitiallyExpanded />
       </GameToolModal>

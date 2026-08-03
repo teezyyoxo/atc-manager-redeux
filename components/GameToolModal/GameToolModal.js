@@ -112,6 +112,11 @@ class GameToolModal extends Component {
             </button>
           </header>
           <div className="game-tool-modal-body">{this.props.children}</div>
+          {this.props.footer ? (
+            <footer className="game-tool-modal-footer">
+              {this.props.footer}
+            </footer>
+          ) : null}
         </section>
       </div>
     );

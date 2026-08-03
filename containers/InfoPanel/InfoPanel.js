@@ -11,6 +11,7 @@ import { saveAs } from 'file-saver';
 import SettingsStore from '../../stores/SettingsStore';
 import TimelapseRecorder from '../../components/TimelapseRecorder/TimelapseRecorder';
 import GameToolModal from '../../components/GameToolModal/GameToolModal';
+import { isMobileSession } from '../../lib/mobile';
 
 const isFullscreen = () =>
   typeof document !== 'undefined' &&
@@ -112,6 +113,7 @@ class InfoPanel extends Component {
         kicker="Session Reference"
         onClose={this.props.onToggle}
         className="game-airfield-modal"
+        modal={isMobileSession()}
       >
         <div className="session-airfield-content">
           <div>
