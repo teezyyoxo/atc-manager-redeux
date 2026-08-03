@@ -21,7 +21,7 @@ RUN --mount=type=cache,id=atc-manager-node-modules,target=/app/node_modules,shar
     npm run check
 
 FROM nginx:1.28-alpine
-ARG APP_VERSION=3.0.0-rc.27
+ARG APP_VERSION=3.0.0-rc.28
 ARG BUILD_COMMIT=unknown
 LABEL org.opencontainers.image.title="ATC Manager 3" \
       org.opencontainers.image.version="${APP_VERSION}" \

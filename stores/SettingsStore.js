@@ -212,6 +212,7 @@ class SettingsStore extends EventEmitter {
     const rootStyle = document.documentElement.style;
     rootStyle.setProperty('--interface-scale', scale);
     rootStyle.setProperty('--interface-font-size', `${14 * scale}px`);
+    rootStyle.setProperty('--mobile-interface-font-size', `${15.4 * scale}px`);
     rootStyle.setProperty('--interface-sidebar-width', `${280 * scale}px`);
     rootStyle.setProperty('--interface-compact-sidebar-width', `${220 * scale}px`);
   };

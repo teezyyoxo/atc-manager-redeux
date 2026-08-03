@@ -1,6 +1,25 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [3.0.0-rc.28] - 2026-08-02
+
+### Added
+
+- Restored mobile and tablet pull-to-refresh with pull, release, and refreshing
+  feedback plus gesture protection for radar, controls, menus, and dialogs.
+
+### Changed
+
+- Increased mobile interface labels by 10% while preserving the selected
+  Interface Scale multiplier.
+- Updated application, package, Compose, Make, image, documentation, and build
+  metadata to 3.0.0-rc.28.
+
+### Fixed
+
+- Restored the pull-to-refresh feature that was removed during the rc.19
+  mobile-layout regression fixes.
+
 ## [3.0.0-rc.27] - 2026-08-02
 
 ### Changed
