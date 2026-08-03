@@ -555,15 +555,28 @@ input.direct-to-input.invalid::placeholder {
     padding: 4px;
   }
 
+  .ga-airport-layout .traffic-control > .vfr-command-controls {
+    height: 100%;
+    margin-top: 0;
+  }
+
   .ga-airport-layout .vfr-command-controls {
-    align-content: end;
+    align-content: stretch;
     gap: 5px;
+    grid-template-areas:
+      "header"
+      "runway"
+      "instructions"
+      "actions";
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
+    height: 100%;
     max-height: 100%;
     overflow: hidden;
   }
 
   .ga-airport-layout .vfr-command-header {
     gap: 2px;
+    grid-area: header;
     padding: 0 1px 5px;
   }
 
@@ -580,10 +593,27 @@ input.direct-to-input.invalid::placeholder {
     margin-bottom: 3px;
   }
 
+  .ga-airport-layout .vfr-runway-group,
+  .ga-airport-layout .vfr-runway-assignment {
+    grid-area: runway;
+  }
+
+  .ga-airport-layout .vfr-instruction-group {
+    display: grid;
+    grid-area: instructions;
+    grid-template-rows: auto minmax(0, 1fr);
+    min-height: 0;
+  }
+
   .ga-airport-layout .vfr-runway-options,
   .ga-airport-layout .vfr-instruction-options {
     gap: 4px;
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .ga-airport-layout .vfr-instruction-options {
+    grid-auto-rows: minmax(34px, 1fr);
+    min-height: 0;
   }
 
   .atc-view .ga-airport-layout .vfr-runway-options button,
@@ -605,6 +635,7 @@ input.direct-to-input.invalid::placeholder {
 
   .ga-airport-layout .vfr-command-actions {
     gap: 4px;
+    grid-area: actions;
   }
 
   .atc-view .ga-airport-layout .vfr-command-actions button {

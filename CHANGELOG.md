@@ -1,6 +1,21 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [3.0.0-rc.27] - 2026-08-02
+
+### Changed
+
+- Expanded mobile GA command controls to fill the complete space beneath the
+  flight strips, with evenly sized instruction rows and the command action
+  anchored to the bottom edge.
+- Updated application, package, Compose, Make, image, documentation, and build
+  metadata to 3.0.0-rc.27.
+
+### Fixed
+
+- Removed the unused vertical gap caused by bottom-aligning the compact GA
+  control block inside a taller mobile control panel.
+
 ## [3.0.0-rc.26] - 2026-08-02
 
 ### Changed

@@ -790,7 +790,7 @@ class TrafficStack extends Component {
           </div>
         ) : null}
 
-        <fieldset className="vfr-command-group">
+        <fieldset className="vfr-command-group vfr-instruction-group">
           <legend>{requiresRunway ? '2' : '1'} · Select instruction</legend>
           <div className="vfr-instruction-options">
             {instructions.map(state => {
