@@ -7,6 +7,8 @@ All notable changes to this project will be documented in this file.
 
 - Widened the desktop Options and Session Logs overlays so settings controls
   and log entries remain fully accessible without horizontal clipping.
+- Added a deployment recovery runbook for safely realigning a clean deployment
+  checkout after corrected Git history prevents a fast-forward pull.
 - Updated application, package, Compose, Make, image, documentation, and build
   metadata to 3.0.0-rc.31.
 

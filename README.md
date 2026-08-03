@@ -395,6 +395,39 @@ Timelapse Overview. No account or hosted storage service is required.
 
 ## Troubleshooting
 
+### Deployment host cannot fast-forward after corrected history
+
+`git pull --ff-only` intentionally refuses when a release commit was corrected
+and the remote branch was updated with `--force-with-lease`. A deployment host
+that still has the superseded commit will report that its branch has diverged.
+Do not merge or rebase the obsolete deployment commit back into the corrected
+history.
+
+First confirm that the deployment checkout has no local changes:
+
+```bash
+git status --short
+```
+
+If that command prints anything, stop and preserve or review those changes
+before continuing. If it prints nothing, create a recovery branch and align
+the deployment checkout with the corrected remote history:
+
+```bash
+git branch backup/deployment-pre-recovery
+git fetch origin master
+git reset --hard origin/master
+make compose-down
+docker builder prune -f
+make compose-up
+```
+
+Choose a different backup branch name if that one already exists. The backup
+keeps the previous deployment commit recoverable. `git reset --hard` is safe
+here only after verifying that the checkout is clean; it discards tracked
+working-tree changes. If the original deployment command used `&&`, commands
+after the failed `git pull --ff-only` were not executed.
+
 ### Podman reports “requested access to the resource is denied”
 
 Podman did not find the requested image locally and tried to pull it. Build it
