@@ -1,6 +1,18 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [3.0.0-rc.32] - 2026-08-03
+
+### Changed
+
+- Updated application, package, Compose, Make, image, documentation, and build
+  metadata to 3.0.0-rc.32.
+
+### Fixed
+
+- Centered the desktop Pause/Exit and Save button contents within their
+  highlight areas and added clear spacing after the Save icon.
+
 ## [3.0.0-rc.31] - 2026-08-03
 
 ### Changed

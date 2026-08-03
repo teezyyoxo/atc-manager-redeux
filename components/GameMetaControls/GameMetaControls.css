@@ -15,6 +15,39 @@
   color: #79f3a2;
 }
 
+@media (min-width: 701px) and (hover: hover) {
+  .atc-view-buttons .gamemetacontrols {
+    display: grid;
+    gap: 4px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .atc-view .atc-view-buttons .gamemetacontrols button.w-50 {
+    float: none;
+    justify-content: center;
+    margin: 0;
+    min-width: 0;
+    text-align: center;
+    width: 100%;
+  }
+
+  .atc-view-buttons .gamemetacontrols button > svg {
+    display: block;
+    flex: 0 0 auto;
+  }
+
+  .atc-view-buttons .gamemetacontrols .game-meta-label,
+  .atc-view-buttons .gamemetacontrols .game-save-button span {
+    align-items: center;
+    display: inline-flex;
+    line-height: 1;
+  }
+
+  .atc-view-buttons .gamemetacontrols .game-save-button {
+    gap: 10px;
+  }
+}
+
 .save-as-modal {
   max-width: 540px;
 }
