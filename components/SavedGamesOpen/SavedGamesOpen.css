@@ -19,8 +19,7 @@
   border-radius: 16px;
   box-shadow: 0 14px 32px color-mix(in srgb, var(--ui-shadow) 74%, transparent);
   color: var(--ui-text);
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 58px;
+  display: block;
   min-width: 0;
   overflow: hidden;
   position: relative;
@@ -44,9 +43,9 @@
 
 .savedgamesopen .save-content {
   display: grid;
-  gap: 13px;
+  gap: 10px;
   min-width: 0;
-  padding: 16px 15px 15px 19px;
+  padding: 14px 14px 13px 19px;
 }
 
 .savedgamesopen .save-heading {
@@ -76,10 +75,18 @@
   overflow-wrap: anywhere;
 }
 
+.savedgamesopen .save-summary {
+  align-items: end;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  min-width: 0;
+}
+
 .savedgamesopen .save-details {
   display: grid;
-  gap: 9px 14px;
-  grid-template-columns: minmax(0, 1.5fr) repeat(2, minmax(62px, .7fr));
+  gap: 7px 10px;
+  grid-template-columns: minmax(0, 1.35fr) repeat(2, minmax(54px, .7fr));
   margin: 0;
   min-width: 0;
 }
@@ -109,13 +116,11 @@
 
 .savedgamesopen .save-actions {
   align-items: center;
-  background: color-mix(in srgb, var(--ui-bg) 36%, transparent);
-  border-left: 1px solid var(--ui-line);
   display: grid;
   gap: 6px;
-  grid-template-rows: repeat(3, 42px);
+  grid-template-columns: repeat(3, 42px);
   justify-content: center;
-  padding: 10px 8px;
+  padding: 0;
 }
 
 .savedgamesopen .save-action {
@@ -181,13 +186,14 @@
 }
 
 @media (max-width: 560px) {
-  .savedgamesopen .save {
-    grid-template-columns: minmax(0, 1fr) 54px;
-  }
-
   .savedgamesopen .save-content {
     gap: 11px;
     padding: 14px 12px 13px 17px;
+  }
+
+  .savedgamesopen .save-summary {
+    align-items: stretch;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .savedgamesopen .save-details {
@@ -199,7 +205,13 @@
   }
 
   .savedgamesopen .save-actions {
-    padding-left: 6px;
-    padding-right: 6px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  .savedgamesopen .save-action {
+    height: 42px;
+    min-height: 42px;
+    width: 100%;
   }
 }

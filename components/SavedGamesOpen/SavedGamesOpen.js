@@ -119,56 +119,62 @@ class SavedGamesOpen extends Component {
                 {details.title}
               </strong>
             </header>
-            <dl className="save-details">
-              <div className="save-detail save-detail-saved">
-                <dt>Saved</dt>
-                <dd>{details.savedLabel}</dd>
+            <div className="save-summary">
+              <dl className="save-details">
+                <div className="save-detail save-detail-saved">
+                  <dt>Saved</dt>
+                  <dd>{details.savedLabel}</dd>
+                </div>
+                <div className="save-detail">
+                  <dt>Sim time</dt>
+                  <dd>{details.timeLabel}</dd>
+                </div>
+                <div className="save-detail">
+                  <dt>Traffic</dt>
+                  <dd>{details.trafficLabel}</dd>
+                </div>
+              </dl>
+              <div
+                className="save-actions"
+                role="group"
+                aria-label={`Actions for ${save.name}`}
+              >
+                <button
+                  type="button"
+                  className="save-action save-resume"
+                  onClick={() =>
+                    this.handleSavedGamesOpenListItemClick(save.name)
+                  }
+                  aria-label={`Resume ${save.name}`}
+                  title="Resume session"
+                >
+                  <FaPlay />
+                  <span className="visually-hidden">Resume</span>
+                </button>
+                <button
+                  type="button"
+                  className="save-action save-edit"
+                  onClick={() => this.handleSavedGameEdit(save.name)}
+                  aria-label={`Edit ${save.name}`}
+                  title="Edit save"
+                >
+                  <FaEdit />
+                  <span className="visually-hidden">Edit</span>
+                </button>
+                <button
+                  type="button"
+                  className="save-action save-delete"
+                  onClick={() =>
+                    this.handleSavedGameOpenListItemTrash(save.name)
+                  }
+                  aria-label={`Delete ${save.name}`}
+                  title="Delete save"
+                >
+                  <FaTrash />
+                  <span className="visually-hidden">Delete</span>
+                </button>
               </div>
-              <div className="save-detail">
-                <dt>Sim time</dt>
-                <dd>{details.timeLabel}</dd>
-              </div>
-              <div className="save-detail">
-                <dt>Traffic</dt>
-                <dd>{details.trafficLabel}</dd>
-              </div>
-            </dl>
-          </div>
-          <div
-            className="save-actions"
-            role="group"
-            aria-label={`Actions for ${save.name}`}
-          >
-            <button
-              type="button"
-              className="save-action save-resume"
-              onClick={() => this.handleSavedGamesOpenListItemClick(save.name)}
-              aria-label={`Resume ${save.name}`}
-              title="Resume session"
-            >
-              <FaPlay />
-              <span className="visually-hidden">Resume</span>
-            </button>
-            <button
-              type="button"
-              className="save-action save-edit"
-              onClick={() => this.handleSavedGameEdit(save.name)}
-              aria-label={`Edit ${save.name}`}
-              title="Edit save"
-            >
-              <FaEdit />
-              <span className="visually-hidden">Edit</span>
-            </button>
-            <button
-              type="button"
-              className="save-action save-delete"
-              onClick={() => this.handleSavedGameOpenListItemTrash(save.name)}
-              aria-label={`Delete ${save.name}`}
-              title="Delete save"
-            >
-              <FaTrash />
-              <span className="visually-hidden">Delete</span>
-            </button>
+            </div>
           </div>
         </article>
       );

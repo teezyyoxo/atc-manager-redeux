@@ -1001,8 +1001,25 @@
 
   .home-continue-section .savedgamesopen-list {
     max-height: min(38vh, 330px);
+    overscroll-behavior: contain;
     overflow-y: auto;
-    padding-right: 3px;
+    padding: 2px 8px 12px 2px;
+    scroll-padding-bottom: 12px;
+    scrollbar-gutter: stable;
+  }
+
+  .home-continue-section .save-summary {
+    align-items: stretch;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .home-continue-section .save-actions {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  .home-continue-section .save-action {
+    width: 100%;
   }
 
   .home-tools-section {

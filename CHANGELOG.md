@@ -1,6 +1,22 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [3.0.0-rc.34] - 2026-08-03
+
+### Changed
+
+- Refactored saved-session tiles into a compact summary and horizontal action
+  layout so desktop cards use less vertical space while retaining accessible
+  resume, edit, and delete controls.
+- Updated application, package, Compose, Make, image, documentation, and build
+  metadata to 3.0.0-rc.34.
+
+### Fixed
+
+- Made the desktop saved-session list independently scrollable with bottom
+  clearance, preventing the final tile and its controls from being clipped or
+  unreachable.
+
 ## [3.0.0-rc.33] - 2026-08-03
 
 ### Added
