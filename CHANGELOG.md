@@ -8,9 +8,9 @@ All notable changes to this project will be documented in this file.
 - Expanded the mobile flight-strip region at commercial and international
   airports so it begins directly beneath the radarscope and fills the space
   above the command panel.
-- Compacted mobile GA command panels to their content height and expanded the
-  flight-strip region into the reclaimed space, eliminating the empty area
-  above the bottom command action.
+- Bottom-anchored mobile GA command panels at their worst-case instruction
+  height and assigned all reclaimed space to the flight-strip region,
+  eliminating the empty area between instructions and the command action.
 - Updated application, package, Compose, Make, image, documentation, and build
   metadata to 3.0.0-rc.30.
 

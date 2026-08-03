@@ -550,10 +550,18 @@ input.direct-to-input.invalid::placeholder {
   }
 
   .ga-airport-layout .traffic-control {
-    flex: 0 1 auto;
+    display: block;
+    flex: 0 0 auto;
+    height: auto;
+    max-height: none;
     overflow: hidden;
     overscroll-behavior: none;
     padding: 4px;
+  }
+
+  .ga-airport-layout .traffic-stack {
+    flex: 1 1 0;
+    margin: 0;
   }
 
   .ga-airport-layout .traffic-control > * {
@@ -566,7 +574,7 @@ input.direct-to-input.invalid::placeholder {
   }
 
   .ga-airport-layout .vfr-command-controls {
-    align-content: stretch;
+    align-content: start;
     gap: 5px;
     grid-template-areas:
       "header"
@@ -639,8 +647,10 @@ input.direct-to-input.invalid::placeholder {
   }
 
   .ga-airport-layout .vfr-command-actions {
+    align-self: start;
     gap: 4px;
     grid-area: actions;
+    margin-top: 0;
   }
 
   .atc-view .ga-airport-layout .vfr-command-actions button {
