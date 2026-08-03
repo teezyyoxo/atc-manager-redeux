@@ -1,6 +1,19 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [3.0.0-rc.30] - 2026-08-03
+
+### Changed
+
+- Expanded the mobile flight-strip region at commercial and international
+  airports so it begins directly beneath the radarscope and fills the space
+  above the command panel.
+- Compacted mobile GA command panels to their content height and expanded the
+  flight-strip region into the reclaimed space, eliminating the empty area
+  above the bottom command action.
+- Updated application, package, Compose, Make, image, documentation, and build
+  metadata to 3.0.0-rc.30.
+
 ## [3.0.0-rc.29] - 2026-08-03
 
 ### Changed
