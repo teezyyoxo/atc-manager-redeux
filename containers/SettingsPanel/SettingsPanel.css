@@ -1,4 +1,24 @@
 
-.SettingsPanel {
-    
+@media (min-width: 701px) {
+  .game-tool-modal-overlay.game-options-modal-overlay {
+    background: color-mix(in srgb, var(--ui-bg) 52%, transparent);
+    pointer-events: auto;
+    -webkit-backdrop-filter: blur(14px) saturate(.74);
+    backdrop-filter: blur(14px) saturate(.74);
+  }
+
+  .game-tool-modal-overlay .game-tool-modal.game-options-modal {
+    max-height: min(90vh, 960px);
+    max-height: min(90dvh, 960px);
+    max-width: 860px;
+    width: min(860px, calc(100vw - 32px));
+  }
+
+  .game-options-modal .game-tool-modal-body {
+    overflow-x: hidden;
+  }
+
+  .game-options-modal .settings-row {
+    grid-template-columns: minmax(160px, .62fr) minmax(0, 1.38fr);
+  }
 }

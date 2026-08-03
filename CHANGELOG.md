@@ -1,6 +1,20 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [3.0.0-rc.31] - 2026-08-03
+
+### Changed
+
+- Widened the desktop Options and Session Logs overlays so settings controls
+  and log entries remain fully accessible without horizontal clipping.
+- Updated application, package, Compose, Make, image, documentation, and build
+  metadata to 3.0.0-rc.31.
+
+### Fixed
+
+- Made desktop Options a blocking dialog that pauses the simulation, locks
+  interaction with the radarscope, and blurs the background until dismissed.
+
 ## [3.0.0-rc.30] - 2026-08-03
 
 ### Changed

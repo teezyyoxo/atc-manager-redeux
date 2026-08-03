@@ -56,6 +56,15 @@
   margin: 0;
 }
 
+@media (min-width: 701px) {
+  .game-tool-modal-overlay .game-tool-modal.game-logs-modal {
+    max-height: min(64vh, 640px);
+    max-height: min(64dvh, 640px);
+    max-width: 680px;
+    width: min(680px, calc(100vw - 32px));
+  }
+}
+
 @media (max-width: 700px),
   (any-pointer: coarse) and (max-width: 1366px) {
   .game-tool-modal-overlay.game-logs-modal-overlay {
