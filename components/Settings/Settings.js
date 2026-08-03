@@ -70,6 +70,13 @@ const colorPalettes = [
   ['sandstone', 'Desert Sand']
 ];
 
+const mapViews = [
+  ['radar', 'Radar Scope'],
+  ['street', 'Street Map'],
+  ['terrain', 'Terrain Map'],
+  ['satellite', 'Satellite Imagery']
+];
+
 class Settings extends Component {
   constructor(props) {
     super(props);
@@ -303,6 +310,22 @@ class Settings extends Component {
                 <option key={value} value={value}>{label}</option>
               ))}
             </select>
+          </SettingRow>
+          <SettingRow label="Map View" className="settings-row-select">
+            <div>
+              <select
+                aria-label="Map View"
+                value={SettingsStore.mapView}
+                onInput={this.handleChange('mapView')}
+              >
+                {mapViews.map(([value, label]) => (
+                  <option key={value} value={value}>{label}</option>
+                ))}
+              </select>
+              <small className="settings-device-note">
+                Geographic views load live tiles; radar symbology stays on top.
+              </small>
+            </div>
           </SettingRow>
           <SettingRow label="Interface Font" className="settings-row-select">
             <div className="settings-font-control">

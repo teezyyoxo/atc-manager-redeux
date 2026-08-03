@@ -66,6 +66,7 @@ class SettingsStore extends EventEmitter {
     this.startingOutboundPlanes = 2;
     this.startingEnroutePlanes = 1;
     this.radarFontsize = 14;
+    this.mapView = 'radar';
     this.interfaceScale = 'auto';
     this.themePreference = 'system';
     this.colorPalette = 'approach';
@@ -296,6 +297,7 @@ class SettingsStore extends EventEmitter {
         'autosaveIntervalMinutes',
         'distanceCirclesAmount',
         'radarFontsize',
+        'mapView',
         'interfaceScale',
         'themePreference',
         'colorPalette',

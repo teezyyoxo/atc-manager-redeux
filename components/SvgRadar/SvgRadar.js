@@ -12,6 +12,9 @@ import MSALayer from '../MSALayer/MSALayer';
 import RouteVisualizer from '../RouteVisualizer/RouteVisualizer';
 import SidSvg from '../SidSvg/SidSvg';
 import StarSvg from '../StarSvg/StarSvg';
+import GeographicMapLayer, {
+  GeographicMapAttribution
+} from '../GeographicMapLayer/GeographicMapLayer';
 
 class SvgRadar extends Component {
   constructor(props) {
@@ -58,7 +61,8 @@ class SvgRadar extends Component {
         onTouchEnd={this.props.onTouchEnd}
         onTouchCancel={this.props.onTouchEnd}
         xmlns="http://www.w3.org/2000/svg"
-        className="atc-view-svg"
+        xmlnsXlink="http://www.w3.org/1999/xlink"
+        className={`atc-view-svg map-view-${SettingsStore.mapView}`}
         width="100%"
         height="100%"
         onClick={this.props.onClick}
@@ -69,6 +73,7 @@ class SvgRadar extends Component {
         }; overflow: visible; font-size: ${fontSize}px;`}
       >
         <style>{styles}</style>
+        <GeographicMapLayer />
         <g transform={transformScale}>
           <BackgroundSvg name={GameStore.id} />
         </g>
@@ -87,6 +92,7 @@ class SvgRadar extends Component {
           stroke-dasharray="20, 20"
           transform={transformScale}
         />
+        <GeographicMapAttribution />
       </svg>
     );
   }

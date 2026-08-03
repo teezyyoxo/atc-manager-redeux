@@ -1,6 +1,30 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [3.0.0-rc.33] - 2026-08-03
+
+### Added
+
+- Added immediately switchable street, terrain, and satellite geographic views
+  beneath the persistent radarscope, with airport-aligned scale, synchronized
+  scope zoom, and visible map-source attribution.
+
+### Changed
+
+- Reconciled every built-in operator with the aircraft types represented in its
+  current fleet and retired historical operator/type pairings from generation.
+- Added operator service regions, long-haul subfleet rules, and airport-specific
+  airline pools across the supported commercial airports.
+- Updated application, package, Compose, Make, image, documentation, and build
+  metadata to 3.0.0-rc.33.
+
+### Fixed
+
+- Prevented JetBlue Boeing traffic, retired-airline traffic, and other invalid
+  operator/aircraft combinations from being generated.
+- Restricted Bradley International to medium and light scheduled traffic, so
+  Boeing 747, Boeing 777, and other heavy/super aircraft no longer spawn there.
+
 ## [3.0.0-rc.32] - 2026-08-03
 
 ### Changed
