@@ -328,7 +328,8 @@ input.direct-to-input.invalid::placeholder {
   }
 }
 
-@media (pointer: coarse) {
+@media screen and (max-width: 700px),
+  screen and (pointer: coarse) and (max-width: 1366px) {
   .atc-view button {
     min-height: 32px;
   }
@@ -340,7 +341,8 @@ input.direct-to-input.invalid::placeholder {
   }
 }
 
-@media (any-pointer: coarse) {
+@media screen and (max-width: 700px),
+  screen and (any-pointer: coarse) and (max-width: 1366px) {
   .atc-view {
     --mobile-game-nav-height: calc(44px + env(safe-area-inset-top));
   }
@@ -833,7 +835,9 @@ input.direct-to-input.invalid::placeholder {
   }
 }
 
-@media (any-pointer: coarse) and (max-height: 500px) {
+@media screen and (max-width: 700px) and (max-height: 500px),
+  screen and (any-pointer: coarse) and (max-width: 1366px)
+  and (max-height: 500px) {
   .atc-view {
     --sidebar-width: clamp(320px, 42vw, 560px);
   }
@@ -855,7 +859,7 @@ input.direct-to-input.invalid::placeholder {
   }
 }
 
-@media (any-pointer: coarse) and (max-width: 360px) {
+@media screen and (max-width: 360px) {
   .mobile-game-status {
     font-size: .66rem;
     gap: 9px;
@@ -1003,7 +1007,8 @@ input.direct-to-input.invalid::placeholder {
   }
 }
 
-@media (any-pointer: coarse) {
+@media screen and (max-width: 700px),
+  screen and (any-pointer: coarse) and (max-width: 1366px) {
   .traffic-stack-wrapper {
     overflow: hidden;
     overscroll-behavior: contain;
@@ -1016,7 +1021,8 @@ input.direct-to-input.invalid::placeholder {
   }
 }
 
-@media (any-pointer: coarse) and (orientation: landscape)
+@media screen and (max-width: 700px) and (orientation: landscape),
+  screen and (any-pointer: coarse) and (orientation: landscape)
   and (max-width: 1366px) {
   .atc-view {
     --sidebar-width: clamp(320px, 42vw, 560px);
@@ -1040,7 +1046,9 @@ input.direct-to-input.invalid::placeholder {
   }
 }
 
-@media (any-pointer: coarse) and (max-height: 500px) {
+@media screen and (max-width: 700px) and (max-height: 500px),
+  screen and (any-pointer: coarse) and (max-width: 1366px)
+  and (max-height: 500px) {
   .traffic-stack {
     flex-basis: 84px;
     min-height: 84px;

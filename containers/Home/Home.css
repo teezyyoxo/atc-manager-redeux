@@ -148,10 +148,10 @@
   font-size: .82rem;
   font-weight: 650;
   height: auto;
-  letter-spacing: 0;
+  letter-spacing: .06em;
   margin: 0;
   padding: 8px 0;
-  text-transform: none;
+  text-transform: uppercase;
 }
 
 .home-nav > a:hover,
@@ -269,6 +269,11 @@
   background: var(--ui-surface-raised);
   border-color: var(--ui-accent);
   color: var(--ui-text);
+}
+
+.home-hero-actions .home-button {
+  letter-spacing: .06em;
+  text-transform: uppercase;
 }
 
 .home-hero-meta {

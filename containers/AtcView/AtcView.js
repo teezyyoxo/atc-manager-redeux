@@ -70,6 +70,10 @@ class AtcView extends Component {
       this.state.cmd.tgt &&
       !GameStore.traffic.includes(this.state.cmd.tgt)
     ) {
+      if (isMobileSession() && GameStore.traffic.length > 0) {
+        this.handleAirplaneClick(0);
+        return;
+      }
       this.setState({
         cmd: {
           tgt: null,
@@ -80,6 +84,14 @@ class AtcView extends Component {
           directionOld: null
         }
       });
+      return;
+    }
+    if (
+      !this.state.cmd.tgt &&
+      isMobileSession() &&
+      GameStore.traffic.length > 0
+    ) {
+      this.handleAirplaneClick(0);
       return;
     }
     this.setState({});

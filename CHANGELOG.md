@@ -1,6 +1,26 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [3.0.0-rc.21] - 2026-08-02
+
+### Changed
+
+- Rendered the homepage and workspace navigation labels, plus the Configure
+  Session and View Tutorial actions, in uppercase.
+- Updated application, package, Compose, Make, image, documentation, and build
+  metadata to 3.0.0-rc.21.
+
+### Fixed
+
+- Restored the Introduction tutorial content by limiting duplicate-heading
+  suppression to headings instead of hiding the tutorial's content panel.
+- Kept mobile command controls visible by applying the touch layout at narrow
+  viewport widths and automatically selecting the next available aircraft when
+  the current target leaves the session.
+- Prevented SPA route refreshes and user-agent changes from redirecting to an
+  internal container port and dropping externally published ports such as
+  `:7123`.
+
 ## [3.0.0-rc.20] - 2026-08-01
 
 ### Changed

@@ -85,10 +85,10 @@
   font-size: .78rem;
   font-weight: 680;
   height: auto;
-  letter-spacing: 0;
+  letter-spacing: .06em;
   margin: 0;
   padding: 8px 11px;
-  text-transform: none;
+  text-transform: uppercase;
 }
 
 .workspace-nav > a:hover,
@@ -195,6 +195,10 @@
   width: 100%;
   -webkit-backdrop-filter: blur(18px);
   backdrop-filter: blur(18px);
+}
+
+.workspace-content .tutorial > .panel:first-of-type {
+  margin-top: 0;
 }
 
 .workspace-content .editor-surface {
@@ -345,8 +349,7 @@
   margin: 0;
 }
 
-.workspace-content .panel > h1:first-child,
-.workspace-content .tutorial > .panel:first-of-type {
+.workspace-content .panel > h1:first-child {
   display: none;
 }
 
